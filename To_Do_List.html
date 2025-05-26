@@ -1,0 +1,509 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📝 To-Do List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+  body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Baloo 2', cursive;
+      background: linear-gradient(135deg, #0f3dc8 , #04edce);
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    .hamburger {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 30px;
+      height: 25px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .hamburger div {
+      background-color: white;
+      height: 4px;
+      margin: 5px 0;
+      border-radius: 2px;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: rgb(7, 116, 218);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      z-index: 9;
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .project-item {
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .project-item input {
+      border: none;
+      background: transparent;
+      font-family: 'Baloo 2';
+      font-size: 1em;
+      width: 80%;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .delete-btn-project {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+    }
+
+    .container {
+      margin: 60px auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #ff6f61;
+      font-size: 2.5em;
+    }
+
+    .quote {
+      font-size: 1.1em;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    #nameInput {
+      font-size: 1em;
+      padding: 10px 10px;
+      border-radius: 30px;
+      border: 2px solid #ff9a8b;
+      outline: none;
+      color: #ff6f61;
+      background: white;
+      width: 60%;
+    }
+
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], input[type="date"], select {
+      padding: 10px 15px;
+      border-radius: 30px;
+      border: 2px solid #ff9a8b;
+      outline: none;
+      font-size: 1em;
+    }
+
+    button {
+      background: #ff6f61;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e94e3e;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      color: #333;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 15px;
+      font-size: 1.1em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: 0.3s;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    li.completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .delete-btn {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+    }
+
+    .priority-label {
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 20px;
+      color: white;
+    }
+
+    .priority-1 { background-color: #e74c3c; }
+    .priority-2 { background-color: #e67e22; }
+    .priority-3 { background-color: #3498db; }
+    .priority-4 { background-color: #2ecc71; }
+
+    .task-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .checkbox {
+      margin-right: 10px;
+    #nameInput {
+      font-size: 0.9em;
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="hamburger" onclick="toggleSidebar()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <button onclick="addProject()">+ Add Project</button>
+    <div id="projectList"></div>
+  </div>
+
+  <div class="container">
+    <h1><span id="nameDisplay"></span> To-Do List</h1>
+    <div class="quote" id="quoteBox">"Loading inspiration..."</div>
+    <input type="text" id="nameInput" placeholder="Enter your name and press Enter">
+    <div class="input-row">
+      <input type="text" id="todoInput" placeholder="What do you need to do?">
+      <input type="text" id="descInput" placeholder="Description">
+      <select id="categoryInput">
+        <option value="General">General</option>
+        <option value="Work">Work</option>
+        <option value="School">School</option>
+        <option value="Personal">Personal</option>
+      </select>
+      <select id="priorityInput">
+        <option value="1">Priority 1 ⚠️</option>
+        <option value="2">Priority 2 ❗</option>
+        <option value="3">Priority 3 ❄️</option>
+        <option value="4">Priority 4 💤</option>
+      </select>
+      <input type="date" id="dateInput">
+      <button onclick="addTodo()">Add</button>
+    </div>
+    <ul id="todoList"></ul>
+    <ul id="completedList"></ul>
+  </div>
+
+  <script>
+    let currentProject = "Default";
+    const savedProjects = JSON.parse(localStorage.getItem("projects") || "{}");
+    const projects = savedProjects;
+    if (!projects[currentProject]) projects[currentProject] = { todos: [], completed: [] };
+
+    const todoList = document.getElementById('todoList');
+    const completedList = document.getElementById('completedList');
+    const projectList = document.getElementById('projectList');
+    const nameInput = document.getElementById('nameInput');
+    const nameDisplay = document.getElementById('nameDisplay');
+    const quoteBox = document.getElementById('quoteBox');
+
+    const quotes = [
+      "“The secret of getting ahead is getting started.” – Mark Twain",
+      "“It always seems impossible until it’s done.” – Nelson Mandela",
+      "“Don’t watch the clock; do what it does. Keep going.” – Sam Levenson",
+      "“Start where you are. Use what you have. Do what you can.” – Arthur Ashe",
+      "“You don’t have to be great to start, but you have to start to be great.” – Zig Ziglar",
+      "“Believe you can and you're halfway there.” - Theodore Roosevelt",
+      "”The only person you are destined to become is the person you decide to be.” — Ralph Waldo Emerson",
+      "”The question isn't who is going to let me; it's who is going to stop me.” — Ayn Rand",
+      "”Winning is not a sometime thing; it's an all the time thing.” — Vince Lombardi",
+      "”Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.” — Christian D. Larson"
+
+    ];
+
+    function showRandomQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      quoteBox.textContent = quotes[randomIndex];
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function addProject() {
+      const name = prompt("Enter new project name:");
+      if (!name) return;
+      if (!projects[name]) projects[name] = { todos: [], completed: [] };
+      currentProject = name;
+      saveProjects();
+      renderProjectList();
+      renderTodos();
+    }
+
+    function deleteProject(name) {
+      if (confirm(`Are you sure you want to delete the project "${name}"?`)) {
+        delete projects[name];
+        if (currentProject === name) currentProject = "Default";
+        saveProjects();
+        renderProjectList();
+        renderTodos();
+      }
+    }
+
+    function switchProject(name) {
+      currentProject = name;
+      renderTodos();
+    }
+
+    function renderProjectList() {
+      projectList.innerHTML = "";
+      Object.keys(projects).forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'project-item';
+
+        const input = document.createElement('input');
+input.value = name;
+input.style.cursor = 'pointer';
+input.addEventListener('click', () => switchProject(name));
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn-project';
+        deleteBtn.textContent = '✕';
+        deleteBtn.onclick = (e) => {
+          e.stopPropagation();
+          deleteProject(name);
+        };
+
+        div.appendChild(input);
+        div.appendChild(deleteBtn);
+        projectList.appendChild(div);
+      });
+    }
+
+    function saveProjects() {
+      localStorage.setItem("projects", JSON.stringify(projects));
+    }
+
+    function renderTodos() {
+      todoList.innerHTML = "";
+      completedList.innerHTML = "";
+      const { todos, completed } = projects[currentProject];
+      [...todos, ...completed].forEach(data => {
+        const li = createTodoElement(data);
+        (data.done ? completedList : todoList).appendChild(li);
+      });
+    }
+
+    function createTodoElement({ text, description, category, priority, date, done }) {
+      const li = document.createElement('li');
+      if (done) li.classList.add('completed');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = done;
+      checkbox.className = 'checkbox';
+      checkbox.onchange = () => toggleComplete(text);
+
+      const taskDetails = document.createElement('div');
+      taskDetails.className = 'task-details';
+
+      const mainText = document.createElement('div');
+      mainText.contentEditable = true;
+      mainText.textContent = `${text}`;
+      mainText.oninput = () => updateText(text, mainText.textContent);
+
+      const desc = document.createElement('div');
+      desc.textContent = description;
+      desc.style.fontSize = '0.9em';
+      desc.style.color = '#333';
+
+      const priorityText = document.createElement('div');
+      priorityText.className = `priority-label priority-${priority}`;
+      priorityText.textContent = `Priority ${priority}`;
+
+      const dateText = document.createElement('div');
+      dateText.textContent = getCountdownText(date);
+
+      taskDetails.append(mainText, desc, priorityText, dateText);
+
+      const btn = document.createElement('button');
+      btn.className = 'delete-btn';
+      btn.textContent = '✕';
+      btn.onclick = () => deleteTodo(text);
+
+      li.append(checkbox, taskDetails, btn);
+      return li;
+    }
+
+    function getCountdownText(dateStr) {
+      if (!dateStr) return '';
+      const today = new Date();
+      const due = new Date(dateStr);
+      const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      if (diff < 0) return '⚠️ Overdue';
+      if (diff === 0) return 'Due today!';
+      if (diff === 1) return 'Due tomorrow';
+      return `Due in ${diff} days`;
+    }
+  
+
+    function addTodo() {
+      const text = document.getElementById('todoInput').value.trim();
+      const description = document.getElementById('descInput').value.trim();
+      const category = document.getElementById('categoryInput').value;
+      const priority = document.getElementById('priorityInput').value;
+      const date = document.getElementById('dateInput').value;
+      if (!text) return;
+      const todo = { text, description, category, priority, date, done: false };
+      projects[currentProject].todos.push(todo);
+      saveProjects();
+      renderTodos();
+      document.getElementById('todoInput').value = '';
+      document.getElementById('descInput').value = '';
+    }
+
+    function deleteTodo(text) {
+      const data = projects[currentProject];
+      data.todos = data.todos.filter(t => t.text !== text);
+      data.completed = data.completed.filter(t => t.text !== text);
+      launchConfetti();
+      saveProjects();
+      renderTodos();
+    }
+
+    function toggleComplete(text) {
+      const data = projects[currentProject];
+      const index = data.todos.findIndex(t => t.text === text);
+      if (index > -1) {
+        const todo = data.todos.splice(index, 1)[0];
+        todo.done = true;
+        data.completed.push(todo);
+      } else {
+        const idx = data.completed.findIndex(t => t.text === text);
+        if (idx > -1) {
+          const todo = data.completed.splice(idx, 1)[0];
+          todo.done = false;
+          data.todos.push(todo);
+        }
+      }
+      saveProjects();
+      renderTodos();
+    }
+
+    function updateText(oldText, newText) {
+      const data = projects[currentProject];
+      for (let list of [data.todos, data.completed]) {
+        const item = list.find(t => t.text === oldText);
+        if (item) item.text = newText;
+      }
+      saveProjects();
+    }
+
+    function launchConfetti() {
+      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+    }
+
+    function updateName(name) {
+      nameDisplay.textContent = `${name}'s`;
+      nameInput.style.display = 'none';
+      localStorage.setItem('username', name);
+    }
+
+    nameInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const name = nameInput.value.trim();
+        if (name) updateName(name);
+      }
+    });
+
+  
+    const savedName = localStorage.getItem('username');
+    if (savedName) updateName(savedName);
+    showRandomQuote();
+    renderProjectList();
+    renderTodos();
+  </script>
+</body>
+</html>
