@@ -28,6 +28,102 @@
       opacity: 0.2;
       z-index: 0;
     }
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      position: absolute;
+      top: 18px;
+      left: 70px;
+      z-index: 20;
+      background: none;
+      width: calc(100vw - 90px);
+      max-width: 850px;
+    }
+    @media (max-width: 850px) {
+      .top-bar { flex-direction: column; align-items: flex-start; left: 8px; width: 98vw; }
+    }
+    .calendar-btn {
+      background: linear-gradient(90deg,#43cea2,#185a9d);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 25px;
+      font-size: 1.08em;
+      font-weight: 700;
+      box-shadow: 0 2px 12px #185a9d22;
+      cursor: pointer;
+      z-index: 15;
+      transition: background 0.16s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .calendar-btn:hover { background: linear-gradient(90deg, #185a9d, #43cea2); }
+
+    .analytics-btn {
+      background: linear-gradient(90deg,#ff9966,#ff5e62);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 25px;
+      font-size: 1.08em;
+      font-weight: 700;
+      box-shadow: 0 2px 12px #ff996622;
+      cursor: pointer;
+      z-index: 15;
+      transition: background 0.16s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .analytics-btn:hover { background: linear-gradient(90deg,#ff5e62,#ff9966); }
+
+    .share-btn {
+      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 23px;
+      font-size: 1.08em;
+      font-weight: 700;
+      box-shadow: 0 2px 12px #2575fc22;
+      cursor: pointer;
+      z-index: 15;
+      transition: background 0.16s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .share-btn:hover { background: linear-gradient(90deg,#2575fc,#6a11cb); }
+
+    .download-btn {
+      background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 23px;
+      font-size: 1.08em;
+      font-weight: 700;
+      box-shadow: 0 2px 12px #11998e22;
+      cursor: pointer;
+      z-index: 15;
+      transition: background 0.16s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .download-btn:hover { background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%); }
+
+    .email-btn {
+      background: linear-gradient(90deg,#f857a6,#ff5858);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 23px;
+      font-size: 1.08em;
+      font-weight: 700;
+      box-shadow: 0 2px 12px #f857a622;
+      cursor: pointer;
+      z-index: 15;
+      transition: background 0.16s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .email-btn:hover { background: linear-gradient(90deg,#ff5858,#f857a6); }
+
     .hamburger {
       position: fixed;
       top: 20px;
@@ -43,14 +139,13 @@
       margin: 5px 0;
       border-radius: 2px;
     }
-    
+
     .sidebar {
       position: fixed;
       top: 0;
       left: -250px;
       width: 250px;
       height: 100%;
-      /* Glassmorphism effect for transparency */
       background: rgba(7, 116, 218, 0.22);
       box-shadow: 2px 0 10px rgba(0,0,0,0.07);
       padding: 20px 20px 18px 20px;
@@ -112,8 +207,6 @@
       justify-content: center;
       font-size: 1.2em;
     }
-
-    /* Three dots menu */
     .project-menu-container {
       position: relative;
       margin-left: 5px;
@@ -211,36 +304,6 @@
       margin-right: 2px;
     }
 
-     .collab-bar {
-      margin-top: 22px;
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
-      z-index: 15;
-    }
-    .collab-btn {
-      background: linear-gradient(90deg, #185a9d, #43cea2);
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 9px 26px;
-      font-size: 1.05em;
-      font-weight: 700;
-      box-shadow: 0 2px 9px #185a9d22;
-      cursor: pointer;
-      transition: background 0.17s, transform 0.11s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      outline: none;
-      position: relative;
-      overflow: hidden;
-    }
-    .collab-btn:hover {
-      background: linear-gradient(90deg, #43cea2, #185a9d);
-      transform: translateY(-2px) scale(1.04);
-    }
     /* Modal Styles */
     .collab-modal-bg {
       position: fixed;
@@ -356,7 +419,6 @@
     @media (max-width: 600px) {
       .collab-modal {width: 97vw; padding: 17px 8vw;}
     }
-    /* Container becomes glass-morphism */
     .container {
       margin: 60px auto;
       background: rgba(255,255,255,0.5);
@@ -375,7 +437,6 @@
     .container:hover {
       background: rgba(255,255,255,0.65);
     }
-   
     h1 {
       margin-bottom: 10px;
       color: #ff6f61;
@@ -533,9 +594,6 @@
       font-size: 0.95em;
       margin-right: 8px;
     }
-  
-    
-    /* theme toggle button */
     .theme-toggle {
       position: absolute;
       top: 24px;
@@ -558,7 +616,6 @@
       background: #ff9a8b;
       color: #fff;
     }
-    /* Progress bar */
     .progress-bar-container {
       margin: 15px 0 0 0;
       width: 100%;
@@ -585,7 +642,6 @@
       position: absolute;
       left: 0; top: 0;
       min-width: 80px;
-      /* 0% text always visible */
       z-index: 1;
     }
     .progress-bar-label {
@@ -604,11 +660,9 @@
       user-select: none;
       mix-blend-mode: difference;
     }
-    /* For small width, label stays visible */
     .progress-bar-fill:empty + .progress-bar-label {
       color: #333;
     }
-    /* Reminder icon for due tasks */
     .reminder-icon {
       color: #e74c3c;
       margin-left: 8px;
@@ -619,7 +673,6 @@
       0% { filter: drop-shadow(0 0 0px #e74c3c);}
       100% { filter: drop-shadow(0 0 6px #e74c3c);}
     }
-    /* Task notes popup */
     .notes-popup {
       display: none;
       position: absolute;
@@ -652,7 +705,6 @@
     .notes-btn:hover {
       background: #ffef9f;
     }
-    /* Undo bar */
     .undo-bar {
       position: fixed;
       bottom: 24px;
@@ -689,7 +741,6 @@
     .undo-btn:hover {
       background: #0f3dc8;
     }
-    /* Scrollbar styling */
     ::-webkit-scrollbar {
       width: 7px;
       background: #f1f1f1;
@@ -704,14 +755,17 @@
   </style>
 </head>
 <body>
- <button class="calendar-btn" onclick="window.location.href='calendar.html'"
-  style="position:absolute;top:24px;left:80px;background:linear-gradient(90deg,#43cea2,#185a9d);color:#fff;border:none;border-radius:20px;padding:10px 25px;font-size:1.08em;font-weight:700;box-shadow:0 2px 12px #185a9d22;cursor:pointer;z-index:15;transition:background 0.16s;">
-  <i class="fa fa-calendar"></i> Calendar
-</button>
-<button class="analytics-btn" onclick="window.location.href='analytics.html'"
-  style="position:absolute;top:24px;left:230px;background:linear-gradient(90deg,#ff9966,#ff5e62);color:#fff;border:none;border-radius:20px;padding:10px 25px;font-size:1.08em;font-weight:700;box-shadow:0 2px 12px #ff996622;cursor:pointer;z-index:15;transition:background 0.16s;">
-  <i class="fa fa-chart-line"></i> Analytics
-</button>
+  <div class="top-bar">
+    <button class="calendar-btn" onclick="window.location.href='calendar.html'">
+      <i class="fa fa-calendar"></i> Calendar
+    </button>
+    <button class="analytics-btn" onclick="window.location.href='analytics.html'">
+      <i class="fa fa-chart-line"></i> Analytics
+    </button>
+    <button class="download-btn" id="downloadBtn"><i class="fa fa-download"></i> Download</button>
+    <button class="share-btn" id="shareLinkBtn"><i class="fa fa-link"></i> Share Link</button>
+    <button class="email-btn" id="emailBtn"><i class="fa fa-envelope"></i> Email</button>
+  </div>
   <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
   <div class="hamburger" onclick="toggleSidebar()">
     <div></div>
@@ -732,12 +786,6 @@
       <span id="projectTitle" style="font-size:0.65em; margin-left:12px; color:#0f3dc8; background:#fff3; padding:4px 14px; border-radius:10px;"></span>
     </h1>
     <div class="quote" id="quoteBox" title="Click for another quote!">"Loading inspiration..."</div>
-     <div class="collab-bar" id="collabBar">
-      <button class="collab-btn" id="downloadBtn"><i class="fa fa-download"></i> Download List</button>
-      <button class="collab-btn" id="shareLinkBtn"><i class="fa fa-link"></i> Share Link</button>
-      <button class="collab-btn" id="emailBtn"><i class="fa fa-envelope"></i> Email List</button>
-    </div>
-    
     <div class="input-row">
       <input type="text" id="todoInput" placeholder="What do you need to do?">
       <input type="text" id="descInput" placeholder="Description">
@@ -747,7 +795,6 @@
         <option value="Work">Work</option>
         <option value="School">School</option>
         <option value="Personal">Personal</option>
-     
       </select>
       <select id="priorityInput">
         <option value="1">Priority 1 ⚠️</option>
@@ -768,6 +815,21 @@
   <div class="undo-bar" id="undoBar">
     <span id="undoMsg"></span>
     <button class="undo-btn" onclick="undoDelete()">Undo</button>
+  </div>
+  <!-- Share Link Modal -->
+  <div class="collab-modal-bg" id="shareModalBg">
+    <div class="collab-modal">
+      <button class="modal-close" onclick="closeShareModal()">&times;</button>
+      <h2>Share Your To-Do List</h2>
+      <div>
+        <label>Copy this link to share your current project:</label>
+        <div class="collab-link-box">
+          <span id="shareLinkText"></span>
+          <button class="copy-link-btn" onclick="copyShareLink()" title="Copy link"><i class="fa fa-copy"></i></button>
+        </div>
+        <div class="mini-info">Anyone with the link can view (not edit) this project.</div>
+      </div>
+    </div>
   </div>
   <script>
     // --- Animated Gradient Background START ---
@@ -850,7 +912,6 @@
       document.getElementById('sidebar').classList.toggle('open');
     }
     document.addEventListener('click', function(e) {
-      // Hide all project menus if click is outside
       document.querySelectorAll('.project-menu').forEach(menu => menu.classList.remove('show'));
     });
 
@@ -903,7 +964,6 @@
         input.readOnly = true;
         input.addEventListener('click', () => switchProject(name));
 
-        // Project task count badge
         const countBadge = document.createElement('span');
         const count = (projects[name].todos?.length || 0) + (projects[name].completed?.length || 0);
         countBadge.textContent = count;
@@ -918,7 +978,6 @@
           letter-spacing: 0.3px;
         `;
 
-        // Three-dot menu
         const menuCont = document.createElement('div');
         menuCont.className = 'project-menu-container';
         const menuTrigger = document.createElement('button');
@@ -932,11 +991,9 @@
         };
         const menu = document.createElement('div');
         menu.className = 'project-menu';
-        // Duplicate Project button
         const duplicateBtn = document.createElement('button');
         duplicateBtn.innerHTML = '<i class="fa fa-clone"></i> Duplicate Project';
         duplicateBtn.onclick = (e) => { e.stopPropagation(); duplicateProject(name); menu.classList.remove('show');};
-        // Delete Project button
         const deleteBtn = document.createElement('button');
         deleteBtn.innerHTML = '<i class="fa fa-trash"></i> Delete Project';
         deleteBtn.onclick = (e) => { e.stopPropagation(); deleteProject(name); menu.classList.remove('show');};
@@ -970,18 +1027,15 @@
     function createTodoElement({ text, description, category, priority, date, tags, done, notes }) {
       const li = document.createElement('li');
       if (done) li.classList.add('completed');
-      // Checkbox
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.checked = done;
       checkbox.className = 'checkbox';
       checkbox.onchange = () => toggleComplete(text);
 
-      // Task details
       const taskDetails = document.createElement('div');
       taskDetails.className = 'task-details';
 
-      // Tags
       if (tags && Array.isArray(tags)) {
         tags.forEach(t => {
           const chip = document.createElement('span');
@@ -990,7 +1044,6 @@
           taskDetails.appendChild(chip);
         });
       }
-      // Main text
       const mainText = document.createElement('div');
       mainText.contentEditable = true;
       mainText.textContent = `${text}`;
@@ -998,28 +1051,23 @@
       mainText.spellcheck = true;
       mainText.title = "Click and edit";
 
-      // Description
       const desc = document.createElement('div');
       desc.textContent = description;
       desc.style.fontSize = '0.9em';
       desc.style.color = '#333';
 
-      // Category
       const cat = document.createElement('div');
       cat.textContent = category || "";
       cat.style.fontSize = "0.92em";
       cat.style.color = "#185a9d";
       cat.style.fontWeight = "bold";
 
-      // Priority
       const priorityText = document.createElement('div');
       priorityText.className = `priority-label priority-${priority}`;
       priorityText.textContent = `Priority ${priority}`;
 
-      // Date/Countdown
       const dateText = document.createElement('div');
       dateText.textContent = getCountdownText(date);
-      // Reminder icon if due today or overdue
       if(dateText.textContent.includes("today") || dateText.textContent.includes("Overdue")) {
         const remindIcon = document.createElement('span');
         remindIcon.className = 'reminder-icon';
@@ -1028,7 +1076,6 @@
         dateText.appendChild(remindIcon);
       }
 
-      // Notes button
       const notesBtn = document.createElement('button');
       notesBtn.className = 'notes-btn';
       notesBtn.innerHTML = '<i class="fa fa-sticky-note"></i> Notes';
@@ -1039,7 +1086,6 @@
 
       taskDetails.append(mainText, desc, cat, priorityText, dateText, notesBtn);
 
-      // Delete button
       const btn = document.createElement('button');
       btn.className = 'delete-btn';
       btn.innerHTML = '<i class="fa fa-trash"></i>';
@@ -1141,13 +1187,12 @@
     function launchConfetti() {
       confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
     }
-    // Progress Bar
     function updateProgressBar() {
       const { todos, completed } = projects[currentProject] || {todos:[],completed:[]};
       const total = todos.length + completed.length;
       let percent = 0;
       if (total > 0) percent = Math.round((completed.length / total) * 100);
-      progressBarFill.textContent = ""; // text moved to label
+      progressBarFill.textContent = "";
       progressBarFill.style.width = percent + "%";
       if(percent === 100 && total > 0) {
         progressBarLabel.textContent = "🎉 All tasks done!";
@@ -1158,7 +1203,6 @@
         progressBarFill.style.background = "linear-gradient(90deg,#43cea2,#185a9d)";
       }
     }
-    // Notes popup
     function showNotesPopup(parentLi, taskText, currNotes) {
       let popup = parentLi.querySelector('.notes-popup');
       if(!popup) {
@@ -1171,12 +1215,10 @@
           <button style="margin-top:7px;background:#43cea2;color:#fff;padding:6px 13px;border-radius:7px;border:none;font-weight:bold;cursor:pointer;">Save</button>
         `;
         parentLi.appendChild(popup);
-        // Save button handler
         popup.querySelector('button').onclick = function(){
           updateNotes(taskText, popup.querySelector('textarea').value);
           popup.classList.remove('show');
         };
-        // Remove popup on outside click
         document.addEventListener('mousedown', function handler(e){
           if(!popup.contains(e.target)) { popup.classList.remove('show'); document.removeEventListener('mousedown', handler);}
         });
@@ -1192,7 +1234,6 @@
       }
       saveProjects();
     }
-    // THEME toggle
     const themeToggleBtn = document.getElementById('themeToggle');
     let isDark = localStorage.getItem("theme") === "dark";
     function applyTheme() {
@@ -1215,7 +1256,6 @@
     };
     if(isDark) applyTheme();
 
-    // Hotkeys: N for new todo, S for search, P for new project, Q for quote, T for theme
     window.addEventListener('keydown', e => {
       if(document.activeElement.tagName==="INPUT"||document.activeElement.tagName==="TEXTAREA") return;
       if(e.key.toLowerCase()==="n") document.getElementById('todoInput').focus();
@@ -1225,7 +1265,6 @@
       if(e.key.toLowerCase()==="t") themeToggleBtn.click();
     });
 
-    // Notifications for due tasks (if any due today!)
     function notifyDueSoonTasks() {
       if (!("Notification" in window)) return;
       if (Notification.permission !== "granted") return;
@@ -1240,11 +1279,85 @@
         }
       });
     }
-    // On load, ask notifications permission
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
     setTimeout(notifyDueSoonTasks, 1200);
+
+    // --- Collab Buttons Functionality ---
+    document.getElementById('downloadBtn').onclick = function() {
+      const data = projects[currentProject];
+      const content = JSON.stringify(data, null, 2);
+      const blob = new Blob([content], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentProject.replace(/\s+/g,'_')}_todo_list.json`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+    };
+
+    document.getElementById('shareLinkBtn').onclick = function() {
+      const data = projects[currentProject];
+      const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
+      const shareURL = `${window.location.origin}${window.location.pathname}?share=${encoded}&project=${encodeURIComponent(currentProject)}`;
+      document.getElementById('shareLinkText').textContent = shareURL;
+      document.getElementById('shareModalBg').classList.add('show');
+    };
+    function closeShareModal() { document.getElementById('shareModalBg').classList.remove('show'); }
+    function copyShareLink() {
+      const link = document.getElementById('shareLinkText').textContent;
+      if (navigator.clipboard) { navigator.clipboard.writeText(link); }
+      else {
+        let tmp = document.createElement("textarea");
+        tmp.value = link;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+      }
+    }
+    window.closeShareModal = closeShareModal;
+    window.copyShareLink = copyShareLink;
+
+    document.getElementById('emailBtn').onclick = function() {
+      const { todos, completed } = projects[currentProject];
+      let body = `Here is my "${currentProject}" To-Do List:%0D%0A%0D%0A`;
+      todos.forEach((task, i) => {
+        body += `- [ ] ${task.text} (${task.description || ''}) [Priority ${task.priority}]%0D%0A`;
+      });
+      completed.forEach((task, i) => {
+        body += `- [x] ${task.text} (${task.description || ''}) [Priority ${task.priority}]%0D%0A`;
+      });
+      const mailto = `mailto:?subject=My To-Do List: ${encodeURIComponent(currentProject)}&body=${body}`;
+      window.location.href = mailto;
+    };
+
+    function tryImportSharedList() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const shared = urlParams.get('share');
+      const projectName = urlParams.get('project') || 'Shared Project';
+      if (shared) {
+        let data;
+        try {
+          data = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(shared)))));
+        } catch (e) {
+          alert('Failed to import shared to-do list.');
+          return;
+        }
+        if (!projects[projectName]) {
+          projects[projectName] = data;
+          currentProject = projectName;
+          saveProjects();
+        }
+        renderProjectList();
+        renderTodos();
+        alert(`Imported shared project: ${projectName}`);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+    setTimeout(tryImportSharedList, 200);
 
     // --- INIT ---
     showRandomQuote();
