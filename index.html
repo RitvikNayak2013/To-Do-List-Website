@@ -43,6 +43,7 @@
       margin: 5px 0;
       border-radius: 2px;
     }
+    
     .sidebar {
       position: fixed;
       top: 0;
@@ -385,38 +386,11 @@
       font-size: 0.95em;
       margin-right: 8px;
     }
-    <!-- Add this right after your Calendar button, before Theme Toggle -->
-<button class="analytics-btn" onclick="window.location.href='analytics.html'"
-  style="position:absolute;top:24px;left:220px;
-    background:linear-gradient(93deg,#ff6f61 0%,#43cea2 100%);
-    color:#fff;
-    border:none;
-    border-radius:20px;
-    padding:10px 32px;
-    font-size:1.08em;
-    font-weight:900;
-    box-shadow:0 2px 12px #ff6f6133;
-    cursor:pointer;
-    z-index:15;
-    letter-spacing:1px;
-    transition:background 0.18s,transform 0.11s;
-    display:flex;align-items:center;gap:10px;overflow:hidden;
-    outline:none;">
-  <i class="fa fa-chart-line" style="font-size:1.1em;"></i>
-  Analytics
-  <span class="sparkle" style="display:inline-block;font-size:1.2em;margin-left:8px;animation:sparkleGlow 1.3s infinite alternate;">✨</span>
-</button>
-<style>
-@keyframes sparkleGlow {
-  0% { filter: drop-shadow(0 0 0 #fff); opacity:0.7;}
-  100% { filter: drop-shadow(0 0 12px #ffeb3b); opacity:1;}
-}
-.analytics-btn:hover {
-  background:linear-gradient(93deg,#43cea2 0%,#ff6f61 100%);
-  transform:scale(1.05);
-  box-shadow:0 4px 24px #43cea255;
-}
-</style>
+     <button class="analytics-btn" onclick="window.location.href='analytics.html'"
+    style="position:absolute;top:24px;left:210px;background:linear-gradient(90deg,#ff9966,#ff5e62);color:#fff;border:none;border-radius:20px;padding:10px 25px;font-size:1.08em;font-weight:700;box-shadow:0 2px 12px #ff996622;cursor:pointer;z-index:15;transition:background 0.16s;">
+    <i class="fa fa-chart-line"></i> Analytics
+  </button>
+    
     /* theme toggle button */
     .theme-toggle {
       position: absolute;
