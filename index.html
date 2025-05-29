@@ -210,6 +210,152 @@
       font-size: 1.25em;
       margin-right: 2px;
     }
+
+     .collab-bar {
+      margin-top: 22px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      z-index: 15;
+    }
+    .collab-btn {
+      background: linear-gradient(90deg, #185a9d, #43cea2);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 9px 26px;
+      font-size: 1.05em;
+      font-weight: 700;
+      box-shadow: 0 2px 9px #185a9d22;
+      cursor: pointer;
+      transition: background 0.17s, transform 0.11s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .collab-btn:hover {
+      background: linear-gradient(90deg, #43cea2, #185a9d);
+      transform: translateY(-2px) scale(1.04);
+    }
+    /* Modal Styles */
+    .collab-modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(30,47,70,0.17);
+      z-index: 201;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.21s;
+    }
+    .collab-modal-bg.show { display: flex; }
+    .collab-modal {
+      background: #fff;
+      border-radius: 17px;
+      box-shadow: 0 9px 29px #0003;
+      padding: 36px 32px 29px 32px;
+      max-width: 99vw;
+      width: 380px;
+      text-align: center;
+      position: relative;
+      z-index: 202;
+      animation: fadeIn 0.2s;
+    }
+    .collab-modal h2 {
+      margin: 0 0 15px 0;
+      color: #185a9d;
+      font-size: 1.45em;
+      letter-spacing: 0.5px;
+    }
+    .collab-modal label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 3px;
+      display: block;
+      font-size: 1em;
+    }
+    .collab-modal input[type="email"] {
+      width: 90%;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1.5px solid #43cea2;
+      font-size: 1.07em;
+      margin-bottom: 12px;
+      background: #f8fdff;
+    }
+    .collab-modal textarea {
+      width: 98%;
+      min-height: 70px;
+      border-radius: 9px;
+      border: 1.5px solid #43cea2;
+      font-size: 1.07em;
+      padding: 7px 10px;
+      margin-bottom: 11px;
+      background: #f8fdff;
+      resize: vertical;
+    }
+    .collab-modal .modal-close {
+      position: absolute;
+      top: 8px; right: 14px;
+      background: none;
+      border: none;
+      font-size: 1.4em;
+      color: #185a9d;
+      cursor: pointer;
+      transition: color 0.14s;
+    }
+    .collab-modal .modal-close:hover { color: #ff6f61; }
+    .collab-modal .modal-action-btn {
+      background: linear-gradient(90deg, #43cea2, #185a9d);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 9px 30px;
+      font-size: 1.09em;
+      font-weight: bold;
+      margin-top: 6px;
+      cursor: pointer;
+      transition: background 0.17s;
+    }
+    .collab-modal .modal-action-btn:hover {
+      background: linear-gradient(90deg, #ff9966 0%, #ff5e62 100%);
+    }
+    .collab-modal .collab-link-box {
+      border: 1.5px solid #43cea2;
+      background: #f8fdff;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 1em;
+      margin: 10px 0;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 7px;
+    }
+    .collab-modal .copy-link-btn {
+      background: none;
+      border: none;
+      color: #185a9d;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: color 0.13s;
+    }
+    .collab-modal .copy-link-btn:hover { color: #ff6f61; }
+    .collab-modal .mini-info {
+      font-size: 0.97em;
+      color: #555;
+      margin: 4px 0 0 0;
+      opacity: 0.88;
+    }
+    @media (max-width: 600px) {
+      .collab-modal {width: 97vw; padding: 17px 8vw;}
+    }
     /* Container becomes glass-morphism */
     .container {
       margin: 60px auto;
@@ -229,6 +375,7 @@
     .container:hover {
       background: rgba(255,255,255,0.65);
     }
+   
     h1 {
       margin-bottom: 10px;
       color: #ff6f61;
@@ -585,6 +732,12 @@
       <span id="projectTitle" style="font-size:0.65em; margin-left:12px; color:#0f3dc8; background:#fff3; padding:4px 14px; border-radius:10px;"></span>
     </h1>
     <div class="quote" id="quoteBox" title="Click for another quote!">"Loading inspiration..."</div>
+     <div class="collab-bar" id="collabBar">
+      <button class="collab-btn" id="downloadBtn"><i class="fa fa-download"></i> Download List</button>
+      <button class="collab-btn" id="shareLinkBtn"><i class="fa fa-link"></i> Share Link</button>
+      <button class="collab-btn" id="emailBtn"><i class="fa fa-envelope"></i> Email List</button>
+    </div>
+    
     <div class="input-row">
       <input type="text" id="todoInput" placeholder="What do you need to do?">
       <input type="text" id="descInput" placeholder="Description">
@@ -594,6 +747,7 @@
         <option value="Work">Work</option>
         <option value="School">School</option>
         <option value="Personal">Personal</option>
+     
       </select>
       <select id="priorityInput">
         <option value="1">Priority 1 ⚠️</option>
