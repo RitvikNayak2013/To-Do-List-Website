@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts for style -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="margin:0;min-height:100vh;font-family:'Baloo 2',cursive,sans-serif;background:linear-gradient(135deg,#0f3dc8,#04edce);">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+    <div style="
+      background:rgba(255,255,255,0.92);
+      box-shadow:0 8px 32px rgba(15,61,200,0.13),0 1.5px 6px rgba(4,237,206,0.07);
+      border-radius:2.2rem;
+      padding:38px 22px 40px 22px;
+      max-width:1000px;width:98vw;margin:36px 0;
+      backdrop-filter: blur(18px) saturate(1.5);
+      border:1.5px solid #e6ecff;
+      position:relative;
+      display:flex;flex-direction:column;align-items:center;
+    ">
+      <a href="index.html"
+         style="
+          display:inline-flex;align-items:center;gap:6px;
+          color:#0f3dc8;font-weight:600;font-size:1.01rem;text-decoration:none;
+          margin-bottom:8px;transition:color 0.16s;
+         "
+         onmouseover="this.style.color='#04edce';"
+         onmouseout="this.style.color='#0f3dc8';"
+      >
+        <i class="fas fa-arrow-left"></i>
+        Back to To-Do List
+      </a>
+      <h1 style="
+        font-family:'Baloo 2',cursive;
+        font-size:2.1rem;font-weight:900;color:#0f3dc8;margin-bottom:0.3em;
+        display:flex;align-items:center;gap:12px;">
+        <i class="fa-solid fa-chart-simple" style="color:#04edce;"></i>
+        To-Do Analytics
+      </h1>
+      <p style="font-size:1.07rem;color:#185a9d;margin-bottom:28px;">
+        Visual summary of your productivity!
+      </p>
+      <div id="statsRow" style="display:flex;gap:22px;margin-bottom:32px;flex-wrap:wrap;justify-content:center;"></div>
+      <div style="display:flex;gap:36px;flex-wrap:wrap;justify-content:center;">
+        <!-- Tasks Completed Over Time -->
+        <div style="
+          flex:1 1 320px;background:linear-gradient(120deg,#e3f0ff 0%,#f9fcff 100%);
+          border-radius:1.3em;padding:20px 18px 18px 18px;box-shadow:0 2px 16px rgba(15,61,200,0.11);
+          min-width:260px;display:flex;flex-direction:column;align-items:center;
+          margin-bottom:18px;
+        ">
+          <div style="font-size:1.08rem;color:#0f3dc8;font-weight:700;margin-bottom:8px;">
+            Tasks Completed Over Time
+          </div>
+          <canvas id="tasksLineChart" style="width:100%;max-width:350px;height:210px;"></canvas>
+        </div>
+        <!-- Task Status Breakdown -->
+        <div style="
+          flex:1 1 320px;background:linear-gradient(120deg,#e3f0ff 0%,#f9fcff 100%);
+          border-radius:1.3em;padding:20px 18px 18px 18px;box-shadow:0 2px 16px rgba(4,237,206,0.08);
+          min-width:260px;display:flex;flex-direction:column;align-items:center;
+          margin-bottom:18px;
+        ">
+          <div style="font-size:1.08rem;color:#0f3dc8;font-weight:700;margin-bottom:8px;">
+            Task Status Breakdown
+          </div>
+          <canvas id="tasksPieChart" style="width:100%;max-width:350px;height:210px;"></canvas>
+        </div>
+      </div>
+      <button onclick="window.location.href='index.html'"
+        style="margin-top:22px;padding:13px 36px;border-radius:30px;
+        background:linear-gradient(90deg,#0f3dc8 0%,#04edce 100%);
+        color:#fff;font-weight:900;font-size:1.09em;box-shadow:0 4px 14px #0f3dc822;border:none;cursor:pointer;transition:background 0.16s;">
+        <i class="fa fa-arrow-left"></i> Back to To-Do List
+      </button>
+    </div>
+  </div>
+  <script>
+    // Try to get stats from localStorage (from the main To-Do List)
+    let projects = {};
+    try {
+      projects = JSON.parse(localStorage.getItem("projects") || "{}");
+    } catch {}
+    let currentProject = Object.keys(projects)[0] || "Default";
+    if (!projects[currentProject]) projects[currentProject] = { todos: [], completed: [] };
+
+    // If the user last used another project, use that
+    if (localStorage.getItem("currentProject")) {
+      currentProject = localStorage.getItem("currentProject");
+    }
+    const data = projects[currentProject] || { todos: [], completed: [] };
+    const todos = data.todos || [];
+    const completed = data.completed || [];
+
+    // Stats
+    const total = todos.length + completed.length;
+    const overdue = todos.filter(t => t.date && new Date(t.date).setHours(0,0,0,0) < new Date().setHours(0,0,0,0)).length;
+    const today = todos.filter(t => t.date && new Date(t.date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)).length;
+    const inProgress = todos.filter(t => t.priority === "2" || t.priority === "3").length;
+    const completionRate = total ? ((completed.length / total) * 100).toFixed(1) : "0.0";
+
+    // Stat cards
+    const statCards = [
+      {
+        icon: '<i class="fa-solid fa-circle-check" style="color:#04edce;"></i>',
+        label: 'Completed',
+        value: completed.length,
+        bg: 'linear-gradient(135deg,#04edce 50%,#0f3dc8 100%)'
+      },
+      {
+        icon: '<i class="fa-solid fa-list-check" style="color:#0f3dc8;"></i>',
+        label: 'Remaining',
+        value: todos.length,
+        bg: 'linear-gradient(135deg,#0f3dc8 50%,#04edce 100%)'
+      },
+      {
+        icon: '<i class="fa-solid fa-bolt" style="color:#ffd700;"></i>',
+        label: 'In Progress',
+        value: inProgress,
+        bg: 'linear-gradient(135deg,#ffd700 50%,#0f3dc8 100%)'
+      },
+      {
+        icon: '<i class="fa-solid fa-calendar-exclamation" style="color:#ff4d4d;"></i>',
+        label: 'Overdue',
+        value: overdue,
+        bg: 'linear-gradient(135deg,#ff4d4d 60%,#f6d365 100%)'
+      },
+      {
+        icon: '<i class="fa-solid fa-percent" style="color:#29d8c2;"></i>',
+        label: 'Completion Rate',
+        value: completionRate + '%',
+        bg: 'linear-gradient(135deg,#43cea2 60%,#185a9d 100%)'
+      }
+    ];
+
+    // Render stat cards
+    const statsRow = document.getElementById('statsRow');
+    statCards.forEach(card => {
+      const d = document.createElement('div');
+      d.style.cssText = `
+        flex:1 1 120px;
+        background:${card.bg};
+        border-radius:1.3em;
+        box-shadow:0 2px 16px #0f3dc822;
+        padding:20px 0 14px 0;
+        text-align:center;min-width:110px;
+        color:#fff;
+        font-weight:800;
+        margin-bottom:8px;
+        display:flex;flex-direction:column;align-items:center;
+        font-size:1.1em;
+      `;
+      d.innerHTML = `
+        <div style="font-size:1.7em;margin-bottom:7px;">${card.icon}</div>
+        <div style="font-size:1em;font-weight:700;opacity:0.86;margin-bottom:3px;">${card.label}</div>
+        <div style="font-size:1.29em;font-family:'Baloo 2',cursive;font-weight:900;">${card.value}</div>
+      `;
+      statsRow.appendChild(d);
+    });
+
+    // Line Chart: Tasks Completed Over Time (last 7 days)
+    function getLast7DaysLabels() {
+      const arr = [];
+      for (let i = 6; i >= 0; --i) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        arr.push(d.toLocaleDateString(undefined, { weekday: 'short' }));
+      }
+      return arr;
+    }
+    function getCompletedEachDay() {
+      const arr = [];
+      for (let i = 6; i >= 0; --i) {
+        const d = new Date();
+        d.setHours(0,0,0,0);
+        d.setDate(d.getDate() - i);
+        const count = completed.filter(task => {
+          if (!task.done) return false;
+          // Use last modified or date if present, else skip
+          if (task.date) {
+            const td = new Date(task.date); td.setHours(0,0,0,0);
+            return td.getTime() === d.getTime();
+          }
+          return false;
+        }).length;
+        arr.push(count);
+      }
+      return arr;
+    }
+    const ctxLine = document.getElementById('tasksLineChart').getContext('2d');
+    new Chart(ctxLine, {
+      type: 'line',
+      data: {
+        labels: getLast7DaysLabels(),
+        datasets: [{
+          label: 'Completed Tasks',
+          data: getCompletedEachDay(),
+          borderColor: '#0f3dc8',
+          backgroundColor: 'rgba(15,61,200,0.11)',
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#0f3dc8',
+          pointRadius: 5,
+          tension: 0.45,
+          fill: true,
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false }},
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#185a9d'} },
+          y: { grid: { color: '#e5e9f2'}, beginAtZero: true, ticks: { color: '#185a9d'} }
+        }
+      }
+    });
+
+    // Pie Chart: Task Status Breakdown
+    const ctxPie = document.getElementById('tasksPieChart').getContext('2d');
+    new Chart(ctxPie, {
+      type: 'doughnut',
+      data: {
+        labels: ['Completed','Pending','Overdue','In Progress'],
+        datasets: [{
+          data: [
+            completed.length,
+            todos.length - overdue - inProgress,
+            overdue,
+            inProgress
+          ],
+          backgroundColor: ['#04edce','#185a9d','#ff4d4d','#ffd700'],
+          borderWidth: 3,
+          borderColor: '#fff',
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'bottom', labels: {color: '#185a9d', font: {weight: 'bold'}}}
+        },
+        cutout: '66%',
+      }
+    });
+
+    // Responsive font sizing for mobile
+    function adjustForMobile() {
+      if(window.innerWidth < 660) {
+        document.querySelector('h1').style.fontSize = '1.15rem';
+        document.querySelectorAll('canvas').forEach(function(canv){
+          canv.style.height = '120px';
+        });
+      }
+    }
+    window.addEventListener('resize', adjustForMobile);
+    adjustForMobile();
+    // Save currentProject back to localStorage for a seamless experience
+    localStorage.setItem("currentProject", currentProject);
+  </script>
+</body>
+</html>
