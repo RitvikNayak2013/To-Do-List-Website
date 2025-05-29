@@ -108,6 +108,22 @@
     }
     .download-btn:hover { background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%); }
 
+    .email-btn {
+      background: linear-gradient(90deg,#f857a6,#ff5858);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 23px;
+      font-size: 1.08em;
+      font-weight: 700;
+      box-shadow: 0 2px 12px #f857a622;
+      cursor: pointer;
+      z-index: 15;
+      transition: background 0.16s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .email-btn:hover { background: linear-gradient(90deg,#ff5858,#f857a6); }
+
     .hamburger {
       position: fixed;
       top: 20px;
@@ -115,7 +131,7 @@
       width: 30px;
       height: 25px;
       cursor: pointer;
-      z-index: 60;
+      z-index: 10;
     }
     .hamburger div {
       background-color: white;
@@ -326,7 +342,15 @@
       display: block;
       font-size: 1em;
     }
-   
+    .collab-modal input[type="email"] {
+      width: 90%;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1.5px solid #43cea2;
+      font-size: 1.07em;
+      margin-bottom: 12px;
+      background: #f8fdff;
+    }
     .collab-modal textarea {
       width: 98%;
       min-height: 70px;
@@ -740,6 +764,7 @@
     </button>
     <button class="download-btn" id="downloadBtn"><i class="fa fa-download"></i> Download</button>
     <button class="share-btn" id="shareLinkBtn"><i class="fa fa-link"></i> Share Link</button>
+    <button class="email-btn" id="emailBtn"><i class="fa fa-envelope"></i> Email</button>
   </div>
   <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
   <div class="hamburger" onclick="toggleSidebar()">
