@@ -108,21 +108,7 @@
     }
     .download-btn:hover { background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%); }
 
-    .email-btn {
-      background: linear-gradient(90deg,#f857a6,#ff5858);
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 23px;
-      font-size: 1.08em;
-      font-weight: 700;
-      box-shadow: 0 2px 12px #f857a622;
-      cursor: pointer;
-      z-index: 15;
-      transition: background 0.16s;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .email-btn:hover { background: linear-gradient(90deg,#ff5858,#f857a6); }
+    /* Removed .email-btn */
 
     .hamburger {
       position: fixed;
@@ -131,7 +117,7 @@
       width: 30px;
       height: 25px;
       cursor: pointer;
-      z-index: 10;
+      z-index: 100;
     }
     .hamburger div {
       background-color: white;
@@ -149,7 +135,7 @@
       background: rgba(7, 116, 218, 0.22);
       box-shadow: 2px 0 10px rgba(0,0,0,0.07);
       padding: 20px 20px 18px 20px;
-      z-index: 9;
+      z-index: 99; /* Increased from 9 to 99 for higher stacking */
       transition: 0.3s;
       display: flex;
       flex-direction: column;
@@ -182,6 +168,7 @@
       position: relative;
       box-shadow: 0 1px 5px #0001;
       transition: background 0.22s;
+      z-index: 101; /* Ensure project list items are above other sidebar content */
     }
     .project-item input {
       border: none;
@@ -227,7 +214,7 @@
       background: white;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       border-radius: 8px;
-      z-index: 20;
+      z-index: 300; /* Increased for menu to appear in front of buttons */
       min-width: 130px;
       flex-direction: column;
       animation: fadeIn 0.2s;
@@ -764,7 +751,7 @@
     </button>
     <button class="download-btn" id="downloadBtn"><i class="fa fa-download"></i> Download</button>
     <button class="share-btn" id="shareLinkBtn"><i class="fa fa-link"></i> Share Link</button>
-    <button class="email-btn" id="emailBtn"><i class="fa fa-envelope"></i> Email</button>
+    <!-- Email button removed -->
   </div>
   <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
   <div class="hamburger" onclick="toggleSidebar()">
@@ -1321,18 +1308,7 @@
     window.closeShareModal = closeShareModal;
     window.copyShareLink = copyShareLink;
 
-    document.getElementById('emailBtn').onclick = function() {
-      const { todos, completed } = projects[currentProject];
-      let body = `Here is my "${currentProject}" To-Do List:%0D%0A%0D%0A`;
-      todos.forEach((task, i) => {
-        body += `- [ ] ${task.text} (${task.description || ''}) [Priority ${task.priority}]%0D%0A`;
-      });
-      completed.forEach((task, i) => {
-        body += `- [x] ${task.text} (${task.description || ''}) [Priority ${task.priority}]%0D%0A`;
-      });
-      const mailto = `mailto:?subject=My To-Do List: ${encodeURIComponent(currentProject)}&body=${body}`;
-      window.location.href = mailto;
-    };
+    // Email button logic removed
 
     function tryImportSharedList() {
       const urlParams = new URLSearchParams(window.location.search);
