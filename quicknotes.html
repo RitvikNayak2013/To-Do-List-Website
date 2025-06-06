@@ -53,6 +53,10 @@
       margin-bottom: 30px;
       text-align: left;
       box-shadow: 0 1px 6px rgba(60,60,100,.03);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
     }
     .header h1 {
       font-size: 36px;
@@ -66,6 +70,43 @@
       margin: 8px 0 0 0;
       font-size: 19px;
       font-weight: 400;
+    }
+
+    /* Back to Dashboard Button */
+    .dashboard-btn {
+      position: absolute;
+      right: 34px;
+      top: 28px;
+      padding: 9px 28px 9px 20px;
+      border-radius: 30px;
+      background: linear-gradient(90deg, #885afc 60%, #ddbaff 100%);
+      color: #fff;
+      font-weight: 600;
+      font-size: 16.5px;
+      border: none;
+      box-shadow: 0 2px 12px rgba(136,90,252,0.09);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      letter-spacing: 0.2px;
+      transition: background .18s, box-shadow .17s, transform .13s;
+      text-decoration: none;
+      outline: none;
+      z-index: 1;
+    }
+    .dashboard-btn:hover, .dashboard-btn:focus {
+      background: linear-gradient(90deg, #5333a6 60%, #bbaefa 100%);
+      box-shadow: 0 4px 20px rgba(136,90,252,0.16);
+      transform: translateY(-1px) scale(1.04);
+      color: #fff;
+      text-decoration: none;
+    }
+    .dashboard-btn .dashboard-icon {
+      font-size: 18px;
+      margin-right: 3px;
+      display: flex;
+      align-items: center;
     }
 
     .stats-row {
@@ -258,6 +299,7 @@
     @media (max-width: 650px) {
       .container { max-width: 99vw; padding: 5vw 2vw; }
       .header { padding: 6vw 4vw 4vw 4vw; }
+      .header .dashboard-btn { top: 6vw; right: 4vw; }
       .note-card, .create-note-box { padding: 5vw 3vw 3vw 3vw; }
     }
   </style>
@@ -267,6 +309,10 @@
     <div class="header">
       <h1>Notes</h1>
       <p>Capture your thoughts and ideas instantly.</p>
+      <a href="index.html" class="dashboard-btn" id="dashboardBtn">
+        <span class="dashboard-icon" aria-hidden="true">&#x25C0;</span>
+        Back to Dashboard
+      </a>
     </div>
     <div class="stats-row">
       <div class="stat">
