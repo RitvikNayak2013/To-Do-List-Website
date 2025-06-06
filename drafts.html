@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TaskFlows Drafts</title>
+  <meta name="viewport" content="width=1200, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f6f7fb; font-family: 'Inter', sans-serif; margin:0; color:#222;}
+    .drafts-container {max-width: 760px; margin:48px auto 0 auto; background:#fff; border-radius:14px; box-shadow:0 4px 20px #885af80f; padding:36px 32px;}
+    h2 { color: #885af8; font-size:2.2em; letter-spacing:-1px;}
+    .draft-list { margin:30px 0 0 0; padding:0; list-style:none;}
+    .draft-item { background:#f3f0fa; border-radius:10px; padding:20px 18px; margin-bottom:18px; display:flex; align-items:center; gap:18px; }
+    .draft-title { font-size:1.18em; font-weight:700;}
+    .draft-date { color:#6c47d9; font-size:0.96em; margin-left:8px;}
+    .draft-actions { margin-left:auto; display:flex; gap:10px;}
+    .draft-actions button { background:linear-gradient(90deg,#885af8,#43cea2); color:#fff; border:none; border-radius:8px; padding:7px 16px; font-size:1em; font-weight:600; cursor:pointer; }
+    .draft-actions button:hover { background:linear-gradient(90deg,#43cea2,#885af8);}
+    .delete-btn { background:#ff4d4d; }
+    .delete-btn:hover { background:#c0392b;}
+    .back-link { text-decoration:none; color:#885af8; font-weight:600; font-size:1.14em; display:inline-block; margin-bottom:16px;}
+    .back-link:hover { color:#43cea2;}
+  </style>
+</head>
+<body>
+  <div class="drafts-container">
+    <a href="texteditor.html" class="back-link">&larr; Back to Editor</a>
+    <h2>Your Drafts</h2>
+    <ul class="draft-list" id="draftList"></ul>
+  </div>
+  <script>
+    const draftsKey = "taskflows_drafts";
+    function getDrafts() { return JSON.parse(localStorage.getItem(draftsKey) || "[]"); }
+    function setDrafts(drafts) { localStorage.setItem(draftsKey, JSON.stringify(drafts)); }
+    function formatDate(str) { if (!str) return ""; const d = new Date(str); return d.toLocaleString(); }
+    function renderDrafts() {
+      const drafts = getDrafts();
+      const list = document.getElementById('draftList');
+      list.innerHTML = "";
+      if (drafts.length === 0) { list.innerHTML = "<li style='color:#aaa;font-size:1.15em;'>No drafts saved yet.</li>"; return; }
+      drafts.slice().reverse().forEach(draft => {
+        const li = document.createElement('li');
+        li.className = "draft-item";
+        li.innerHTML = `
+          <span class="draft-title">${draft.title || "Untitled"}</span>
+          <span class="draft-date">${formatDate(draft.updated)}</span>
+          <div class="draft-actions">
+            <button onclick="loadDraft('${draft.id}')">Open</button>
+            <button class="delete-btn" onclick="deleteDraft('${draft.id}')">Delete</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+    function loadDraft(id) {
+      window.location.href = "texteditor.html?draft=" + encodeURIComponent(id);
+    }
+    function deleteDraft(id) {
+      if (!confirm("Delete this draft?")) return;
+      let drafts = getDrafts();
+      drafts = drafts.filter(d => d.id !== id);
+      setDrafts(drafts);
+      renderDrafts();
+    }
+    renderDrafts();
+  </script>
+</body>
+</html>
