@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TaskFlows Journal</title>
+  <meta name="viewport" content="width=1200, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d26c39;
+      --primary-light: #fff6ee;
+      --primary-hover: #c4561e;
+      --header-bg: #f6f7fb;
+      --border: #ececec;
+      --shadow: 0 2px 8px rgba(0,0,0,0.04);
+      --radius: 12px;
+      --gray: #9ba3af;
+      --gray-dark: #4a5568;
+      --success: #34c759;
+      --tag-bg: #eaf8ef;
+      --tag-color: #2a934f;
+      --text: #222;
+    }
+    * { box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
+    body {
+      margin: 0;
+      background: #fbfcfe;
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .journal-main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 36px 20px;
+      min-height: 100vh;
+      background: #fbfcfe;
+    }
+    .journal-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .journal-title-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+    }
+    .journal-title-icon {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 8px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .journal-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #222;
+    }
+    .journal-desc {
+      color: var(--gray-dark);
+      font-size: 1.13rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .journal-new-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 26px;
+      font-size: 1.07rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .journal-new-btn:hover {
+      background: var(--primary-hover);
+    }
+    /* Prompt Card */
+    .journal-prompt-card {
+      margin: 0 0 32px 0;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      border: 1.4px solid #ffe1cb;
+      padding: 34px 26px 32px 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .journal-prompt-icon {
+      color: var(--primary);
+      font-size: 2.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .journal-prompt-title {
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: #a64b17;
+      margin-bottom: 7px;
+      text-align: center;
+    }
+    .journal-prompt-desc {
+      color: #bc652b;
+      font-size: 1.07rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .journal-prompt-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 13px 28px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.18s;
+      box-shadow: 0 1px 7px #d26c3922;
+    }
+    .journal-prompt-btn:hover {
+      background: var(--primary-hover);
+    }
+    /* Entry Card */
+    .journal-entry-card {
+      background: #fff;
+      border-radius: 10px;
+      border: 1.4px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+      padding: 22px 25px 17px 25px;
+      position: relative;
+      min-height: 80px;
+    }
+    .journal-entry-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: 1.17rem;
+      color: #20212a;
+    }
+    .journal-entry-header .entry-date-icon {
+      color: #576174;
+      font-size: 1.17em;
+      margin-right: 1px;
+    }
+    .journal-entry-header .mood-icons {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+    .journal-entry-header .mood-icons span {
+      font-size: 1.25em;
+      cursor: pointer;
+      border-radius: 50%;
+      padding: 2px 4px;
+      transition: background 0.14s;
+    }
+    .journal-entry-header .mood-icons span.selected,
+    .journal-entry-header .mood-icons span:hover {
+      background: #eaf8ef;
+    }
+    .journal-entry-content {
+      font-size: 1.09rem;
+      font-weight: 500;
+      color: #434a58;
+      margin-bottom: 10px;
+      white-space: pre-line;
+    }
+    .journal-entry-grateful-label {
+      font-weight: 700;
+      font-size: 1.02em;
+      margin-bottom: 4px;
+    }
+    .journal-entry-tags-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+    }
+    .journal-entry-tag {
+      background: var(--tag-bg);
+      color: var(--tag-color);
+      border-radius: 13px;
+      padding: 4px 13px;
+      font-size: 0.99em;
+      border: 1.1px solid #d2f3db;
+      font-weight: 600;
+      opacity: 0.93;
+      margin-bottom: 2px;
+      display: inline-block;
+    }
+    /* Modal styles */
+    #journalModalOverlay {
+      display:none; position:fixed; z-index:10001; top:0; left:0; width:100vw; height:100vh;
+      background:rgba(26,32,44,0.18);
+    }
+    #journalModalBox {
+      background:#fff; border-radius:16px; max-width:430px; margin:100px auto 0 auto;
+      padding:36px 32px 30px 32px; box-shadow:0 8px 40px #d26c3933; position:relative;
+      animation:fadeIn 0.21s;
+    }
+    @keyframes fadeIn {from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
+    #closeJournalModalBtn {
+      position:absolute;top:15px;right:12px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:#bbb;
+    }
+    #closeJournalModalBtn:hover { color:#e94e3e; }
+    #journalModalBox input, #journalModalBox textarea {
+      width: 100%; margin-bottom: 13px; padding:10px 13px; border-radius:8px;
+      border:1.2px solid #ececec; font-size:1.08em; background:#f6f5fc;
+      transition: border 0.19s;
+    }
+    #journalModalBox input:focus, #journalModalBox textarea:focus {
+      border:1.2px solid var(--primary); background:#fff;
+    }
+    #journalModalBox label { font-weight:700; margin-bottom:3px; display:block; color: var(--primary);}
+    #journalModalBox .tags-help { font-size:0.96em; color:#888; margin-bottom:8px;}
+    #saveJournalEntryBtn {
+      background: var(--primary);
+      color: #fff; border:none; border-radius:8px; font-size:1.09rem; font-weight:700;
+      padding:13px 0; margin-top:10px; cursor:pointer; box-shadow:0 2px 12px #d26c3930;
+      transition: background 0.17s;
+      width: 100%;
+    }
+    #saveJournalEntryBtn:hover { background: var(--primary-hover);}
+    /* Responsive */
+    @media (max-width: 900px) {
+      .journal-main { padding: 20px 4px;}
+      #journalModalBox { margin:40px auto 0 auto;}
+    }
+    @media (max-width: 600px) {
+      .journal-header-row { flex-direction:column;align-items:flex-start;gap:8px;}
+      .journal-title { font-size: 1.45rem;}
+    }
+  </style>
+</head>
+<body>
+  <div class="journal-main">
+    <!-- Header -->
+    <div class="journal-header-row">
+      <div>
+        <div class="journal-title-wrap">
+          <span class="journal-title-icon"><span style="font-size:1.4em;line-height:1.1;">&#128214;</span></span>
+          <div>
+            <span class="journal-title">Journal</span>
+            <div class="journal-desc">Reflect on your day and track your journey</div>
+          </div>
+        </div>
+      </div>
+      <button class="journal-new-btn" id="todayEntryBtn"><span>＋</span> Today's Entry</button>
+    </div>
+    <!-- Prompt Card -->
+    <div class="journal-prompt-card" id="journalPromptCard">
+      <span class="journal-prompt-icon">&#128214;</span>
+      <div class="journal-prompt-title">How was your day today?</div>
+      <div class="journal-prompt-desc">Take a moment to reflect and capture your thoughts</div>
+      <button class="journal-prompt-btn" id="writeTodayEntryBtn">Write Today's Entry</button>
+    </div>
+    <!-- Journal Entries -->
+    <div id="journalEntries"></div>
+  </div>
+  <!-- Modal for Journal Entry (New/Edit) -->
+  <div id="journalModalOverlay">
+    <div id="journalModalBox">
+      <button id="closeJournalModalBtn">&times;</button>
+      <h2 id="journalModalTitle" style="font-size:1.23em; font-weight:700; margin-bottom:19px;">Today's Entry</h2>
+      <label for="journalDateInput">Date</label>
+      <input id="journalDateInput" type="date">
+      <label for="journalContentInput">How was your day?</label>
+      <textarea id="journalContentInput" maxlength="2000" placeholder="Write about your day..." style="min-height:90px;"></textarea>
+      <label for="journalGratefulInput">Grateful for</label>
+      <input id="journalGratefulInput" type="text" maxlength="100" placeholder="e.g. Supportive team, Good health, Beautiful weather">
+      <div class="tags-help">Separate items with commas. Example: <span style="color:#d26c39;">Supportive team, Good health</span></div>
+      <label>Mood</label>
+      <div id="journalMoodRow" style="margin-bottom:13px;">
+        <span class="mood-btn" data-mood="happy" title="Happy" style="cursor:pointer;font-size:1.5em;margin-right:12px;">😊</span>
+        <span class="mood-btn" data-mood="neutral" title="Neutral" style="cursor:pointer;font-size:1.5em;margin-right:12px;">😐</span>
+        <span class="mood-btn" data-mood="sad" title="Sad" style="cursor:pointer;font-size:1.5em;margin-right:12px;">😞</span>
+        <span class="mood-btn" data-mood="sunny" title="Sunny" style="cursor:pointer;font-size:1.5em;">🌞</span>
+      </div>
+      <button id="saveJournalEntryBtn">Save Entry</button>
+    </div>
+  </div>
+  <script>
+    // --- Utilities ---
+    function formatLongDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T00:00:00");
+      return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    // Local Storage logic
+    const journalKey = "taskflows_journal";
+    function getJournalEntries() {
+      return JSON.parse(localStorage.getItem(journalKey) || "[]");
+    }
+    function setJournalEntries(entries) {
+      localStorage.setItem(journalKey, JSON.stringify(entries));
+    }
+    // --- Render Entries ---
+    function renderJournalEntries() {
+      const entriesDiv = document.getElementById('journalEntries');
+      const entries = getJournalEntries().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      entriesDiv.innerHTML = '';
+      if (!entries.length) return;
+      entries.forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'journal-entry-card';
+        card.setAttribute('data-id', entry.id);
+        card.innerHTML = `
+          <div class="journal-entry-header">
+            <span class="entry-date-icon">&#128197;</span>
+            <span>${formatLongDate(entry.date)}</span>
+            <span class="mood-icons">
+              ${entry.mood === "happy" ? `<span title="Happy" class="selected">😊</span>` : ""}
+              ${entry.mood === "neutral" ? `<span title="Neutral" class="selected">😐</span>` : ""}
+              ${entry.mood === "sad" ? `<span title="Sad" class="selected">😞</span>` : ""}
+              ${entry.mood === "sunny" ? `<span title="Sunny" class="selected">🌞</span>` : ""}
+            </span>
+            <button title="Edit Entry" class="edit-entry-btn" style="margin-left:10px; background:none;border:none;cursor:pointer;font-size:1.13em;color:#aaa;">&#9998;</button>
+            <button title="Delete Entry" class="delete-entry-btn" style="margin-left:6px; background:none;border:none;cursor:pointer;font-size:1.13em;color:#e94e3e;">&#128465;</button>
+          </div>
+          <div class="journal-entry-content">${entry.content || ""}</div>
+          <div class="journal-entry-grateful-label">Grateful for:</div>
+          <div class="journal-entry-tags-row">
+            ${(entry.grateful || []).map(t => `<span class="journal-entry-tag">${t}</span>`).join("")}
+          </div>
+        `;
+        entriesDiv.appendChild(card);
+      });
+      // Button handlers
+      document.querySelectorAll('.edit-entry-btn').forEach(btn => {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          const card = btn.closest('.journal-entry-card');
+          showJournalModal(card.getAttribute('data-id'));
+        };
+      });
+      document.querySelectorAll('.delete-entry-btn').forEach(btn => {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          const card = btn.closest('.journal-entry-card');
+          deleteJournalEntry(card.getAttribute('data-id'));
+        };
+      });
+    }
+    // --- Modal Logic ---
+    function showJournalModal(editId = null) {
+      document.getElementById('journalModalOverlay').style.display = "block";
+      document.getElementById('journalModalTitle').textContent = editId ? "Edit Entry" : "Today's Entry";
+      document.getElementById('saveJournalEntryBtn').textContent = editId ? "Save Changes" : "Save Entry";
+      // Modal fields
+      if (editId) {
+        const entry = getJournalEntries().find(e => e.id === editId);
+        document.getElementById('journalDateInput').value = entry.date || "";
+        document.getElementById('journalContentInput').value = entry.content || "";
+        document.getElementById('journalGratefulInput').value = (entry.grateful || []).join(", ");
+        document.getElementById('saveJournalEntryBtn').setAttribute("data-edit-id", editId);
+        // Mood select
+        document.querySelectorAll('#journalMoodRow .mood-btn').forEach(btn => {
+          btn.classList.toggle('selected', btn.getAttribute('data-mood') === entry.mood);
+        });
+      } else {
+        // Default to today's date
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('journalDateInput').value = today;
+        document.getElementById('journalContentInput').value = "";
+        document.getElementById('journalGratefulInput').value = "";
+        document.getElementById('saveJournalEntryBtn').removeAttribute("data-edit-id");
+        document.querySelectorAll('#journalMoodRow .mood-btn').forEach(btn => btn.classList.remove('selected'));
+      }
+    }
+    function hideJournalModal() {
+      document.getElementById('journalModalOverlay').style.display = "none";
+    }
+    document.getElementById('todayEntryBtn').onclick = () => showJournalModal();
+    document.getElementById('writeTodayEntryBtn').onclick = () => showJournalModal();
+    document.getElementById('closeJournalModalBtn').onclick = hideJournalModal;
+    document.getElementById('journalModalOverlay').onclick = function(e) {
+      if (e.target === this) hideJournalModal();
+    };
+    // Mood selection in modal
+    document.querySelectorAll('#journalMoodRow .mood-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('#journalMoodRow .mood-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+    });
+    // Save Journal Entry (Create or Edit)
+    document.getElementById('saveJournalEntryBtn').onclick = function() {
+      const date = document.getElementById('journalDateInput').value;
+      const content = document.getElementById('journalContentInput').value.trim();
+      const grateful = document.getElementById('journalGratefulInput').value.split(",").map(t => t.trim()).filter(Boolean);
+      let mood = null;
+      document.querySelectorAll('#journalMoodRow .mood-btn').forEach(btn => {
+        if (btn.classList.contains('selected')) mood = btn.getAttribute('data-mood');
+      });
+      if (!date) { alert("Please select a date."); return; }
+      if (!content) { alert("Please write about your day."); return; }
+      let entries = getJournalEntries();
+      const editId = this.getAttribute("data-edit-id");
+      if (editId) {
+        const idx = entries.findIndex(e => e.id === editId);
+        if (idx >= 0) {
+          entries[idx] = { ...entries[idx], date, content, grateful, mood };
+        }
+      } else {
+        // If entry for this date exists, replace it
+        const existingIdx = entries.findIndex(e => e.date === date);
+        if (existingIdx >= 0) {
+          if (!confirm("You already have an entry for this date. Overwrite?")) return;
+          entries[existingIdx] = { ...entries[existingIdx], date, content, grateful, mood };
+        } else {
+          const id = "journal-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
+          entries.push({ id, date, content, grateful, mood });
+        }
+      }
+      setJournalEntries(entries);
+      renderJournalEntries();
+      hideJournalModal();
+    };
+    // Delete Journal Entry
+    function deleteJournalEntry(id) {
+      if (!confirm("Delete this entry?")) return;
+      let entries = getJournalEntries().filter(e => e.id !== id);
+      setJournalEntries(entries);
+      renderJournalEntries();
+    }
+    // --- Demo Entry (first time only) ---
+    function seedDemoJournal() {
+      if (getJournalEntries().length > 0) return;
+      setJournalEntries([
+        {
+          id: "journal-1",
+          date: "2024-06-01",
+          content: "Had a productive day at work. Finally finished the project that I've been working on for weeks.\nFeeling accomplished and ready for the weekend.",
+          grateful: ["Supportive team", "Good health", "Beautiful weather"],
+          mood: "happy"
+        }
+      ]);
+    }
+    // --- INIT ---
+    seedDemoJournal();
+    renderJournalEntries();
+  </script>
+</body>
+</html>
