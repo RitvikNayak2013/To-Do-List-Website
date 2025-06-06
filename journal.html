@@ -20,6 +20,9 @@
       --tag-bg: #eaf8ef;
       --tag-color: #2a934f;
       --text: #222;
+      --dashboard-btn-bg: #fff6ee;
+      --dashboard-btn-shadow: 0 2px 10px #d26c3911;
+      --dashboard-btn-hover: #ffe3c8;
     }
     * { box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
     body {
@@ -88,6 +91,39 @@
     }
     .journal-new-btn:hover {
       background: var(--primary-hover);
+    }
+    /* Back to Dashboard Button */
+    .dashboard-btn {
+      background: var(--dashboard-btn-bg);
+      color: var(--primary);
+      border: 1.5px solid #ffd7b2;
+      border-radius: 9px;
+      padding: 12px 26px;
+      font-size: 1.06rem;
+      font-weight: 700;
+      box-shadow: var(--dashboard-btn-shadow);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-bottom: 22px;
+      margin-right: 10px;
+      margin-top: 2px;
+      transition: background 0.17s, border-color 0.17s, color 0.17s, box-shadow 0.17s;
+    }
+    .dashboard-btn:hover {
+      background: var(--dashboard-btn-hover);
+      border-color: #ffc387;
+      color: #c4561e;
+      box-shadow: 0 4px 20px #d26c3933;
+      text-decoration: none;
+    }
+    .dashboard-btn .dashboard-btn-icon {
+      font-size: 1.17em;
+      margin-right: 2px;
+      margin-bottom: 1px;
+      display: inline-block;
     }
     /* Prompt Card */
     .journal-prompt-card {
@@ -252,11 +288,17 @@
     @media (max-width: 600px) {
       .journal-header-row { flex-direction:column;align-items:flex-start;gap:8px;}
       .journal-title { font-size: 1.45rem;}
+      .dashboard-btn { width: 100%; text-align: center; margin-bottom: 16px;}
     }
   </style>
 </head>
 <body>
   <div class="journal-main">
+    <!-- Back to Dashboard Button -->
+    <a href="index.html" class="dashboard-btn" id="backToDashboardBtn">
+      <span class="dashboard-btn-icon">&#8592;</span>
+      Back to Dashboard
+    </a>
     <!-- Header -->
     <div class="journal-header-row">
       <div>
