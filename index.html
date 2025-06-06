@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>TaskFlows</title>
-  <meta name="viewport" content="width=1200, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- FIXED FOR MOBILE -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -31,6 +31,7 @@
       margin: 0;
       background: #f6f7fb;
       color: #222;
+      overflow-x: hidden;
     }
     .container {
       display: flex;
@@ -48,6 +49,8 @@
       position: fixed;
       height: 100vh;
       z-index: 2;
+      transition: left 0.3s;
+      left: 0;
     }
     .logo {
       display: flex;
@@ -137,6 +140,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      width: auto;
     }
     .topbar {
       display: flex;
@@ -468,7 +472,8 @@
     .priority.low {
       color: #19b35a;
     }
-    /* Responsive */
+
+    /* Responsive: Laptops/Tablets */
     @media (max-width: 1300px) {
       .projects-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -509,6 +514,128 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+      }
+    }
+
+    /* --- MOBILE: Improved for <600px screens --- */
+    @media (max-width: 600px) {
+      .container {
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .sidebar {
+        position: fixed;
+        left: -100vw;
+        top: 0;
+        width: 80vw;
+        max-width: 320px;
+        height: 100vh;
+        z-index: 999;
+        transition: left 0.3s;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+        padding: 30px 12px 20px 12px;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .sidebar.open {
+        left: 0;
+      }
+      .main {
+        margin-left: 0;
+        min-width: 0;
+        width: 100vw;
+      }
+      .topbar {
+        padding: 14px 4vw 0 4vw;
+        min-height: 44px;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+      }
+      .menu-btn {
+        display: flex;
+        margin-right: 8px;
+      }
+      .topbar-left {
+        gap: 10px;
+      }
+      .main-content {
+        padding: 12px 2vw 18px 2vw;
+      }
+      .projects-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .projects-title {
+        font-size: 1.2rem;
+        gap: 8px;
+      }
+      .projects-title-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+      }
+      .projects-desc {
+        font-size: 0.97rem;
+        margin-left: 0;
+        margin-top: 1px;
+      }
+      .new-project-btn {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 1rem;
+      }
+      .stats-row {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .stat-card {
+        min-width: 0;
+        padding: 12px 7px 10px 11px;
+        font-size: 0.95rem;
+      }
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 6px;
+      }
+      .project-card {
+        padding: 10px 4px 8px 7px;
+        min-height: 90px;
+        font-size: 0.96rem;
+      }
+      .project-header {
+        margin-bottom: 2px;
+      }
+      .project-title {
+        font-size: 0.98rem;
+        gap: 4px;
+      }
+      .project-desc {
+        font-size: 0.95rem;
+      }
+      .priority {
+        font-size: 0.93rem;
+      }
+      #modalBox {
+        max-width: 98vw !important;
+        width: 98vw;
+        margin: 8vw auto 0 auto !important;
+        padding: 12px 4px 14px 4px !important;
+      }
+      #modalOverlay {
+        align-items: flex-start;
+      }
+      input, select, textarea {
+        font-size: 1rem !important;
+      }
+      /* Hide sidebar overlay */
+      .sidebar::after {
+        display: none;
       }
     }
   </style>
@@ -930,6 +1057,27 @@
         });
       });
     }
+
+    // --- MOBILE SIDEBAR TOGGLE ---
+    // Menu button toggles sidebar on mobile
+    const sidebar = document.querySelector('.sidebar');
+    const menuBtn = document.querySelector('.menu-btn');
+    menuBtn.addEventListener('click', function(e) {
+      sidebar.classList.toggle('open');
+      e.stopPropagation();
+    });
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth <= 600 && sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+          sidebar.classList.remove('open');
+        }
+      }
+    });
+    sidebar.addEventListener('click', function(e) {
+      if (e.target.tagName === 'A' || e.target.classList.contains('nav-item')) {
+        sidebar.classList.remove('open');
+      }
+    });
 
     // Initial render
     renderProjects(projectsData);
