@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TaskFlows Notes</title>
+  <meta name="viewport" content="width=1200, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #885af8;
+      --primary-light: #f5f2fe;
+      --card-bg: #fff;
+      --border: #ececec;
+      --gray: #9ba3af;
+      --gray-dark: #4a5568;
+      --danger: #ff5449;
+      --shadow: 0 2px 8px rgba(0,0,0,0.04);
+      --radius: 16px;
+      --transition: 0.2s;
+    }
+    * { box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
+    body {
+      margin: 0;
+      background: #f6f7fb;
+      color: #222;
+      min-height: 100vh;
+    }
+    .main {
+      margin-left: 0;
+      padding: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 26px 38px 0 38px;
+      min-height: 80px;
+      background: transparent;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex: 1;
+    }
+    .search-bar {
+      flex: 1;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 12px 44px 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 1.04rem;
+      outline: none;
+      transition: border var(--transition);
+    }
+    .search-bar input:focus {
+      border: 1.5px solid var(--primary);
+      background: #fff;
+    }
+    .search-icon {
+      position: absolute;
+      right: 14px;
+      top: 11px;
+      color: var(--gray);
+      font-size: 1.16rem;
+      pointer-events: none;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.18rem;
+      color: var(--gray-dark);
+      padding: 6px;
+      border-radius: 6px;
+      transition: background var(--transition);
+    }
+    .icon-btn:hover {
+      background: #f4f2f8;
+      color: var(--primary);
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.12rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .notes-content {
+      flex: 1;
+      padding: 24px 38px 38px 38px;
+      background: #f6f7fb;
+      min-height: 80vh;
+    }
+    .notes-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .notes-title {
+      display: flex;
+      align-items: center;
+      font-size: 2.1rem;
+      font-weight: 700;
+      gap: 18px;
+    }
+    .notes-title-icon {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 8px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .notes-desc {
+      color: var(--gray-dark);
+      font-size: 1.18rem;
+      margin-left: 4px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .new-note-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 34px;
+      font-size: 1.09rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .new-note-btn:hover {
+      background: #7c4ef7;
+    }
+    .note-search-bar {
+      position: relative;
+      margin: 24px 0 30px 0;
+      width: 100%;
+    }
+    .note-search-bar input {
+      width: 100%;
+      padding: 13px 44px 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 1.03rem;
+      outline: none;
+      transition: border var(--transition);
+    }
+    .note-search-bar input:focus {
+      border: 1.5px solid var(--primary);
+      background: #fff;
+    }
+    .note-search-icon {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      color: var(--gray);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+    .notes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-top: 0;
+    }
+    .note-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      border: 1.2px solid var(--border);
+      padding: 23px 22px 14px 22px;
+      min-width: 340px;
+      max-width: 380px;
+      flex: 1 1 340px;
+      display: flex;
+      flex-direction: column;
+      min-height: 170px;
+      position: relative;
+      transition: box-shadow var(--transition), border var(--transition);
+      word-break: break-word;
+    }
+    .note-card:hover {
+      box-shadow: 0 4px 16px rgba(136,90,248,0.13);
+      border: 1.2px solid var(--primary);
+    }
+    .note-card-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      min-height: 44px;
+    }
+    .note-card-title {
+      font-size: 1.17rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #191922;
+      margin-right: 8px;
+      flex: 1;
+      word-break: break-word;
+    }
+    .note-card-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-left: 11px;
+    }
+    .note-card-actions button {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #888;
+      padding: 3px;
+      border-radius: 6px;
+      transition: background var(--transition), color var(--transition);
+    }
+    .note-card-actions button:hover {
+      background: #f4f2f8;
+      color: var(--primary);
+    }
+    .note-card-actions .delete-btn {
+      color: var(--danger);
+    }
+    .note-card-actions .delete-btn:hover {
+      background: #ffefee;
+      color: #fff;
+      background: var(--danger);
+    }
+    .note-card-content {
+      font-size: 1.05rem;
+      color: #434a58;
+      margin-bottom: 12px;
+      font-weight: 500;
+      min-height: 45px;
+      word-break: break-word;
+    }
+    .note-tags-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 7px;
+    }
+    .note-tag {
+      display: inline-block;
+      background: #f6f7fb;
+      color: #363c4a;
+      border-radius: 11px;
+      padding: 3px 11px;
+      font-size: 0.98em;
+      border: 1px solid #ececec;
+      font-weight: 600;
+      opacity: 0.92;
+      margin-bottom: 2px;
+    }
+    .note-date-row {
+      display: flex;
+      gap: 16px;
+      color: #888;
+      font-size: 0.98em;
+      align-items: center;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+    /* Modal styles */
+    #modalOverlay {
+      display:none; position:fixed; z-index:99999; top:0; left:0; width:100vw; height:100vh;
+      background:rgba(26,32,44,0.16);
+    }
+    #modalBox {
+      background:#fff; border-radius:18px; max-width:430px; margin:100px auto 0 auto;
+      padding:38px 36px 34px 36px; box-shadow:0 8px 40px #885af832; position:relative;
+      animation:fadeIn 0.22s;
+    }
+    @keyframes fadeIn {from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
+    #closeModalBtn {
+      position:absolute;top:15px;right:12px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:#bbb;
+    }
+    #closeModalBtn:hover { color:#e94e3e; }
+    #modalBox input, #modalBox textarea {
+      width: 100%; margin-bottom: 13px; padding:10px 13px; border-radius:8px;
+      border:1.2px solid #ececec; font-size:1.08em; background:#f6f5fc;
+      transition: border 0.19s;
+    }
+    #modalBox input:focus, #modalBox textarea:focus { border:1.2px solid #885af8; background:#fff; }
+    #modalBox label { font-weight:700; margin-bottom:3px; display:block; color:#885af8;}
+    #modalBox .tags-help { font-size:0.96em; color:#888; margin-bottom:8px;}
+    #saveNoteBtn {
+      background: var(--primary);
+      color: #fff; border:none; border-radius:8px; font-size:1.09rem; font-weight:700;
+      padding:13px 0; margin-top:10px; cursor:pointer; box-shadow:0 2px 12px #885af830;
+      transition: background 0.17s;
+      width: 100%;
+    }
+    #saveNoteBtn:hover { background: #7c4ef7;}
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .notes-content { padding: 24px 12px 38px 12px;}
+    }
+    @media (max-width: 900px) {
+      .note-card { min-width: 97vw; max-width:99vw;}
+      .notes-grid { flex-direction:column; gap:18px;}
+    }
+    @media (max-width: 600px) {
+      .notes-header-row { flex-direction:column;align-items:flex-start;gap:8px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="search-bar" style="max-width: 500px;">
+          <input type="text" id="searchInputAll" placeholder="Search tasks, notes, projects..." autocomplete="off">
+          <span class="search-icon"><i class="fa fa-search"></i></span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" aria-label="Notifications"><span>🔔</span></button>
+        <button class="icon-btn" aria-label="Settings"><span>⚙️</span></button>
+        <div class="user-avatar" id="userAvatar">U</div>
+      </div>
+    </div>
+    <div class="notes-content">
+      <div class="notes-header-row">
+        <div>
+          <span class="notes-title">
+            <span class="notes-title-icon"><i class="fa fa-book"></i></span>
+            Notes
+          </span>
+          <div class="notes-desc">Capture and organize your thoughts</div>
+        </div>
+        <button class="new-note-btn" id="newNoteBtn"><span>＋</span> New Note</button>
+      </div>
+      <div class="note-search-bar">
+        <input type="text" id="searchNotesInput" placeholder="Search notes..." autocomplete="off">
+        <span class="note-search-icon"><i class="fa fa-search"></i></span>
+      </div>
+      <div class="notes-grid" id="notesGrid"></div>
+    </div>
+  </div>
+  <!-- Modal for New/Edit Note -->
+  <div id="modalOverlay">
+    <div id="modalBox">
+      <button id="closeModalBtn">&times;</button>
+      <h2 id="modalTitle" style="font-size:1.25em; font-weight:700; margin-bottom:24px;">New Note</h2>
+      <label for="noteTitleInput">Title</label>
+      <input id="noteTitleInput" type="text" maxlength="60" placeholder="e.g. Meeting Notes - Project Alpha">
+      <label for="noteContentInput">Content</label>
+      <textarea id="noteContentInput" maxlength="5000" placeholder="Write your note here..." style="min-height:90px;"></textarea>
+      <label for="noteTagsInput">Tags</label>
+      <input id="noteTagsInput" type="text" maxlength="90" placeholder="e.g. work, meeting, project-alpha">
+      <div class="tags-help">Separate tags with commas. Example: <span style="color:#885af8;">meeting, project-alpha</span></div>
+      <label for="noteDateInput">Date</label>
+      <input id="noteDateInput" type="date">
+      <button id="saveNoteBtn">Save Note</button>
+    </div>
+  </div>
+  <script>
+    // --- Utilities ---
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
+    }
+    // Local Storage logic
+    const notesKey = "taskflows_notes";
+    function getNotes() { return JSON.parse(localStorage.getItem(notesKey) || "[]"); }
+    function setNotes(notes) { localStorage.setItem(notesKey, JSON.stringify(notes)); }
+
+    // --- Render Notes ---
+    function renderNotes(notes = null) {
+      if (!notes) notes = getNotes();
+      const grid = document.getElementById('notesGrid');
+      grid.innerHTML = '';
+      if (!notes.length) {
+        grid.innerHTML = `<div style="color:#bbb;font-size:1.18em; font-weight:600;margin:32px 0;">No notes yet. Click <b>New Note</b> to add one!</div>`;
+        return;
+      }
+      notes.forEach(n => {
+        const card = document.createElement('div');
+        card.className = 'note-card';
+        card.setAttribute('data-id', n.id);
+        card.innerHTML = `
+          <div class="note-card-title-row">
+            <span class="note-card-title">${n.title||"(Untitled Note)"}</span>
+            <div class="note-card-actions">
+              <button title="Edit" class="edit-btn"><i class="fa fa-pen-to-square"></i></button>
+              <button title="Delete" class="delete-btn"><i class="fa fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="note-card-content">${truncate(n.content||"",120)}</div>
+          <div class="note-tags-row">
+            ${(n.tags||[]).map(t=>`<span class="note-tag">${t}</span>`).join("")}
+          </div>
+          <div class="note-date-row">
+            <span><i class="fa fa-calendar"></i> ${formatDate(n.date)}</span>
+            ${n.updated && n.updated !== n.date ? `<span>Updated ${formatDate(n.updated)}</span>` : ""}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      // Attach event listeners *after* rendering the cards
+      document.querySelectorAll('.note-card .edit-btn').forEach(btn => {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          // Find note id from parent .note-card
+          const card = e.target.closest('.note-card');
+          showModal(card.getAttribute('data-id'));
+        };
+      });
+      document.querySelectorAll('.note-card .delete-btn').forEach(btn => {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          const card = e.target.closest('.note-card');
+          deleteNote(card.getAttribute('data-id'));
+        };
+      });
+    }
+    function truncate(str, n) {
+      if (!str) return "";
+      return str.length > n ? str.slice(0, n-2) + "..." : str;
+    }
+    // --- Modal Logic ---
+    function showModal(editId=null) {
+      document.getElementById('modalOverlay').style.display = "block";
+      document.getElementById('modalTitle').textContent = editId ? "Edit Note" : "New Note";
+      document.getElementById('saveNoteBtn').textContent = editId ? "Save Changes" : "Save Note";
+      if (editId) {
+        const n = getNotes().find(n=>n.id===editId);
+        document.getElementById('noteTitleInput').value = n.title||"";
+        document.getElementById('noteContentInput').value = n.content||"";
+        document.getElementById('noteTagsInput').value = (n.tags||[]).join(", ");
+        document.getElementById('noteDateInput').value = n.date||"";
+        document.getElementById('saveNoteBtn').setAttribute("data-edit-id", editId);
+      } else {
+        document.getElementById('noteTitleInput').value = "";
+        document.getElementById('noteContentInput').value = "";
+        document.getElementById('noteTagsInput').value = "";
+        document.getElementById('noteDateInput').value = "";
+        document.getElementById('saveNoteBtn').removeAttribute("data-edit-id");
+      }
+    }
+    function hideModal() {
+      document.getElementById('modalOverlay').style.display = "none";
+    }
+    document.getElementById('newNoteBtn').onclick =()=> showModal();
+    document.getElementById('closeModalBtn').onclick = hideModal;
+    document.getElementById('modalOverlay').onclick = function(e){ if(e.target===this) hideModal(); };
+
+    // Save Note (Create or Edit)
+    document.getElementById('saveNoteBtn').onclick = function() {
+      const title = document.getElementById('noteTitleInput').value.trim();
+      const content = document.getElementById('noteContentInput').value.trim();
+      const tags = document.getElementById('noteTagsInput').value.split(",").map(t=>t.trim()).filter(Boolean);
+      const date = document.getElementById('noteDateInput').value;
+      let notes = getNotes();
+      const editId = this.getAttribute("data-edit-id");
+      const now = new Date().toISOString().slice(0,10);
+      if (editId) {
+        const idx = notes.findIndex(n=>n.id===editId);
+        if (idx>=0) {
+          notes[idx] = {...notes[idx], title, content, tags, date, updated: now};
+        }
+      } else {
+        const id = "note-" + Date.now() + "-" + Math.floor(Math.random()*10000);
+        notes.push({id, title, content, tags, date, updated: now});
+      }
+      setNotes(notes);
+      renderNotes();
+      hideModal();
+    };
+    // Delete Note
+    function deleteNote(id) {
+      if (!confirm("Delete this note?")) return;
+      let notes = getNotes().filter(n=>n.id!==id);
+      setNotes(notes);
+      renderNotes();
+    }
+    // --- Search ---
+    document.getElementById('searchNotesInput').addEventListener('input', function() {
+      const val = this.value.toLowerCase();
+      const notes = getNotes().filter(n =>
+        (n.title||"").toLowerCase().includes(val) ||
+        (n.content||"").toLowerCase().includes(val) ||
+        (n.tags||[]).some(t=>t.toLowerCase().includes(val))
+      );
+      renderNotes(notes);
+    });
+    // --- Demo Notes (first time only) ---
+    function seedDemoNotes() {
+      if (getNotes().length > 0) return;
+      const demo = [
+        {
+          id: "note-1",
+          title: "Meeting Notes - Project Alpha",
+          content: "Discussed project timeline, budget constraints, and team assignments. Key decisions: Move deadline to end of month,...",
+          tags: ["work", "meeting", "project-alpha"],
+          date: "2024-06-01",
+          updated: "2024-06-01"
+        },
+        {
+          id: "note-2",
+          title: "Book Recommendations",
+          content: "List of books to read: The Clean Coder, Atomic Habits, Deep Work, The Pragmatic Programmer.",
+          tags: ["personal", "books", "self-improvement"],
+          date: "2024-05-30",
+          updated: "2024-06-01"
+        }
+      ];
+      setNotes(demo);
+    }
+    // --- INIT ---
+    seedDemoNotes();
+    renderNotes();
+    // --- Top bar dummy buttons ---
+    document.querySelectorAll('.topbar .icon-btn')[1].addEventListener('click', function(){
+      alert('Settings coming soon!');
+    });
+    document.querySelectorAll('.topbar .icon-btn')[0].addEventListener('click', function(){
+      alert('Notifications coming soon!');
+    });
+    document.getElementById('userAvatar').addEventListener('click', function(){
+      alert('Profile menu coming soon!');
+    });
+  </script>
+</body>
+</html>
