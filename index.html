@@ -198,34 +198,6 @@
       align-items: center;
       gap: 24px;
     }
-    .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.18rem;
-      color: var(--gray-dark);
-      padding: 6px;
-      border-radius: 6px;
-      transition: background var(--transition);
-    }
-    .icon-btn:hover {
-      background: #f4f2f8;
-      color: var(--primary);
-    }
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 1.12rem;
-      cursor: pointer;
-      user-select: none;
-    }
 
     /* Main Content */
     .main-content {
@@ -602,9 +574,7 @@
           </div>
         </div>
         <div class="topbar-right">
-          <button class="icon-btn" aria-label="Notifications"><span>🔔</span></button>
-          <button class="icon-btn" aria-label="Settings"><span>⚙️</span></button>
-          <div class="user-avatar" id="userAvatar">U</div>
+          <!-- Removed notifications, settings, and user profile -->
         </div>
       </div>
       <!-- Main Content -->
@@ -626,28 +596,28 @@
               <div class="stat-icon"><span>📊</span></div>
               <div class="stat-content">
                 <div class="stat-label">Total Projects</div>
-                <div class="stat-value" id="statTotalProjects">6</div>
+                <div class="stat-value" id="statTotalProjects">0</div>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon clock"><span>⏲️</span></div>
               <div class="stat-content">
                 <div class="stat-label">In Progress</div>
-                <div class="stat-value" id="statInProgress">2</div>
+                <div class="stat-value" id="statInProgress">0</div>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon check"><span>✔️</span></div>
               <div class="stat-content">
                 <div class="stat-label">Completed</div>
-                <div class="stat-value" id="statCompleted">1</div>
+                <div class="stat-value" id="statCompleted">0</div>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon trend"><span>📈</span></div>
               <div class="stat-content">
                 <div class="stat-label">Avg Progress</div>
-                <div class="stat-value orange" id="statAvgProgress">53%</div>
+                <div class="stat-value orange" id="statAvgProgress">0%</div>
               </div>
             </div>
           </div>
@@ -684,76 +654,9 @@
     </div>
   </div>
   <script>
-    // Data
-    const projectsData = [
-      {
-        title: "Website Redesign",
-        status: "in progress",
-        statusColor: "blue",
-        badge: "inprogress",
-        desc: "Complete overhaul of the company website with modern design and improved UX",
-        progress: 65,
-        members: 5,
-        endDate: "2024-06-15",
-        priority: "high"
-      },
-      {
-        title: "Mobile App Development",
-        status: "planning",
-        statusColor: "purple",
-        badge: "planning",
-        desc: "Native iOS and Android app for customer engagement",
-        progress: 15,
-        members: 8,
-        endDate: "2024-08-30",
-        priority: "high"
-      },
-      {
-        title: "Marketing Campaign",
-        status: "review",
-        statusColor: "green",
-        badge: "review",
-        desc: "Q2 digital marketing campaign across all channels",
-        progress: 90,
-        members: 3,
-        endDate: "2024-06-05",
-        priority: "medium"
-      },
-      {
-        title: "Database Migration",
-        status: "completed",
-        statusColor: "orange",
-        badge: "completed",
-        desc: "Migrate legacy database to cloud infrastructure",
-        progress: 100,
-        members: 6,
-        endDate: "2024-05-23",
-        priority: "low"
-      },
-      {
-        title: "Documentation Update",
-        status: "in progress",
-        statusColor: "teal",
-        badge: "inprogress",
-        desc: "Update all technical documentation and user guides",
-        progress: 30,
-        members: 4,
-        endDate: "2024-07-01",
-        priority: "medium"
-      },
-      {
-        title: "Security Audit",
-        status: "planning",
-        statusColor: "orange",
-        badge: "planning",
-        desc: "Comprehensive security review and implementation of fixes",
-        progress: 0,
-        members: 2,
-        endDate: "2024-09-10",
-        priority: "high"
-      }
-    ];
-    // Status badge map
+    // Add this line to define projectsData so the New Project button works!
+    let projectsData = [];
+
     const statusBadges = {
       "in progress": { text: "in progress", class: "status-badge inprogress" },
       "planning": { text: "planning", class: "status-badge planning" },
@@ -767,7 +670,6 @@
       "orange": "dot orange",
       "teal": "dot teal"
     };
-    // Priority map
     const priorityText = {
       "high": "HIGH PRIORITY",
       "medium": "MEDIUM PRIORITY",
@@ -815,14 +717,16 @@
       });
     }
     function formatDate(dateStr) {
+      if(!dateStr) return "--";
       const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
       return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
     }
     function updateStats() {
       const total = projectsData.length;
       const inProgress = projectsData.filter(p=>p.status==="in progress").length;
       const completed = projectsData.filter(p=>p.status==="completed").length;
-      const avg = Math.round(projectsData.reduce((a,p)=>a+p.progress,0)/total);
+      const avg = total ? Math.round(projectsData.reduce((a,p)=>a+p.progress,0)/total) : 0;
       document.getElementById('statTotalProjects').textContent = total;
       document.getElementById('statInProgress').textContent = inProgress;
       document.getElementById('statCompleted').textContent = completed;
@@ -966,19 +870,9 @@
       }
     });
 
-    // User Avatar (profile menu)
-    document.getElementById('userAvatar').addEventListener('click', function(){
-      alert('Profile menu coming soon!');
-    });
+    // Remove user avatar and topbar buttons logic (per requirements)
+    // No code for notifications/settings/user avatar
 
-    // Topbar settings button
-    document.querySelectorAll('.topbar .icon-btn')[1].addEventListener('click', function(){
-      showPage('settings');
-    });
-    // Topbar notifications button
-    document.querySelectorAll('.topbar .icon-btn')[0].addEventListener('click', function(){
-      alert('Notifications coming soon!');
-    });
   </script>
 </body>
 </html>
