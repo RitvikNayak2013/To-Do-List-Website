@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>TaskFlows Journal</title>
-  <meta name="viewport" content="width=1200, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- FIXED FOR MOBILE -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -30,6 +30,7 @@
       background: #fbfcfe;
       color: var(--text);
       min-height: 100vh;
+      overflow-x: hidden;
     }
     .journal-main {
       max-width: 760px;
@@ -285,10 +286,113 @@
       .journal-main { padding: 20px 4px;}
       #journalModalBox { margin:40px auto 0 auto;}
     }
+    /* --- IMPROVED PHONE RESPONSIVENESS --- */
     @media (max-width: 600px) {
-      .journal-header-row { flex-direction:column;align-items:flex-start;gap:8px;}
-      .journal-title { font-size: 1.45rem;}
-      .dashboard-btn { width: 100%; text-align: center; margin-bottom: 16px;}
+      .journal-main {
+        max-width: 100vw;
+        padding: 12px 1vw 6vw 1vw;
+      }
+      .journal-header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-bottom: 9px;
+      }
+      .journal-title-wrap {
+        gap: 7px;
+      }
+      .journal-title-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1.2rem;
+        border-radius: 6px;
+      }
+      .journal-title {
+        font-size: 1.15rem;
+      }
+      .journal-desc {
+        font-size: 0.98rem;
+        margin-top: 2px;
+      }
+      .journal-new-btn {
+        padding: 10px 0;
+        font-size: 1.01rem;
+        width: 100%;
+        border-radius: 7px;
+        margin-top: 0;
+      }
+      .dashboard-btn {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 14px;
+        margin-right: 0;
+        padding: 11px 0;
+        font-size: 1.01rem;
+        border-radius: 7px;
+      }
+      .journal-prompt-card {
+        padding: 20px 7px 18px 7px;
+        font-size: 0.97rem;
+        border-radius: 8px;
+      }
+      .journal-prompt-icon {
+        font-size: 1.4rem;
+        margin-bottom: 3px;
+      }
+      .journal-prompt-title {
+        font-size: 1.03rem;
+        margin-bottom: 3px;
+      }
+      .journal-prompt-desc {
+        font-size: 0.97rem;
+        margin-bottom: 8px;
+      }
+      .journal-prompt-btn {
+        font-size: 0.97rem;
+        padding: 10px 0;
+        border-radius: 7px;
+        width: 100%;
+      }
+      .journal-entry-card {
+        padding: 12px 5px 10px 7px;
+        font-size: 0.97rem;
+        border-radius: 8px;
+      }
+      .journal-entry-header {
+        font-size: 1.02rem;
+        gap: 6px;
+      }
+      .journal-entry-content {
+        font-size: 0.97rem;
+      }
+      .journal-entry-grateful-label {
+        font-size: 0.97em;
+      }
+      .journal-entry-tags-row {
+        gap: 4px;
+      }
+      .journal-entry-tag {
+        font-size: 0.95em;
+        border-radius: 9px;
+        padding: 3px 9px;
+      }
+      #journalModalBox {
+        max-width: 98vw !important;
+        width: 98vw;
+        margin: 8vw auto 0 auto !important;
+        padding: 12px 5px 14px 5px !important;
+        border-radius: 10px;
+      }
+      #journalModalBox input, #journalModalBox textarea {
+        font-size: 1em;
+        padding: 9px 6px;
+        border-radius: 6px;
+      }
+      #saveJournalEntryBtn {
+        font-size: 1em;
+        border-radius: 7px;
+        padding: 10px 0;
+      }
     }
   </style>
 </head>
