@@ -654,8 +654,9 @@
     </div>
   </div>
   <script>
-    // Add this line to define projectsData so the New Project button works!
-    let projectsData = [];
+    // Persist projects in localStorage so new projects are saved
+    const PROJECTS_KEY = 'taskflows-projects';
+    let projectsData = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]');
 
     const statusBadges = {
       "in progress": { text: "in progress", class: "status-badge inprogress" },
@@ -737,6 +738,11 @@
     renderProjects(projectsData);
     updateStats();
 
+    // Save projects to localStorage
+    function saveProjects() {
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(projectsData));
+    }
+
     // Sidebar nav functionality
     document.querySelectorAll('.nav-item[data-page]').forEach(item => {
       item.addEventListener('click', function(e) {
@@ -801,6 +807,7 @@
         progress: (status==="completed")?100:0,
         members, endDate, priority
       });
+      saveProjects();
       renderProjects(projectsData);
       updateStats();
       hideModal();
@@ -844,6 +851,7 @@
             progress: (status==="completed")?100:0,
             members, endDate, priority
           });
+          saveProjects();
           renderProjects(projectsData);
           updateStats();
           hideModal();
