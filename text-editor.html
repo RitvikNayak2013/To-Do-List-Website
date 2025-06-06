@@ -105,7 +105,7 @@
       margin-top: 4px;
       flex-wrap: wrap;
     }
-    .editor-buttons button {
+    .editor-buttons button, .editor-buttons a.dashboard-btn {
       background: linear-gradient(90deg, #885af8 0%, #43cea2 100%);
       color: #fff;
       border: none;
@@ -116,15 +116,23 @@
       letter-spacing: 1px;
       cursor: pointer;
       box-shadow: 0 2px 12px #885af826;
-      transition: background 0.19s, box-shadow 0.19s;
+      transition: background 0.19s, box-shadow 0.19s, color 0.19s;
       outline: none;
       display: flex;
       align-items: center;
       gap: 7px;
+      text-decoration: none;
     }
-    .editor-buttons button:hover {
+    .editor-buttons button:hover, .editor-buttons a.dashboard-btn:hover {
       background: linear-gradient(90deg, #43cea2 0%, #885af8 100%);
       box-shadow: 0 4px 22px #43cea235;
+      color: #fff;
+      text-decoration: none;
+    }
+    .editor-buttons a.dashboard-btn:visited,
+    .editor-buttons a.dashboard-btn:active {
+      color: #fff;
+      text-decoration: none;
     }
     .drafts-link {
       margin-left: auto;
@@ -274,6 +282,7 @@
       <button onclick="newDraft()" title="New Draft"><i class="fa fa-file-alt"></i>New Draft</button>
       <button onclick="downloadDoc()" title="Download"><i class="fa fa-download"></i>Download</button>
       <button onclick="shareDoc()" title="Share"><i class="fa fa-link"></i>Share</button>
+      <a href="index.html" class="dashboard-btn" title="Back to Dashboard"><i class="fa fa-arrow-left"></i>Back to Dashboard</a>
     </div>
     <div id="shareLinkRow" class="share-link-row" style="display:none;">
       <span>Shareable Link:</span>
