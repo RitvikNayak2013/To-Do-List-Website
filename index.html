@@ -345,6 +345,7 @@
       align-items: flex-start;
       justify-content: space-between;
       margin-bottom: 4px;
+      position: relative;
     }
     .project-title {
       font-size: 1.19rem;
@@ -403,71 +404,55 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background var(--transition);
+      position: relative;
     }
     .project-menu-btn:hover {
       background: #f4f2f8;
       color: #222;
     }
-    .project-desc {
-      font-size: 1.06rem;
-      color: #434a58;
-      margin-bottom: 14px;
-      margin-top: 4px;
-      font-weight: 500;
-      min-height: 36px;
-    }
-    .progress-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 6px;
-      margin-top: -4px;
-    }
-    .progress-label {
-      font-size: 0.97rem;
-      color: #7a7e89;
-      font-weight: 500;
-      margin-right: 8px;
-    }
-    .progress-bar-bg {
-      width: 100%;
-      background: #f1f3f6;
-      border-radius: 5px;
-      height: 8px;
-      margin-right: 8px;
-      margin-left: 0;
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-    .progress-bar {
-      background: #1a202c;
-      height: 8px;
-      border-radius: 5px;
-      transition: width 0.4s cubic-bezier(.4,2,.3,1);
+    .project-menu-dropdown {
       position: absolute;
-      left: 0; top: 0;
+      top: 36px;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      min-width: 170px;
+      z-index: 30;
+      padding: 8px 0;
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.15s;
     }
-    .progress-perc {
-      font-size: 1rem;
-      color: #222;
-      font-weight: 600;
-      margin-left: 8px;
-      min-width: 40px;
-      text-align: right;
-    }
-    .project-meta {
+    .project-menu-dropdown.show {
       display: flex;
-      align-items: center;
-      gap: 18px;
-      margin: 8px 0 0 0;
-      font-size: 1rem;
-      color: #767c88;
-      font-weight: 500;
     }
-    .project-meta .icon {
-      font-size: 1.12rem;
-      margin-right: 5px;
+    .project-menu-dropdown button {
+      background: none;
+      border: none;
+      padding: 11px 20px;
+      width: 100%;
+      text-align: left;
+      font-size: 1.04rem;
+      color: #444;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+      outline: none;
+    }
+    .project-menu-dropdown button:hover {
+      background: #f4f2f8;
+      color: var(--primary);
+    }
+    .project-card.completed .project-title,
+    .project-card.completed .project-desc {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-7px);}
+      to { opacity: 1; transform: translateY(0);}
     }
     .priority {
       font-weight: 700;
@@ -483,7 +468,6 @@
     .priority.low {
       color: #19b35a;
     }
-
     /* Responsive */
     @media (max-width: 1300px) {
       .projects-grid {
@@ -573,9 +557,7 @@
             <span class="search-icon">🔍</span>
           </div>
         </div>
-        <div class="topbar-right">
-          <!-- Removed notifications, settings, and user profile -->
-        </div>
+        <div class="topbar-right"></div>
       </div>
       <!-- Main Content -->
       <div class="main-content" id="mainContent">
@@ -690,8 +672,9 @@
         let dotClass = statusColorDots[p.statusColor] || statusColorDots["blue"];
         let priority = priorityText[p.priority] || "";
         let priorityCls = priorityClass[p.priority] || "";
+        let completedClass = p.status === "completed" ? "completed" : "";
         grid.innerHTML += `
-        <div class="project-card">
+        <div class="project-card ${completedClass}" data-idx="${idx}">
           <div class="project-header">
             <span class="project-title">
               <span class="${dotClass}"></span>
@@ -699,6 +682,11 @@
               <span class="${badge.class}">${badge.text}</span>
             </span>
             <button class="project-menu-btn" tabindex="0" aria-label="Show menu">⋯</button>
+            <div class="project-menu-dropdown">
+              <button class="complete-btn">${p.status !== "completed" ? "Mark as Completed" : "Mark as In Progress"}</button>
+              <button class="duplicate-btn">Duplicate Project</button>
+              <button class="delete-btn" style="color:#ff5449;">Delete Project</button>
+            </div>
           </div>
           <div class="project-desc">${p.desc}</div>
           <div class="progress-row">
@@ -716,13 +704,17 @@
         </div>
         `;
       });
+      // Attach event listeners for project menus after rendering
+      attachProjectMenus();
     }
+
     function formatDate(dateStr) {
       if(!dateStr) return "--";
       const d = new Date(dateStr);
       if (isNaN(d.getTime())) return dateStr;
       return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
     }
+
     function updateStats() {
       const total = projectsData.length;
       const inProgress = projectsData.filter(p=>p.status==="in progress").length;
@@ -734,9 +726,6 @@
       document.getElementById('statAvgProgress').textContent = avg + "%";
       document.getElementById('statAvgProgress').className = "stat-value orange";
     }
-    // Initial render
-    renderProjects(projectsData);
-    updateStats();
 
     // Save projects to localStorage
     function saveProjects() {
@@ -766,6 +755,8 @@
       if (page === "projects") {
         mc.innerHTML = document.getElementById('projectsPage').outerHTML;
         // After replacing content, re-attach events
+        renderProjects(projectsData);
+        updateStats();
         attachMainEvents();
       } else {
         mc.innerHTML = `<div style="padding:60px 0;text-align:center; font-size:2rem; color:#9ba3af;">${capitalize(page)} page coming soon.</div>`;
@@ -863,20 +854,86 @@
           if(e.target===this) hideModal();
         });
       }
-      // Project menu button (just alert for now)
-      document.querySelectorAll('.project-menu-btn').forEach(btn=>{
-        btn.addEventListener('click', function(e){
+      // Attach project menu listeners again
+      attachProjectMenus();
+    }
+
+    function attachProjectMenus() {
+      // Hide all dropdowns on click outside
+      document.addEventListener('click', function hideDropdowns(e) {
+        document.querySelectorAll('.project-menu-dropdown.show').forEach(menu => {
+          if (!menu.contains(e.target) && !menu.previousElementSibling.contains(e.target)) {
+            menu.classList.remove('show');
+          }
+        });
+      }, { once: true });
+
+      document.querySelectorAll('.project-card').forEach(card => {
+        const idx = parseInt(card.getAttribute('data-idx'), 10);
+        const menuBtn = card.querySelector('.project-menu-btn');
+        const dropdown = card.querySelector('.project-menu-dropdown');
+        const completeBtn = card.querySelector('.complete-btn');
+        const duplicateBtn = card.querySelector('.duplicate-btn');
+        const deleteBtn = card.querySelector('.delete-btn');
+
+        // Toggle dropdown
+        menuBtn.addEventListener('click', function(e) {
           e.stopPropagation();
-          alert('Project menu actions coming soon!');
+          document.querySelectorAll('.project-menu-dropdown').forEach(d=>d.classList.remove('show'));
+          dropdown.classList.toggle('show');
+        });
+
+        // Complete/in-progress
+        completeBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (projectsData[idx].status !== "completed") {
+            projectsData[idx].status = "completed";
+            projectsData[idx].progress = 100;
+            projectsData[idx].statusColor = "orange";
+          } else {
+            projectsData[idx].status = "in progress";
+            projectsData[idx].progress = 0;
+            projectsData[idx].statusColor = "blue";
+          }
+          saveProjects();
+          renderProjects(projectsData);
+          updateStats();
+        });
+
+        // Duplicate
+        duplicateBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const proj = projectsData[idx];
+          const copy = {...proj};
+          copy.title = proj.title + " (Copy)";
+          // Don't mark as completed in copy
+          if (copy.status === "completed") {
+            copy.status = "planning";
+            copy.progress = 0;
+            copy.statusColor = "purple";
+          }
+          projectsData.push(copy);
+          saveProjects();
+          renderProjects(projectsData);
+          updateStats();
+        });
+
+        // Delete
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (confirm("Delete this project?")) {
+            projectsData.splice(idx, 1);
+            saveProjects();
+            renderProjects(projectsData);
+            updateStats();
+          }
         });
       });
     }
-    // Project menu button (just alert for now)
-    document.addEventListener('click', function(e){
-      if (e.target.classList.contains('project-menu-btn')) {
-        alert('Project menu actions coming soon!');
-      }
-    });
+
+    // Initial render
+    renderProjects(projectsData);
+    updateStats();
 
     // Remove user avatar and topbar buttons logic (per requirements)
     // No code for notifications/settings/user avatar
