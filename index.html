@@ -571,17 +571,16 @@
          <ul class="nav">
   <li class="nav-item"><a href="text-editor.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">📝</span>Text Editor</a></li>
   <li class="nav-item"><a href="to-do-list.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">✅</span>To-Do Lists</a></li>
-  <li class="nav-item"><a href="index.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">📊</span>Dashboard</a></li>
+  <li class="nav-item selected" data-page="projects"><span class="nav-icon">📊</span>Dashboard</li>
   <li class="nav-item"><a href="notes.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">🗒️</span>Notes</a></li>
 </ul>
       
-          </ul>
         </div>
         <div class="nav-section">
           <div class="nav-title">PERSONAL</div>
           <ul class="nav">
           <li  class="nav-item"><a href="journal.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">📓</span>Journal</a></li>
-         <li class="nav-item"><a href="quicknotes.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">✏️</span>Quick Notes</li>
+         <li class="nav-item"><a href="quicknotes.html" style="text-decoration:none; color:inherit; display:flex; align-items:center;"><span class="nav-icon">✏️</span>Quick Notes</a></li>
           </ul>
         </div>
       </div>
@@ -835,8 +834,10 @@
     updateStats();
 
     // Sidebar nav functionality
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+      item.addEventListener('click', function(e) {
+        // Prevent following <a> links if present
+        if (e.target.tagName === "A") return;
         document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('selected'));
         this.classList.add('selected');
         const page = this.getAttribute('data-page');
@@ -854,8 +855,7 @@
       const mc = document.getElementById('mainContent');
       if (page === "projects") {
         mc.innerHTML = document.getElementById('projectsPage').outerHTML;
-        renderProjects(projectsData);
-        updateStats();
+        // After replacing content, re-attach events
         attachMainEvents();
       } else {
         mc.innerHTML = `<div style="padding:60px 0;text-align:center; font-size:2rem; color:#9ba3af;">${capitalize(page)} page coming soon.</div>`;
@@ -915,9 +915,49 @@
 
     // Attach events again after rerender
     function attachMainEvents() {
+      // Modal
       if(document.getElementById('newProjectBtn')){
         document.getElementById('newProjectBtn').addEventListener('click', showModal);
       }
+      // Modal close
+      if(document.getElementById('closeModalBtn')){
+        document.getElementById('closeModalBtn').addEventListener('click', hideModal);
+      }
+      // Create project
+      if(document.getElementById('createProjectBtn')){
+        document.getElementById('createProjectBtn').addEventListener('click', function() {
+          const title = document.getElementById('newProjectTitle').value.trim();
+          const desc = document.getElementById('newProjectDesc').value.trim();
+          const status = document.getElementById('newProjectStatus').value;
+          const endDate = document.getElementById('newProjectEndDate').value;
+          const members = parseInt(document.getElementById('newProjectMembers').value,10) || 1;
+          const priority = document.getElementById('newProjectPriority').value;
+          if (!title) { alert("Project title is required."); return; }
+          projectsData.push({
+            title, status, desc,
+            statusColor: (status==="in progress")?"blue":(status==="planning"?"purple":(status==="review"?"green":"orange")),
+            badge: status,
+            progress: (status==="completed")?100:0,
+            members, endDate, priority
+          });
+          renderProjects(projectsData);
+          updateStats();
+          hideModal();
+        });
+      }
+      // Modal overlay click
+      if(document.getElementById('modalOverlay')){
+        document.getElementById('modalOverlay').addEventListener('click', function(e){
+          if(e.target===this) hideModal();
+        });
+      }
+      // Project menu button (just alert for now)
+      document.querySelectorAll('.project-menu-btn').forEach(btn=>{
+        btn.addEventListener('click', function(e){
+          e.stopPropagation();
+          alert('Project menu actions coming soon!');
+        });
+      });
     }
     // Project menu button (just alert for now)
     document.addEventListener('click', function(e){
