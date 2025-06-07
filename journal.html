@@ -3,43 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <title>TaskFlows Journal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- FIXED FOR MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #d26c39;
+      --primary2: #fca13a;
       --primary-light: #fff6ee;
       --primary-hover: #c4561e;
-      --header-bg: #f6f7fb;
-      --border: #ececec;
-      --shadow: 0 2px 8px rgba(0,0,0,0.04);
-      --radius: 12px;
-      --gray: #9ba3af;
-      --gray-dark: #4a5568;
-      --success: #34c759;
-      --tag-bg: #eaf8ef;
-      --tag-color: #2a934f;
-      --text: #222;
-      --dashboard-btn-bg: #fff6ee;
-      --dashboard-btn-shadow: 0 2px 10px #d26c3911;
-      --dashboard-btn-hover: #ffe3c8;
+      --accent: #34c759;
+      --bg1: #ffd2a9;
+      --bg2: #ffb5c2;
+      --bg3: #ffe6a1;
+      --glass: rgba(255,255,255,0.64);
+      --glass2: rgba(255,255,255,0.52);
+      --border: #ffe1cb;
+      --glass-border: #ffe1cbcc;
+      --shadow: 0 8px 48px 0 #d26c3911, 0 2px 10px 0 #d26c3922;
+      --radius: 1.2rem;
+      --max-width: 690px;
+      --fab-size: 62px;
     }
-    * { box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
-    body {
+    html, body {
       margin: 0;
-      background: #fbfcfe;
-      color: var(--text);
+      padding: 0;
       min-height: 100vh;
+      width: 100vw;
+      font-family: 'Inter', Arial, sans-serif;
+      color: #222;
+      background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg3), #fff8e1, #fff6ee);
+      background-size: 400% 400%;
+      animation: animatedGradient 15s ease-in-out infinite;
       overflow-x: hidden;
     }
-    .journal-main {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 36px 20px;
-      min-height: 100vh;
-      background: #fbfcfe;
+    @keyframes animatedGradient {
+      0% {background-position: 0% 50%;}
+      25% {background-position: 100% 60%;}
+      50% {background-position: 100% 100%;}
+      75% {background-position: 50% 0%;}
+      100% {background-position: 0% 50%;}
     }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .journal-main {
+      width: 100vw;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 36px 2vw 130px 2vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .dashboard-btn {
+      background: var(--glass);
+      color: var(--primary);
+      border: 1.7px solid var(--glass-border);
+      border-radius: 1.1rem;
+      padding: 13px 28px;
+      font-size: 1.11rem;
+      font-weight: 700;
+      box-shadow: 0 2px 10px #d26c3916;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      margin-bottom: 26px;
+      margin-top: 28px;
+      margin-left: 0;
+      margin-right: 0;
+      transition: background 0.17s, border-color 0.17s, color 0.17s, box-shadow 0.17s;
+      backdrop-filter: blur(10px) saturate(1.3);
+    }
+    .dashboard-btn:hover {
+      background: linear-gradient(90deg, var(--primary) 55%, var(--primary2) 100%);
+      color: #fff;
+      border-color: var(--primary2);
+      box-shadow: 0 8px 30px #fca13a44;
+    }
+    .dashboard-btn .dashboard-btn-icon {
+      font-size: 1.18em;
+      margin-right: 2px;
+      margin-bottom: 1px;
+      display: inline-block;
+    }
+    /* Header row */
     .journal-header-row {
+      width: 100%;
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -53,7 +107,7 @@
       gap: 13px;
     }
     .journal-title-icon {
-      background: var(--primary-light);
+      background: var(--glass2);
       color: var(--primary);
       border-radius: 8px;
       width: 48px;
@@ -62,81 +116,61 @@
       align-items: center;
       justify-content: center;
       font-size: 2rem;
+      box-shadow: 0 2px 8px #fca13a22;
     }
     .journal-title {
       font-size: 2.2rem;
       font-weight: 700;
-      color: #222;
+      background: linear-gradient(90deg, var(--primary), var(--primary2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1.5px;
+      margin-bottom: 2px;
+      display: block;
     }
     .journal-desc {
-      color: var(--gray-dark);
+      color: #bc652b;
       font-size: 1.13rem;
-      font-weight: 500;
-      margin-top: 4px;
+      font-weight: 600;
+      margin-top: 7px;
+      text-shadow: 0 2px 12px #fff8;
     }
     .journal-new-btn {
-      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary2), var(--primary));
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 13px 26px;
-      font-size: 1.07rem;
-      font-weight: 600;
+      border-radius: 1em;
+      padding: 13px 34px;
+      font-size: 1.13rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.18s;
-      box-shadow: var(--shadow);
+      transition: background 0.14s, box-shadow 0.13s, color 0.11s;
+      box-shadow: 0 2px 14px #d26c3933;
       display: flex;
       align-items: center;
       gap: 10px;
+      outline: none;
+      margin-left: 10px;
       margin-top: 4px;
     }
     .journal-new-btn:hover {
-      background: var(--primary-hover);
-    }
-    /* Back to Dashboard Button */
-    .dashboard-btn {
-      background: var(--dashboard-btn-bg);
-      color: var(--primary);
-      border: 1.5px solid #ffd7b2;
-      border-radius: 9px;
-      padding: 12px 26px;
-      font-size: 1.06rem;
-      font-weight: 700;
-      box-shadow: var(--dashboard-btn-shadow);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      cursor: pointer;
-      margin-bottom: 22px;
-      margin-right: 10px;
-      margin-top: 2px;
-      transition: background 0.17s, border-color 0.17s, color 0.17s, box-shadow 0.17s;
-    }
-    .dashboard-btn:hover {
-      background: var(--dashboard-btn-hover);
-      border-color: #ffc387;
-      color: #c4561e;
-      box-shadow: 0 4px 20px #d26c3933;
-      text-decoration: none;
-    }
-    .dashboard-btn .dashboard-btn-icon {
-      font-size: 1.17em;
-      margin-right: 2px;
-      margin-bottom: 1px;
-      display: inline-block;
+      background: linear-gradient(90deg,var(--primary),var(--primary2));
+      color: #fff;
+      box-shadow: 0 4px 24px #fca13a33;
     }
     /* Prompt Card */
     .journal-prompt-card {
       margin: 0 0 32px 0;
-      background: var(--primary-light);
+      background: var(--glass2);
       border-radius: var(--radius);
-      border: 1.4px solid #ffe1cb;
+      border: 1.6px solid var(--glass-border);
       padding: 34px 26px 32px 26px;
       display: flex;
       flex-direction: column;
       align-items: center;
       box-shadow: var(--shadow);
+      backdrop-filter: blur(13px) saturate(1.5);
     }
     .journal-prompt-icon {
       color: var(--primary);
@@ -145,6 +179,7 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 10px;
+      text-shadow: 0 2px 12px #fff7;
     }
     .journal-prompt-title {
       font-size: 1.32rem;
@@ -152,6 +187,8 @@
       color: #a64b17;
       margin-bottom: 7px;
       text-align: center;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 12px #fff7;
     }
     .journal-prompt-desc {
       color: #bc652b;
@@ -161,31 +198,41 @@
       text-align: center;
     }
     .journal-prompt-btn {
-      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary2), var(--primary));
       color: #fff;
       border: none;
-      border-radius: 7px;
+      border-radius: 9px;
       padding: 13px 28px;
-      font-size: 1.08rem;
-      font-weight: 600;
+      font-size: 1.11rem;
+      font-weight: 700;
       cursor: pointer;
       margin-top: 4px;
-      transition: background 0.18s;
+      transition: background 0.13s;
       box-shadow: 0 1px 7px #d26c3922;
+      outline: none;
+      letter-spacing: 0.07em;
     }
     .journal-prompt-btn:hover {
-      background: var(--primary-hover);
+      background: linear-gradient(90deg, var(--primary), var(--primary2));
     }
     /* Entry Card */
     .journal-entry-card {
-      background: #fff;
-      border-radius: 10px;
-      border: 1.4px solid var(--border);
+      background: var(--glass);
+      border-radius: var(--radius);
+      border: 1.6px solid var(--glass-border);
       box-shadow: var(--shadow);
       margin-bottom: 22px;
       padding: 22px 25px 17px 25px;
       position: relative;
       min-height: 80px;
+      backdrop-filter: blur(13px) saturate(1.3);
+      transition: box-shadow 0.13s, border 0.12s, background 0.12s, transform 0.11s;
+    }
+    .journal-entry-card:hover {
+      box-shadow: 0 12px 40px #d26c3933, 0 2px 8px #fca13a44;
+      background: #fff8;
+      border-color: var(--primary2);
+      transform: scale(1.012);
     }
     .journal-entry-header {
       display: flex;
@@ -197,8 +244,8 @@
       color: #20212a;
     }
     .journal-entry-header .entry-date-icon {
-      color: #576174;
-      font-size: 1.17em;
+      color: #bc652b;
+      font-size: 1.18em;
       margin-right: 1px;
     }
     .journal-entry-header .mood-icons {
@@ -208,7 +255,7 @@
       gap: 13px;
     }
     .journal-entry-header .mood-icons span {
-      font-size: 1.25em;
+      font-size: 1.22em;
       cursor: pointer;
       border-radius: 50%;
       padding: 2px 4px;
@@ -219,15 +266,16 @@
       background: #eaf8ef;
     }
     .journal-entry-content {
-      font-size: 1.09rem;
+      font-size: 1.13rem;
       font-weight: 500;
       color: #434a58;
       margin-bottom: 10px;
       white-space: pre-line;
+      letter-spacing: 0.01em;
     }
     .journal-entry-grateful-label {
       font-weight: 700;
-      font-size: 1.02em;
+      font-size: 1.07em;
       margin-bottom: 4px;
     }
     .journal-entry-tags-row {
@@ -237,163 +285,129 @@
       margin-bottom: 5px;
     }
     .journal-entry-tag {
-      background: var(--tag-bg);
-      color: var(--tag-color);
+      background: #eaf8ef;
+      color: #2a934f;
       border-radius: 13px;
       padding: 4px 13px;
-      font-size: 0.99em;
+      font-size: 1.01em;
       border: 1.1px solid #d2f3db;
       font-weight: 600;
       opacity: 0.93;
       margin-bottom: 2px;
       display: inline-block;
+      box-shadow: 0 1px 5px #34c75920;
     }
-    /* Modal styles */
+    /* FAB Button */
+    .fab-btn {
+      position: fixed;
+      right: 2.3em;
+      bottom: 3.1em;
+      z-index: 99;
+      background: linear-gradient(135deg, var(--primary2) 0%, var(--primary) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: var(--fab-size);
+      height: var(--fab-size);
+      font-size: 2em;
+      box-shadow: 0 4px 32px #fca13a55, 0 2px 9px #ffd2a966;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.13s, box-shadow 0.15s, transform 0.10s;
+      outline: 0;
+      border: 2.3px solid #fff8;
+      animation: fabglow 2.6s ease-in-out infinite alternate;
+    }
+    .fab-btn:hover {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary2) 100%);
+      transform: scale(1.09);
+      box-shadow: 0 8px 38px #34c75944, 0 2px 14px #ff6ccc66;
+    }
+    @keyframes fabglow {
+      0% { box-shadow: 0 4px 38px #fca13a44, 0 0 0 #34c75900;}
+      100% { box-shadow: 0 6px 48px #34c75966, 0 0 12px #fca13a99;}
+    }
+    /* Modal */
     #journalModalOverlay {
       display:none; position:fixed; z-index:10001; top:0; left:0; width:100vw; height:100vh;
-      background:rgba(26,32,44,0.18);
+      background:rgba(90, 102, 255, 0.16);
+      backdrop-filter: blur(2.7px);
+      animation: fadeIn 0.22s;
     }
     #journalModalBox {
-      background:#fff; border-radius:16px; max-width:430px; margin:100px auto 0 auto;
-      padding:36px 32px 30px 32px; box-shadow:0 8px 40px #d26c3933; position:relative;
-      animation:fadeIn 0.21s;
+      background: var(--glass2);
+      border-radius:1.2rem; max-width:420px; margin:80px auto 0 auto;
+      padding:2.2rem 2.1rem 1.6rem 2.1rem; box-shadow:0 12px 44px #d26c3933, 0 2px 8px #fca13a44;
+      position:relative; animation:fadeIn 0.22s;
+      border: 1.7px solid var(--primary2);
+      backdrop-filter: blur(19px) saturate(1.6);
     }
     @keyframes fadeIn {from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
     #closeJournalModalBtn {
-      position:absolute;top:15px;right:12px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:#bbb;
+      position:absolute;top:18px;right:12px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:#bdb5e9;
+      border-radius: 0.9em; transition: color 0.12s, background 0.12s;
+      box-shadow: 0 1px 8px #fca13a22;
     }
-    #closeJournalModalBtn:hover { color:#e94e3e; }
+    #closeJournalModalBtn:hover { color:var(--primary-hover); background: #ffe2fa;}
     #journalModalBox input, #journalModalBox textarea {
-      width: 100%; margin-bottom: 13px; padding:10px 13px; border-radius:8px;
-      border:1.2px solid #ececec; font-size:1.08em; background:#f6f5fc;
-      transition: border 0.19s;
+      width: 100%; margin-bottom: 13px; padding:1em 1em; border-radius:0.9em;
+      border:1.3px solid var(--primary2); font-size:1.08em; background:rgba(255,255,255,0.68);
+      transition: border 0.13s, background 0.12s;
+      font-weight: 500; color: #2b2b4b; box-shadow: 0 1px 6px #fca13a22; backdrop-filter: blur(2px);
     }
-    #journalModalBox input:focus, #journalModalBox textarea:focus {
-      border:1.2px solid var(--primary); background:#fff;
-    }
+    #journalModalBox input:focus, #journalModalBox textarea:focus { border:1.3px solid var(--primary); background: #fff; }
     #journalModalBox label { font-weight:700; margin-bottom:3px; display:block; color: var(--primary);}
     #journalModalBox .tags-help { font-size:0.96em; color:#888; margin-bottom:8px;}
     #saveJournalEntryBtn {
-      background: var(--primary);
-      color: #fff; border:none; border-radius:8px; font-size:1.09rem; font-weight:700;
-      padding:13px 0; margin-top:10px; cursor:pointer; box-shadow:0 2px 12px #d26c3930;
-      transition: background 0.17s;
+      background: linear-gradient(90deg, var(--primary2), var(--primary));
+      color: #fff; border:none; border-radius:9px; font-size:1.09rem; font-weight:700;
+      padding:13px 0; margin-top:10px; cursor:pointer; box-shadow:0 2px 12px #34c75933;
+      transition: background 0.14s, color 0.13s, box-shadow 0.12s;
       width: 100%;
+      letter-spacing: 0.07em;
     }
-    #saveJournalEntryBtn:hover { background: var(--primary-hover);}
+    #saveJournalEntryBtn:hover { background: linear-gradient(90deg, var(--primary), var(--primary2)); }
     /* Responsive */
     @media (max-width: 900px) {
       .journal-main { padding: 20px 4px;}
       #journalModalBox { margin:40px auto 0 auto;}
     }
-    /* --- IMPROVED PHONE RESPONSIVENESS --- */
-    @media (max-width: 600px) {
-      .journal-main {
-        max-width: 100vw;
-        padding: 12px 1vw 6vw 1vw;
-      }
-      .journal-header-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-        margin-bottom: 9px;
-      }
-      .journal-title-wrap {
-        gap: 7px;
-      }
-      .journal-title-icon {
-        width: 32px;
-        height: 32px;
-        font-size: 1.2rem;
-        border-radius: 6px;
-      }
-      .journal-title {
-        font-size: 1.15rem;
-      }
-      .journal-desc {
-        font-size: 0.98rem;
-        margin-top: 2px;
-      }
-      .journal-new-btn {
-        padding: 10px 0;
-        font-size: 1.01rem;
-        width: 100%;
-        border-radius: 7px;
-        margin-top: 0;
-      }
-      .dashboard-btn {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 14px;
-        margin-right: 0;
-        padding: 11px 0;
-        font-size: 1.01rem;
-        border-radius: 7px;
-      }
-      .journal-prompt-card {
-        padding: 20px 7px 18px 7px;
-        font-size: 0.97rem;
-        border-radius: 8px;
-      }
-      .journal-prompt-icon {
-        font-size: 1.4rem;
-        margin-bottom: 3px;
-      }
-      .journal-prompt-title {
-        font-size: 1.03rem;
-        margin-bottom: 3px;
-      }
-      .journal-prompt-desc {
-        font-size: 0.97rem;
-        margin-bottom: 8px;
-      }
-      .journal-prompt-btn {
-        font-size: 0.97rem;
-        padding: 10px 0;
-        border-radius: 7px;
-        width: 100%;
-      }
-      .journal-entry-card {
-        padding: 12px 5px 10px 7px;
-        font-size: 0.97rem;
-        border-radius: 8px;
-      }
-      .journal-entry-header {
-        font-size: 1.02rem;
-        gap: 6px;
-      }
-      .journal-entry-content {
-        font-size: 0.97rem;
-      }
-      .journal-entry-grateful-label {
-        font-size: 0.97em;
-      }
-      .journal-entry-tags-row {
-        gap: 4px;
-      }
-      .journal-entry-tag {
-        font-size: 0.95em;
-        border-radius: 9px;
-        padding: 3px 9px;
-      }
-      #journalModalBox {
-        max-width: 98vw !important;
-        width: 98vw;
-        margin: 8vw auto 0 auto !important;
-        padding: 12px 5px 14px 5px !important;
-        border-radius: 10px;
-      }
-      #journalModalBox input, #journalModalBox textarea {
-        font-size: 1em;
-        padding: 9px 6px;
-        border-radius: 6px;
-      }
-      #saveJournalEntryBtn {
-        font-size: 1em;
-        border-radius: 7px;
-        padding: 10px 0;
-      }
+    @media (max-width: 700px) {
+      :root { --max-width: 99vw; --fab-size: 54px; }
+      .journal-main { max-width: 99vw; padding-left: 2vw; padding-right: 2vw;}
+      #journalModalBox { max-width: 98vw !important; width: 98vw; }
+      .fab-btn { right: 1.1em; bottom: 1.1em; width: var(--fab-size); height: var(--fab-size); font-size: 1.4em; }
     }
+    @media (max-width: 600px) {
+      .journal-main { max-width: 99vw; padding: 12px 1vw 7vw 1vw; }
+      .journal-header-row { flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 9px;}
+      .journal-title-wrap { gap: 7px; }
+      .journal-title-icon { width: 32px; height: 32px; font-size: 1.2rem; border-radius: 6px;}
+      .journal-title { font-size: 1.15rem;}
+      .journal-desc { font-size: 0.98rem; margin-top: 2px;}
+      .journal-new-btn { padding: 10px 0; font-size: 1.01rem; width: 100%; border-radius: 7px; margin-top: 0;}
+      .dashboard-btn { width: 100%; text-align: center; margin-bottom: 14px; margin-right: 0; padding: 11px 0; font-size: 1.01rem; border-radius: 7px;}
+      .journal-prompt-card { padding: 20px 7px 18px 7px; font-size: 0.97rem; border-radius: 8px;}
+      .journal-prompt-icon { font-size: 1.4rem; margin-bottom: 3px;}
+      .journal-prompt-title { font-size: 1.03rem; margin-bottom: 3px;}
+      .journal-prompt-desc { font-size: 0.97rem; margin-bottom: 8px;}
+      .journal-prompt-btn { font-size: 0.97rem; padding: 10px 0; border-radius: 7px; width: 100%;}
+      .journal-entry-card { padding: 12px 5px 10px 7px; font-size: 0.97rem; border-radius: 8px;}
+      .journal-entry-header { font-size: 1.02rem; gap: 6px;}
+      .journal-entry-content { font-size: 0.97rem;}
+      .journal-entry-grateful-label { font-size: 0.97em;}
+      .journal-entry-tags-row { gap: 4px;}
+      .journal-entry-tag { font-size: 0.95em; border-radius: 9px; padding: 3px 9px;}
+      #journalModalBox { padding: 12px 5px 14px 5px !important; border-radius: 10px;}
+      #journalModalBox input, #journalModalBox textarea { font-size: 1em; padding: 9px 6px; border-radius: 7px;}
+      #saveJournalEntryBtn { font-size: 1em; border-radius: 8px; padding: 10px 0;}
+    }
+    ::-webkit-scrollbar { width: 8px; background: #f4f3fa;}
+    ::-webkit-scrollbar-thumb { background: #ffd2a9; border-radius: 16px;}
+    ::-webkit-scrollbar-thumb:hover { background: #fca13a; }
+    ::selection { background: #fff2e1;}
   </style>
 </head>
 <body>
@@ -426,6 +440,7 @@
     <!-- Journal Entries -->
     <div id="journalEntries"></div>
   </div>
+  <button class="fab-btn" id="fabBtn" title="New Entry">＋</button>
   <!-- Modal for Journal Entry (New/Edit) -->
   <div id="journalModalOverlay">
     <div id="journalModalBox">
@@ -541,6 +556,7 @@
     }
     document.getElementById('todayEntryBtn').onclick = () => showJournalModal();
     document.getElementById('writeTodayEntryBtn').onclick = () => showJournalModal();
+    document.getElementById('fabBtn').onclick = () => showJournalModal();
     document.getElementById('closeJournalModalBtn').onclick = hideJournalModal;
     document.getElementById('journalModalOverlay').onclick = function(e) {
       if (e.target === this) hideJournalModal();
