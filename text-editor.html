@@ -500,10 +500,19 @@
     }
 
     /* Responsive: Google Docs mobile look */
-    @media (max-width: 950px) {
-      .sidebar {
-        width: var(--sidebar-width-mobile);
-      }
+  @media (max-width: 950px) {
+  .sidebar {
+    width: var(--sidebar-width-mobile);
+    background: rgba(255,255,255,0.25) !important;
+    box-shadow: none !important;
+    pointer-events: none;
+  }
+  .sidebar .sidebar-btn {
+    pointer-events: auto;
+    background: rgba(255,255,255,0.65);
+    margin-bottom: 4px;
+  }
+}
       .editor-container {
         max-width: 100vw;
         border-radius: 0;
