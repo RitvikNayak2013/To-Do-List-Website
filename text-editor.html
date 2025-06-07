@@ -3,127 +3,302 @@
 <head>
   <meta charset="UTF-8">
   <title>TaskFlows Text Editor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- FIXED FOR MOBILE -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Baloo+2&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts & Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
   <style>
-    body {
-      background: linear-gradient(135deg, #f3e7e9 0%, #e3eeff 100%);
-      margin: 0;
-      font-family: 'Inter', 'Baloo 2', Arial, sans-serif;
-      color: #222;
-      min-height: 100vh;
-      overflow-x: hidden;
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1765c1;
+      --secondary: #f8f9fa;
+      --surface: #fff;
+      --surface-alt: #f1f3f4;
+      --accent: #34a853;
+      --danger: #ea4335;
+      --text-main: #202124;
+      --text-light: #5f6368;
+      --shadow: 0 3px 16px 1px rgba(60,64,67,.13), 0 1.5px 7px 0 rgba(60,64,67,.09);
+      --radius: 15px;
+      --radius-small: 8px;
+      --toolbar-height: 54px;
+      --toolbar-height-mobile: 47px;
+      --font-main: 'Google Sans', 'Roboto', Arial, sans-serif;
+      --sidebar-width: 56px;
+      --sidebar-width-mobile: 48px;
+      --editor-max-width: 820px;
+      --background-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
     }
-    .editor-container {
-      max-width: 900px;
-      margin: 36px auto 0 auto;
-      box-shadow: 0 8px 32px rgba(136,90,248,0.08);
-      background: #fff;
-      border-radius: 18px;
-      padding: 32px 28px 38px 28px;
-      position: relative;
-      z-index: 1;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--background-gradient);
+      font-family: var(--font-main);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+    body {
+      background: var(--background-gradient), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    /* SIDEBAR for quick menu */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: rgba(255,255,255,0.94);
+      box-shadow: 2px 0 8px #e0e0e0aa;
       display: flex;
       flex-direction: column;
-      gap: 22px;
-      min-height: 85vh;
+      align-items: center;
+      z-index: 111;
+      padding-top: 13px;
+      gap: 16px;
     }
+    .sidebar .sidebar-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 2.15em;
+      padding: 9px 0 7px 0;
+      margin: 0;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background .15s, color .13s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+    }
+    .sidebar .sidebar-btn:hover,
+    .sidebar .sidebar-btn.active {
+      background: #e3f0ff;
+      color: var(--accent);
+    }
+    .sidebar .sidebar-separator {
+      width: 36px;
+      height: 2.5px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin: 6px 0;
+    }
+
+    /* Main container, with floating shadow like Google Docs */
+    .editor-container {
+      background: var(--surface);
+      margin: 28px auto 0 auto;
+      max-width: var(--editor-max-width);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      min-height: 86vh;
+      position: relative;
+      padding: 0;
+      overflow: visible;
+      transition: box-shadow 0.2s;
+      z-index: 10;
+    }
+
+    /* HEADER, sticky */
+    .doc-title-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 18px 34px 10px 68px;
+      border-bottom: 1px solid #e0e0e0;
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      min-height: 64px;
+    }
+    .doc-title-row input {
+      font-size: 1.55em;
+      font-weight: 700;
+      color: var(--primary);
+      border: none;
+      background: transparent;
+      border-bottom: 2px solid #e8eaed;
+      outline: none;
+      padding: 5px 12px 5px 0;
+      border-radius: 0;
+      max-width: 350px;
+      min-width: 0;
+      transition: border 0.18s;
+      flex: 1;
+    }
+    .doc-title-row input:focus {
+      border-bottom: 2px solid var(--primary);
+      background: #e8f0fe;
+    }
+    .saved-status {
+      font-size: 1.01em;
+      color: var(--accent);
+      font-weight: 600;
+      opacity: 0.9;
+      margin-left: 7px;
+      transition: color 0.2s;
+    }
+    .drafts-link {
+      margin-left: auto;
+      font-size: 1.04em;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      background: #e8f0fe;
+      padding: 8px 17px;
+      border-radius: var(--radius-small);
+      border: 1.2px solid #e3e7ea;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.13s, color 0.13s;
+    }
+    .drafts-link:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Toolbar */
     .editor-toolbar {
       display: flex;
-      gap: 11px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
-      border-radius: 14px;
-      background: #f7f6fd;
-      box-shadow: 0 2px 8px #885af80d;
-      padding: 13px 13px 8px 13px;
-      margin-bottom: 2px;
-      flex-wrap: wrap;
+      gap: 2px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0 24px;
+      min-height: var(--toolbar-height);
+      height: var(--toolbar-height);
+      position: sticky;
+      top: 71px;
+      z-index: 20;
       overflow-x: auto;
+      scrollbar-width: thin;
+      border-radius: 0 0 var(--radius) var(--radius);
+      white-space: nowrap;
+    }
+    .editor-toolbar .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-right: 9px;
     }
     .editor-toolbar button, .editor-toolbar select, .editor-toolbar input[type="color"] {
       border: none;
       background: none;
-      font-size: 1.15rem;
+      font-size: 1.22em;
       cursor: pointer;
-      padding: 7px 12px;
-      border-radius: 8px;
-      transition: background 0.18s, color 0.18s;
-      color: #6c47d9;
-      margin-right: 2px;
+      padding: 8px 9px;
+      border-radius: var(--radius-small);
+      transition: background 0.11s, color 0.11s;
+      color: var(--text-light);
+      margin: 0 0.5px;
+      outline: none;
+      min-width: 38px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .editor-toolbar button:hover, .editor-toolbar select:hover, .editor-toolbar input[type="color"]:hover {
-      background: #ece8f9;
-      color: #885af8;
+    .editor-toolbar button.active, .editor-toolbar button:hover, .editor-toolbar select:focus, .editor-toolbar input[type="color"]:hover {
+      background: #d2e3fc;
+      color: var(--primary);
     }
     .editor-toolbar select, .editor-toolbar input[type="color"] {
-      font-size: 1.05rem;
-      color: #222;
-      background: #f3f0fa;
-      padding: 6px 9px;
-      border: 1.2px solid #e0dbfa;
-      margin-right: 7px;
-      min-width: 69px;
+      font-size: 1.06em;
+      color: var(--text-main);
+      background: #f6f8fa;
+      border: 1.2px solid #e3e7ea;
+      margin-right: 3px;
+      min-width: 48px;
+      padding: 7px 8px;
+      border-radius: var(--radius-small);
+      height: 36px;
     }
     .editor-toolbar input[type="color"] {
-      padding: 3px 3px;
+      padding: 0;
+      width: 27px;
+      height: 27px;
+      min-width: 27px;
+      min-height: 27px;
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      border: 2px solid #ece8f9;
-      cursor: pointer;
+      border: 2px solid #e3e7ea;
+      margin: 0 2px;
       background: none;
-      margin-right: 0;
       vertical-align: middle;
     }
-    .editor-toolbar .fa-solid, .editor-toolbar .fa {
-      pointer-events: none;
-    }
     .editor-toolbar label {
-      margin-right: 10px;
+      margin: 0 2px 0 3px;
       font-weight: 600;
-      color: #6c47d9;
-      font-size: 1.01rem;
+      color: var(--text-light);
+      font-size: 1.06em;
     }
+    .toolbar-divider {
+      width: 1.5px;
+      height: 25px;
+      background: #e0e0e0;
+      margin: 0 8px;
+      border-radius: 1.5px;
+      display: inline-block;
+    }
+
+    /* Editor area - like Google Docs page */
     .editor-area {
-      min-height: 380px;
-      background: #f6f5fc;
-      border-radius: 11px;
-      border: 1.5px solid #ececec;
-      padding: 24px 18px;
-      font-size: 1.17em;
+      min-height: 70vh;
+      max-width: 700px;
+      margin: 34px auto 0 auto;
+      background: #fff;
+      border-radius: 7px;
+      border: 1.5px solid #e0e0e0;
+      padding: 44px 34px 44px 34px;
+      font-size: 1.19em;
       font-family: inherit;
-      color: #222;
+      color: var(--text-main);
       outline: none;
-      box-shadow: 0 2px 12px #885af80a;
-      transition: border 0.23s;
-      margin-bottom: 6px;
-      width: 100%;
-      overflow-x: auto;
+      box-shadow: 0 2px 24px #c9d6f10c;
+      transition: border 0.19s, box-shadow 0.19s;
+      width: 96%;
+      overflow-y: auto;
       word-break: break-word;
+      margin-bottom: 20px;
     }
     .editor-area:focus {
-      border: 1.5px solid #885af8;
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 4px 24px #c7e0fc33;
+      background: #f8faff;
     }
+
+    /* Buttons - floating style */
     .editor-buttons {
       display: flex;
-      gap: 14px;
-      margin-top: 4px;
+      gap: 13px;
+      margin: 0 auto 22px auto;
+      justify-content: flex-end;
+      padding: 0 27px;
       flex-wrap: wrap;
+      max-width: 700px;
+      width: 96%;
     }
     .editor-buttons button, .editor-buttons a.dashboard-btn {
-      background: linear-gradient(90deg, #885af8 0%, #43cea2 100%);
+      background: var(--primary);
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 12px 22px;
-      font-size: 1.06em;
+      border-radius: var(--radius-small);
+      padding: 13px 27px;
+      font-size: 1.09em;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.9px;
       cursor: pointer;
-      box-shadow: 0 2px 12px #885af826;
-      transition: background 0.19s, box-shadow 0.19s, color 0.19s;
+      box-shadow: 0 2px 8px #4285f414;
+      transition: background 0.16s, box-shadow 0.17s, color 0.14s;
       outline: none;
       display: flex;
       align-items: center;
@@ -131,279 +306,425 @@
       text-decoration: none;
     }
     .editor-buttons button:hover, .editor-buttons a.dashboard-btn:hover {
-      background: linear-gradient(90deg, #43cea2 0%, #885af8 100%);
-      box-shadow: 0 4px 22px #43cea235;
+      background: var(--primary-dark);
       color: #fff;
+      box-shadow: 0 4px 18px #4285f425;
       text-decoration: none;
     }
-    .editor-buttons a.dashboard-btn:visited,
-    .editor-buttons a.dashboard-btn:active {
-      color: #fff;
-      text-decoration: none;
-    }
-    .drafts-link {
-      margin-left: auto;
-      font-size: 1.06em;
-      text-decoration: none;
-      color: #885af8;
-      font-weight: 600;
-      background: #f7f6fd;
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: 1.2px solid #ece8f9;
-      transition: background 0.17s, color 0.17s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .drafts-link:hover {
-      background: #ece8f9;
-      color: #43cea2;
-    }
-    .doc-title-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 12px;
-    }
-    .doc-title-row input {
-      font-size: 1.14em;
-      font-weight: 700;
-      color: #6c47d9;
-      border: none;
-      background: transparent;
-      border-bottom: 2px solid #ececec;
-      outline: none;
-      padding: 5px 6px;
-      border-radius: 4px 4px 0 0;
-      margin-right: 12px;
-      min-width: 120px;
-      max-width: 300px;
-      transition: border 0.18s;
-    }
-    .doc-title-row input:focus {
-      border-bottom: 2px solid #885af8;
-      color: #222;
-    }
-    .saved-status {
-      font-size: 1.04em;
-      color: #43cea2;
-      margin-left: 5px;
-      opacity: 0.85;
-      font-weight: 600;
-      transition: color 0.16s;
-    }
+
+    /* Share link */
     .share-link-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 12px;
+      margin: 12px auto 0 auto;
       font-size: 1.02em;
-      color: #885af8;
+      color: var(--primary);
+      flex-wrap: wrap;
+      max-width: 700px;
+      width: 96%;
+      padding-left: 0;
     }
     .share-link-box {
-      background: #f3f0fa;
-      border: 1.2px solid #ececec;
+      background: #f3f8fd;
+      border: 1.2px solid #dde6ee;
       border-radius: 7px;
-      padding: 4px 10px;
-      font-size: 0.98em;
-      margin-right: 7px;
+      padding: 5px 12px;
+      font-size: 1em;
       user-select: all;
-      color: #6c47d9;
+      color: var(--primary);
       word-break: break-all;
+      max-width: 60vw;
     }
     .copy-link-btn {
-      background: #ece8f9;
+      background: #d2e3fc;
       border: none;
-      color: #885af8;
+      color: var(--primary);
       border-radius: 8px;
       padding: 6px 13px;
       font-size: 1em;
-      cursor: pointer;
       font-weight: bold;
-      transition: background 0.12s;
+      cursor: pointer;
+      transition: background 0.13s, color 0.12s;
     }
     .copy-link-btn:hover {
-      background: #d2c0ff;
+      background: var(--primary);
       color: #fff;
     }
-    @media (max-width: 1000px) {
-      .editor-container {
-        max-width: 97vw;
-        padding: 16px 3vw;
-      }
+
+    /* Comments panel */
+    .comments-panel {
+      position: fixed;
+      top: 0;
+      right: -360px;
+      width: 340px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -2px 0 16px #c3d1ea35;
+      z-index: 123;
+      transition: right 0.28s cubic-bezier(.5,.33,.26,.86);
+      display: flex;
+      flex-direction: column;
+      border-radius: 13px 0 0 13px;
     }
-    /* IMPROVED RESPONSIVENESS FOR MOBILE */
-    @media (max-width: 600px) {
+    .comments-panel.open { right: 0; }
+    .comments-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 18px 7px 18px;
+      border-bottom: 1px solid #e0e0e0;
+      font-weight: 700;
+      font-size: 1.18em;
+      color: var(--primary);
+      background: #f7fafc;
+    }
+    .comments-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 9px 18px 18px 18px;
+      background: #f7fafc;
+    }
+    .comment-item {
+      background: #f1f6fa;
+      border-radius: 8px;
+      margin-bottom: 13px;
+      padding: 8px 10px;
+      font-size: 1em;
+      color: #333;
+      box-shadow: 0 1px 2px #e0e7f780;
+      position: relative;
+    }
+    .comment-item .comment-date {
+      font-size: 0.93em;
+      color: #8792a2;
+      margin-top: 1px;
+      margin-bottom: 0;
+      text-align: right;
+    }
+    .comment-item .delete-comment {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      background: none;
+      border: none;
+      color: #c65c5c;
+      font-size: 1.21em;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity .13s;
+    }
+    .comment-item .delete-comment:hover {
+      opacity: 1;
+    }
+    .add-comment-row {
+      border-top: 1px solid #e0e0e0;
+      background: #f3f6fa;
+      padding: 12px 18px 14px 18px;
+      display: flex;
+      gap: 9px;
+      align-items: center;
+    }
+    .add-comment-row input, .add-comment-row textarea {
+      flex: 1;
+      font-size: 1em;
+      border: 1.2px solid #e3e7ea;
+      border-radius: 7px;
+      padding: 7px 12px;
+      min-height: 34px;
+      outline: none;
+      resize: none;
+    }
+    .add-comment-row button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 14px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.13s;
+    }
+    .add-comment-row button:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Find/replace bar */
+    .find-bar {
+      position: absolute;
+      top: 13px;
+      right: 26px;
+      background: #f1f3f4;
+      border-radius: 8px;
+      box-shadow: 0 1.5px 7px #e0e0e0;
+      padding: 9px 12px 9px 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 99;
+      transition: top 0.18s;
+    }
+    .find-bar input {
+      font-size: 1em;
+      border: 1.2px solid #e3e7ea;
+      border-radius: 6px;
+      padding: 6px 10px;
+      outline: none;
+      min-width: 90px;
+    }
+    .find-bar button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.13s;
+    }
+    .find-bar button:hover { background: var(--primary-dark);}
+    .find-bar .close-find { background: none; color: #c65c5c; font-size: 1.3em; padding: 0 3px; }
+
+    /* Word count and live stats */
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: #5f6368;
+      font-size: 1em;
+      font-weight: 500;
+      justify-content: flex-end;
+      padding: 0 37px 17px 37px;
+    }
+
+    /* Responsive: Google Docs mobile look */
+    @media (max-width: 950px) {
+      .sidebar {
+        width: var(--sidebar-width-mobile);
+      }
       .editor-container {
         max-width: 100vw;
-        min-width: 0;
+        border-radius: 0;
         margin: 0;
-        border-radius: 0;
-        padding: 1vw 0vw 10vw 0vw;
         box-shadow: none;
-        gap: 9px;
       }
-      .editor-toolbar {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: stretch;
-        gap: 5px;
-        padding: 9px 2vw 6px 2vw;
-        box-shadow: none;
-        font-size: 0.95em;
-        justify-content: flex-start;
-        overflow-x: auto;
+      .editor-area, .editor-buttons, .share-link-row, .stats-bar {
+        max-width: 100vw;
+        width: 100vw;
         border-radius: 0;
-      }
-      .editor-toolbar button, .editor-toolbar select, .editor-toolbar input[type="color"] {
-        font-size: 0.98em;
-        padding: 6px 8px;
+        margin-left: 0;
         margin-right: 0;
-        border-radius: 7px;
-      }
-      .editor-toolbar select, .editor-toolbar input[type="color"] {
-        min-width: 0;
-        width: auto;
-        font-size: 0.96em;
-      }
-      .editor-toolbar label {
-        margin-right: 3px;
-        font-size: 0.94em;
+        padding-left: 4vw;
+        padding-right: 4vw;
       }
       .editor-area {
-        min-height: 120px;
-        padding: 10px 4vw;
-        font-size: 0.97em;
-        border-radius: 7px;
-        box-shadow: none;
-        border-width: 1px;
+        padding: 12vw 2vw 14vw 2vw;
+        min-height: 53vh;
+        font-size: 1.04em;
       }
       .editor-buttons {
         flex-direction: column;
         gap: 6px;
-        margin-top: 3px;
+        padding: 0 4vw;
+        margin: 0 0 13px 0;
       }
       .editor-buttons button, .editor-buttons a.dashboard-btn {
         width: 100%;
         min-width: 0;
-        padding: 9px 0;
-        font-size: 0.97em;
-        border-radius: 6px;
-        letter-spacing: 0.2px;
-      }
-      .drafts-link {
-        font-size: 0.97em;
-        padding: 7px 0;
-        border-radius: 6px;
-        margin-left: 0;
-        margin-top: 6px;
-        width: 100%;
-        justify-content: center;
-      }
-      .doc-title-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 3px;
-        margin-bottom: 6px;
-      }
-      .doc-title-row input {
-        font-size: 0.99em;
-        min-width: 0;
-        max-width: 100vw;
-        margin-right: 0;
-        border-radius: 4px 4px 0 0;
-        padding: 7px 0 3px 2px;
-      }
-      .saved-status {
-        font-size: 0.92em;
-        margin-left: 0;
+        padding: 12px 0;
+        font-size: 1em;
+        border-radius: 7px;
       }
       .share-link-row {
         flex-direction: column;
         align-items: stretch;
-        gap: 5px;
-        margin-top: 7px;
-        font-size: 0.95em;
+        gap: 6px;
+        font-size: 0.98em;
+        padding: 0 4vw;
       }
       .share-link-box {
+        max-width: 99vw;
         font-size: 0.97em;
-        padding: 3px 4px;
+        padding: 4px 5px;
         border-radius: 6px;
-        margin-right: 0;
       }
       .copy-link-btn {
-        padding: 6px 0;
+        padding: 7px 0;
         border-radius: 6px;
-        margin-top: 3px;
+        margin-top: 2px;
       }
+      .doc-title-row {
+        flex-direction: row;
+        gap: 5px;
+        font-size: 0.98em;
+        padding: 11px 4vw 6px 4vw;
+        border-radius: 0;
+        min-height: 56px;
+      }
+      .doc-title-row input {
+        font-size: 1.08em;
+        max-width: 60vw;
+        padding: 6px 5px 6px 0;
+      }
+      .drafts-link {
+        font-size: 0.97em;
+        padding: 7px 10px;
+        border-radius: var(--radius-small);
+        margin-left: auto;
+      }
+      .editor-toolbar {
+        padding: 0 3vw;
+        font-size: 0.95em;
+        min-height: var(--toolbar-height-mobile);
+        height: var(--toolbar-height-mobile);
+        border-radius: 0;
+        top: 41px;
+      }
+      .editor-toolbar button, .editor-toolbar select, .editor-toolbar input[type="color"] {
+        font-size: 1em;
+        padding: 5px 5px;
+        border-radius: 7px;
+        min-width: 27px;
+        min-height: 31px;
+      }
+      .editor-toolbar label {
+        font-size: 0.95em;
+      }
+      .comments-panel {
+        width: 98vw;
+        right: -100vw;
+        border-radius: 0;
+      }
+      .comments-panel.open { right: 0; }
     }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 7px; background: #f1f3f4; }
+    ::-webkit-scrollbar-thumb { background: #e3e7ea; border-radius: 7px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d2e3fc; }
+    ::selection { background: #cbe6ff; }
   </style>
 </head>
 <body>
+  <!-- Sidebar for menu (add more features here) -->
+  <div class="sidebar" id="sidebar">
+    <button class="sidebar-btn" title="Edit" onclick="scrollToEditor()"><span class="material-icons">edit</span></button>
+    <button class="sidebar-btn" title="Comments" onclick="toggleCommentsPanel()"><span class="material-icons">chat</span></button>
+    <button class="sidebar-btn" title="Find/Replace" onclick="toggleFindBar()"><span class="material-icons">find_replace</span></button>
+    <div class="sidebar-separator"></div>
+    <button class="sidebar-btn" title="Download" onclick="downloadDoc()"><span class="material-icons">download</span></button>
+    <button class="sidebar-btn" title="Share" onclick="shareDoc()"><span class="material-icons">share</span></button>
+    <div class="sidebar-separator"></div>
+    <button class="sidebar-btn" title="Dashboard" onclick="window.location='index.html'"><span class="material-icons">dashboard</span></button>
+  </div>
+
   <div class="editor-container">
     <div class="doc-title-row">
-      <input id="docTitle" placeholder="Untitled Document" maxlength="50">
+      <input id="docTitle" placeholder="Untitled Document" maxlength="50" autocomplete="off" autocapitalize="sentences" spellcheck="true">
       <span class="saved-status" id="savedStatus">Saved</span>
-      <a href="drafts.html" class="drafts-link"><i class="fa fa-folder-open"></i>Drafts</a>
+      <a href="drafts.html" class="drafts-link" title="My Drafts"><span class="material-icons">folder_open</span>Drafts</a>
     </div>
-    <div class="editor-toolbar">
-      <button title="Bold (Ctrl+B)" onclick="format('bold')"><i class="fa fa-bold"></i></button>
-      <button title="Italic (Ctrl+I)" onclick="format('italic')"><i class="fa fa-italic"></i></button>
-      <button title="Underline (Ctrl+U)" onclick="format('underline')"><i class="fa fa-underline"></i></button>
-      <button title="Strikethrough" onclick="format('strikeThrough')"><i class="fa fa-strikethrough"></i></button>
-      <label for="fontSelect">Font:</label>
-      <select id="fontSelect" onchange="changeFont(this.value)">
-        <option value="Inter">Inter</option>
-        <option value="Arial">Arial</option>
-        <option value="Baloo 2">Baloo 2</option>
-        <option value="Courier New">Courier New</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Verdana">Verdana</option>
-      </select>
-      <label for="fontSizeSelect">Size:</label>
-      <select id="fontSizeSelect" onchange="changeFontSize(this.value)">
-        <option value="3">Normal</option>
-        <option value="1">Small</option>
-        <option value="2">Medium</option>
-        <option value="4">Large</option>
-        <option value="5">X-Large</option>
-        <option value="6">XX-Large</option>
-        <option value="7">Huge</option>
-      </select>
-      <label for="colorInput">Text Color:</label>
-      <input type="color" id="colorInput" value="#6c47d9" onchange="changeColor(this.value)">
-      <label for="bgColorInput">Highlight:</label>
-      <input type="color" id="bgColorInput" value="#f7f6fd" onchange="changeBgColor(this.value)">
-      <button title="Left Align" onclick="format('justifyLeft')"><i class="fa fa-align-left"></i></button>
-      <button title="Center Align" onclick="format('justifyCenter')"><i class="fa fa-align-center"></i></button>
-      <button title="Right Align" onclick="format('justifyRight')"><i class="fa fa-align-right"></i></button>
-      <button title="Numbered List" onclick="format('insertOrderedList')"><i class="fa fa-list-ol"></i></button>
-      <button title="Bulleted List" onclick="format('insertUnorderedList')"><i class="fa fa-list-ul"></i></button>
-      <button title="Undo" onclick="format('undo')"><i class="fa fa-undo"></i></button>
-      <button title="Redo" onclick="format('redo')"><i class="fa fa-redo"></i></button>
-      <button title="Clear Formatting" onclick="clearFormatting()"><i class="fa fa-eraser"></i></button>
+    <div class="editor-toolbar" id="toolbar">
+      <div class="toolbar-group">
+        <button title="Bold (Ctrl+B)" onclick="format('bold')" type="button" id="btnBold"><span class="material-icons">format_bold</span></button>
+        <button title="Italic (Ctrl+I)" onclick="format('italic')" type="button" id="btnItalic"><span class="material-icons">format_italic</span></button>
+        <button title="Underline (Ctrl+U)" onclick="format('underline')" type="button" id="btnUnderline"><span class="material-icons">format_underlined</span></button>
+        <button title="Strikethrough" onclick="format('strikeThrough')" type="button"><span class="material-icons">strikethrough_s</span></button>
+      </div>
+      <span class="toolbar-divider"></span>
+      <div class="toolbar-group">
+        <select id="fontSelect" onchange="changeFont(this.value)" title="Font">
+          <option value="Google Sans">Google Sans</option>
+          <option value="Arial">Arial</option>
+          <option value="Baloo 2">Baloo 2</option>
+          <option value="Courier New">Courier New</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Verdana">Verdana</option>
+        </select>
+        <select id="fontSizeSelect" onchange="changeFontSize(this.value)" title="Font Size">
+          <option value="3">Normal</option>
+          <option value="1">Small</option>
+          <option value="2">Medium</option>
+          <option value="4">Large</option>
+          <option value="5">X-Large</option>
+          <option value="6">XX-Large</option>
+          <option value="7">Huge</option>
+        </select>
+      </div>
+      <span class="toolbar-divider"></span>
+      <div class="toolbar-group">
+        <label for="colorInput" title="Text color"><span class="material-icons" style="font-size:1.2em;vertical-align:middle;">format_color_text</span></label>
+        <input type="color" id="colorInput" value="#202124" onchange="changeColor(this.value)">
+        <label for="bgColorInput" title="Highlight"><span class="material-icons" style="font-size:1.2em;vertical-align:middle;">format_color_fill</span></label>
+        <input type="color" id="bgColorInput" value="#f8f9fa" onchange="changeBgColor(this.value)">
+      </div>
+      <span class="toolbar-divider"></span>
+      <div class="toolbar-group">
+        <button title="Left Align" onclick="format('justifyLeft')" type="button"><span class="material-icons">format_align_left</span></button>
+        <button title="Center Align" onclick="format('justifyCenter')" type="button"><span class="material-icons">format_align_center</span></button>
+        <button title="Right Align" onclick="format('justifyRight')" type="button"><span class="material-icons">format_align_right</span></button>
+      </div>
+      <span class="toolbar-divider"></span>
+      <div class="toolbar-group">
+        <button title="Numbered List" onclick="format('insertOrderedList')" type="button"><span class="material-icons">format_list_numbered</span></button>
+        <button title="Bulleted List" onclick="format('insertUnorderedList')" type="button"><span class="material-icons">format_list_bulleted</span></button>
+      </div>
+      <span class="toolbar-divider"></span>
+      <div class="toolbar-group">
+        <button title="Undo" onclick="format('undo')" type="button"><span class="material-icons">undo</span></button>
+        <button title="Redo" onclick="format('redo')" type="button"><span class="material-icons">redo</span></button>
+        <button title="Clear Formatting" onclick="clearFormatting()" type="button"><span class="material-icons">format_clear</span></button>
+      </div>
     </div>
-    <div id="editor" class="editor-area" contenteditable="true" spellcheck="true"></div>
+    <!-- Find/replace bar -->
+    <div class="find-bar" id="findBar" style="display:none;">
+      <input type="text" id="findInput" placeholder="Find..." />
+      <input type="text" id="replaceInput" placeholder="Replace..." />
+      <button onclick="findNext()">Next</button>
+      <button onclick="replaceOne()">Replace</button>
+      <button onclick="replaceAll()">All</button>
+      <button class="close-find" onclick="toggleFindBar()" title="Close"><span class="material-icons">close</span></button>
+    </div>
+    <div id="editor" class="editor-area" contenteditable="true" spellcheck="true" aria-label="Document area"></div>
+    <div class="stats-bar" id="statsBar">
+      <span id="wordCount">Words: 0</span>
+      <span id="charCount">Chars: 0</span>
+      <span id="readingTime">Reading time: 0 min</span>
+    </div>
     <div class="editor-buttons">
-      <button onclick="saveDraft()" title="Save Draft"><i class="fa fa-save"></i>Save Draft</button>
-      <button onclick="newDraft()" title="New Draft"><i class="fa fa-file-alt"></i>New Draft</button>
-      <button onclick="downloadDoc()" title="Download"><i class="fa fa-download"></i>Download</button>
-      <button onclick="shareDoc()" title="Share"><i class="fa fa-link"></i>Share</button>
-      <a href="index.html" class="dashboard-btn" title="Back to Dashboard"><i class="fa fa-arrow-left"></i>Back to Dashboard</a>
+      <button onclick="saveDraft()" title="Save Draft" type="button"><span class="material-icons">save</span>Save</button>
+      <button onclick="newDraft()" title="New Draft" type="button"><span class="material-icons">note_add</span>New</button>
+      <button onclick="downloadDoc()" title="Download" type="button"><span class="material-icons">download</span>Download</button>
+      <button onclick="shareDoc()" title="Share" type="button"><span class="material-icons">share</span>Share</button>
+      <a href="index.html" class="dashboard-btn" title="Back to Dashboard"><span class="material-icons">dashboard</span>Dashboard</a>
     </div>
     <div id="shareLinkRow" class="share-link-row" style="display:none;">
       <span>Shareable Link:</span>
       <span id="shareLinkBox" class="share-link-box"></span>
-      <button class="copy-link-btn" onclick="copyShareLink()"><i class="fa fa-copy"></i> Copy</button>
+      <button class="copy-link-btn" onclick="copyShareLink()" type="button"><span class="material-icons">content_copy</span> Copy</button>
     </div>
   </div>
+  <!-- Comments side panel -->
+  <div class="comments-panel" id="commentsPanel">
+    <div class="comments-header">
+      Comments
+      <button class="close-find" onclick="toggleCommentsPanel()" title="Close"><span class="material-icons">close</span></button>
+    </div>
+    <div class="comments-list" id="commentsList"></div>
+    <form class="add-comment-row" onsubmit="addComment(event)">
+      <textarea id="commentInput" placeholder="Add a comment..." rows="2"></textarea>
+      <button type="submit">Add</button>
+    </form>
+  </div>
   <script>
-    // --- Toolbar functions ---
+    // --- Toolbar Functions ---
     function format(cmd, val = null) {
       document.execCommand(cmd, false, val);
       saveAuto();
+      highlightActiveToolbar();
+      updateStats();
     }
     function changeFont(font) {
       document.execCommand("fontName", false, font);
@@ -470,16 +791,18 @@
     function showSaved(msg) {
       const status = document.getElementById('savedStatus');
       status.textContent = msg;
-      status.style.color = "#43cea2";
-      setTimeout(() => { status.textContent = "Saved"; status.style.color = "#43cea2"; }, 1200);
+      status.style.color = "#34a853";
+      setTimeout(() => { status.textContent = "Saved"; status.style.color = "#34a853"; }, 1200);
     }
     function newDraft() {
-      if (!confirm("Do you want to create a new draft? Unsaved changes will be lost.")) return;
+      if (!confirm("Create a new draft? Unsaved changes will be lost.")) return;
       document.getElementById('docTitle').value = "";
       document.getElementById('editor').innerHTML = "";
       currentDraftId = null;
       showSaved("New Draft");
       document.getElementById('shareLinkRow').style.display = "none";
+      updateStats();
+      clearComments();
     }
     function loadDraft(id) {
       const draft = getDraft(id);
@@ -489,8 +812,11 @@
         currentDraftId = id;
         showSaved("Draft Loaded");
         document.getElementById('shareLinkRow').style.display = "none";
+        updateStats();
+        clearComments();
       }
     }
+
     // --- Download Document ---
     function downloadDoc() {
       const title = document.getElementById('docTitle').value.trim() || "Untitled_Document";
@@ -529,6 +855,7 @@
       }
       showSaved("Link Copied!");
     }
+
     // --- Keyboard Shortcuts ---
     document.addEventListener('keydown', function(e){
       if(e.ctrlKey && e.key.toLowerCase() === "b"){ e.preventDefault(); format('bold'); }
@@ -536,10 +863,15 @@
       if(e.ctrlKey && e.key.toLowerCase() === "u"){ e.preventDefault(); format('underline'); }
       if(e.ctrlKey && e.key.toLowerCase() === "s"){ e.preventDefault(); saveDraft(); }
       if(e.ctrlKey && e.key.toLowerCase() === "n"){ e.preventDefault(); newDraft(); }
+      // Quick open find/replace (Ctrl+F)
+      if(e.ctrlKey && e.key.toLowerCase() === "f"){ e.preventDefault(); toggleFindBar(); }
     });
 
     // --- Auto Save on changes ---
-    document.getElementById('editor').addEventListener('input', saveAuto);
+    document.getElementById('editor').addEventListener('input', function() {
+      saveAuto();
+      updateStats();
+    });
     document.getElementById('docTitle').addEventListener('input', saveAuto);
 
     // --- Load shared doc if present ---
@@ -560,6 +892,8 @@
         showSaved("Imported");
         document.getElementById('shareLinkRow').style.display = "none";
         window.history.replaceState({}, document.title, window.location.pathname);
+        updateStats();
+        clearComments();
       }
     }
     // --- On page load, load last draft ---
@@ -571,9 +905,153 @@
         document.getElementById('editor').innerHTML = last.html || "";
         currentDraftId = last.id;
       }
+      updateStats();
     }
+
+    // --- Toolbar Highlighting (Bold/Italic/Underline) ---
+    function highlightActiveToolbar() {
+      try {
+        document.queryCommandState('bold') ? document.getElementById('btnBold').classList.add('active') : document.getElementById('btnBold').classList.remove('active');
+        document.queryCommandState('italic') ? document.getElementById('btnItalic').classList.add('active') : document.getElementById('btnItalic').classList.remove('active');
+        document.queryCommandState('underline') ? document.getElementById('btnUnderline').classList.add('active') : document.getElementById('btnUnderline').classList.remove('active');
+      } catch (e) {}
+    }
+    document.getElementById('editor').addEventListener('keyup', highlightActiveToolbar);
+    document.getElementById('editor').addEventListener('mouseup', highlightActiveToolbar);
+
+    // --- Word/char count and reading time ---
+    function updateStats() {
+      const text = document.getElementById('editor').innerText || "";
+      const words = (text.match(/\b\S+\b/g) || []).length;
+      const chars = text.replace(/\s/g, "").length;
+      const readingTime = Math.ceil(words / 200);
+      document.getElementById('wordCount').textContent = `Words: ${words}`;
+      document.getElementById('charCount').textContent = `Chars: ${chars}`;
+      document.getElementById('readingTime').textContent = `Reading time: ${readingTime} min`;
+    }
+
+    // --- Sidebar actions ---
+    function scrollToEditor() {
+      document.getElementById('editor').focus();
+      window.scrollTo({ top: document.getElementById('editor').getBoundingClientRect().top + window.scrollY - 60, behavior: "smooth" });
+    }
+
+    // --- Comments panel ---
+    function toggleCommentsPanel() {
+      const panel = document.getElementById('commentsPanel');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) document.getElementById('commentInput').focus();
+    }
+    function addComment(e) {
+      e.preventDefault();
+      const comment = document.getElementById('commentInput').value.trim();
+      if (!comment) return;
+      const now = new Date();
+      const dateStr = now.toLocaleString(undefined, {dateStyle:'short', timeStyle:'short'});
+      const list = document.getElementById('commentsList');
+      const div = document.createElement('div');
+      div.className = 'comment-item';
+      div.innerHTML = `<button class="delete-comment" title="Delete" onclick="this.parentNode.remove()"><span class="material-icons">delete</span></button>
+        <div>${comment}</div><div class="comment-date">${dateStr}</div>`;
+      list.prepend(div);
+      document.getElementById('commentInput').value = "";
+    }
+    function clearComments() {
+      document.getElementById('commentsList').innerHTML = "";
+      document.getElementById('commentInput').value = "";
+    }
+
+    // --- Find/replace ---
+    let findMatches = [], findIndex = 0;
+    function toggleFindBar() {
+      const bar = document.getElementById('findBar');
+      bar.style.display = bar.style.display === "none" ? "" : "none";
+      if (bar.style.display !== "none") {
+        document.getElementById('findInput').focus();
+      } else {
+        clearFindHighlights();
+      }
+    }
+    function findNext() {
+      clearFindHighlights();
+      const findVal = document.getElementById('findInput').value;
+      const editor = document.getElementById('editor');
+      if (!findVal) return;
+      const html = editor.innerHTML;
+      // Highlight all matches
+      const regex = new RegExp(findVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
+      let m, matchArr = [];
+      let idx = 0;
+      let markedHtml = html.replace(regex, function(match) {
+        matchArr.push(idx++);
+        return `<mark class="findmark">${match}</mark>`;
+      });
+      editor.innerHTML = markedHtml;
+      findMatches = Array.from(editor.querySelectorAll('mark.findmark'));
+      findIndex = 0;
+      if (findMatches.length) highlightFindIndex();
+    }
+    function highlightFindIndex() {
+      if (!findMatches.length) return;
+      findMatches.forEach((el, i) => {
+        el.style.background = i === findIndex ? "#ffe082" : "#cbe6ff";
+        el.scrollIntoView({block: "center", behavior: "smooth"});
+      });
+      findIndex = (findIndex + 1) % findMatches.length;
+    }
+    function clearFindHighlights() {
+      const editor = document.getElementById('editor');
+      editor.innerHTML = editor.innerHTML.replace(/<mark class="findmark">(.*?)<\/mark>/gi, "$1");
+      findMatches = [];
+      findIndex = 0;
+    }
+    function replaceOne() {
+      const findVal = document.getElementById('findInput').value;
+      const repVal = document.getElementById('replaceInput').value;
+      if (!findVal) return;
+      findNext();
+      if (findMatches.length) {
+        findMatches[findIndex ? findIndex - 1 : 0].outerHTML = repVal;
+      }
+      clearFindHighlights();
+      updateStats();
+    }
+    function replaceAll() {
+      const findVal = document.getElementById('findInput').value;
+      const repVal = document.getElementById('replaceInput').value;
+      const editor = document.getElementById('editor');
+      if (!findVal) return;
+      const regex = new RegExp(findVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
+      editor.innerHTML = editor.innerHTML.replace(regex, repVal);
+      clearFindHighlights();
+      updateStats();
+    }
+
+    // --- Initial Load ---
     tryImportSharedDoc();
     loadLastDraft();
+    updateStats();
+
+    // --- Auto-close find bar and comments on outside click ---
+    document.addEventListener('mousedown', function(e){
+      // Find bar
+      const bar = document.getElementById('findBar');
+      if (bar.style.display !== "none" && !bar.contains(e.target) && !e.target.classList.contains('sidebar-btn')) {
+        bar.style.display = "none";
+        clearFindHighlights();
+      }
+      // Comments
+      const panel = document.getElementById('commentsPanel');
+      if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('sidebar-btn')) {
+        panel.classList.remove('open');
+      }
+    });
+
+    // --- Accessibility: scroll to editor on sidebar edit click ---
+    function scrollToEditor() {
+      document.getElementById('editor').focus();
+      window.scrollTo({ top: document.getElementById('editor').getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+    }
   </script>
 </body>
 </html>
