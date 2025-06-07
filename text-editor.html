@@ -4,1063 +4,813 @@
   <meta charset="UTF-8">
   <title>TaskFlows Text Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts & Material Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <!-- Google Fonts: Add more for variety -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Fira+Mono:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Playfair+Display:wght@400;700&family=Quicksand:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #1a73e8;
-      --primary-dark: #1765c1;
-      --secondary: #f8f9fa;
-      --surface: #fff;
-      --surface-alt: #f1f3f4;
-      --accent: #34a853;
-      --danger: #ea4335;
-      --text-main: #202124;
-      --text-light: #5f6368;
-      --shadow: 0 3px 16px 1px rgba(60,64,67,.13), 0 1.5px 7px 0 rgba(60,64,67,.09);
-      --radius: 15px;
-      --radius-small: 8px;
-      --toolbar-height: 54px;
-      --toolbar-height-mobile: 47px;
-      --font-main: 'Google Sans', 'Roboto', Arial, sans-serif;
-      --sidebar-width: 56px;
-      --sidebar-width-mobile: 48px;
-      --editor-max-width: 820px;
-      --background-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      --primary: #7c3aed;
+      --primary2: #ff6ccc;
+      --primary-light: #f5f2fe;
+      --editor-bg: #fafbfc;
+      --toolbar-bg: #fff;
+      --border: #ececec;
+      --shadow: 0 8px 40px #7c3aed1a, 0 2px 10px #7c3aed13;
+      --radius: 18px;
+      --editor-radius: 15px;
+      --editor-padding: 26px;
+      --toolbar-radius: 15px;
+      --transition: 0.17s;
+      --btn-gradient: linear-gradient(90deg, var(--primary2), var(--primary));
+      --font-ui: 'Inter', 'Roboto', 'Montserrat', 'Lato', 'Open Sans', Arial, sans-serif;
+      --font-docs: 'Inter', 'Roboto', 'Montserrat', 'Lato', 'Open Sans', Arial, sans-serif;
     }
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      background: var(--background-gradient);
-      font-family: var(--font-main);
-      color: var(--text-main);
       min-height: 100vh;
+      background: linear-gradient(-45deg, #f7b267, #70a1d7, #ff6ccc, #b5faff, #fff8e1, #f5f2fe);
+      background-size: 400% 400%;
+      animation: animatedGradient 18s ease-in-out infinite;
+      color: #23213a;
+      font-family: var(--font-ui);
+      overflow-x: hidden;
+    }
+    @keyframes animatedGradient {
+      0% {background-position: 0% 50%;}
+      25% {background-position: 100% 60%;}
+      50% {background-position: 100% 100%;}
+      75% {background-position: 50% 0%;}
+      100% {background-position: 0% 50%;}
     }
     body {
-      background: var(--background-gradient), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
-      background-size: cover;
-      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       min-height: 100vh;
     }
-    /* SIDEBAR for quick menu */
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: var(--sidebar-width);
-      height: 100vh;
-      background: rgba(255,255,255,0.94);
-      box-shadow: 2px 0 8px #e0e0e0aa;
+    .container {
+      max-width: 920px;
+      margin: 44px auto 0 auto;
+      min-height: 92vh;
+      background: var(--editor-bg);
+      border-radius: var(--editor-radius);
+      box-shadow: var(--shadow);
+      padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      z-index: 111;
-      padding-top: 13px;
-      gap: 16px;
+      align-items: stretch;
+      position: relative;
     }
-    .sidebar .sidebar-btn {
+    .tab-bar {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1.8px solid var(--primary-light);
+      background: var(--toolbar-bg);
+      border-radius: var(--toolbar-radius) var(--toolbar-radius) 0 0;
+      box-shadow: 0 2px 14px #7c3aed18;
+      position: sticky;
+      z-index: 11;
+      top: 0;
+      padding-left: 14px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .tab {
+      font-weight: 600;
+      font-size: 1.05rem;
+      border: none;
+      background: none;
+      color: #555;
+      border-radius: 13px 13px 0 0;
+      margin-right: 8px;
+      padding: 13px 30px 11px 30px;
+      cursor: pointer;
+      transition: background 0.13s, color 0.13s;
+      position: relative;
+      outline: none;
+    }
+    .tab.selected, .tab:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      box-shadow: 0 2px 12px #7c3aed11;
+      z-index: 2;
+    }
+    .tab .close-tab {
+      margin-left: 10px;
+      color: #999;
+      font-size: 1.1em;
       background: none;
       border: none;
-      color: var(--primary);
-      font-size: 2.15em;
-      padding: 9px 0 7px 0;
-      margin: 0;
       cursor: pointer;
+      padding: 0 2px 0 3px;
       border-radius: 50%;
-      transition: background .15s, color .13s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
+      transition: background 0.12s, color 0.12s;
     }
-    .sidebar .sidebar-btn:hover,
-    .sidebar .sidebar-btn.active {
-      background: #e3f0ff;
-      color: var(--accent);
+    .tab .close-tab:hover {
+      color: #ff6ccc;
+      background: #fbe1f6;
     }
-    .sidebar .sidebar-separator {
-      width: 36px;
-      height: 2.5px;
-      background: #e0e0e0;
-      border-radius: 2px;
-      margin: 6px 0;
-    }
-
-    /* Main container, with floating shadow like Google Docs */
-    .editor-container {
-      background: var(--surface);
-      margin: 28px auto 0 auto;
-      max-width: var(--editor-max-width);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      min-height: 86vh;
-      position: relative;
-      padding: 0;
-      overflow: visible;
-      transition: box-shadow 0.2s;
-      z-index: 10;
-    }
-
-    /* HEADER, sticky */
-    .doc-title-row {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 18px 34px 10px 68px;
-      border-bottom: 1px solid #e0e0e0;
-      background: var(--surface);
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      min-height: 64px;
-    }
-    .doc-title-row input {
-      font-size: 1.55em;
-      font-weight: 700;
-      color: var(--primary);
+    .tab-bar .add-tab-btn,
+    .drafts-btn {
+      background: var(--btn-gradient);
+      color: #fff;
       border: none;
-      background: transparent;
-      border-bottom: 2px solid #e8eaed;
+      font-size: 1.23rem;
+      font-weight: 700;
+      margin: 7px 7px 7px 0;
+      border-radius: 12px;
+      padding: 7px 24px 7px 24px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px #ff6ccc22;
+      transition: background 0.15s, transform 0.13s;
       outline: none;
-      padding: 5px 12px 5px 0;
-      border-radius: 0;
-      max-width: 350px;
-      min-width: 0;
-      transition: border 0.18s;
-      flex: 1;
+      display: flex; align-items: center; gap: 7px;
     }
-    .doc-title-row input:focus {
-      border-bottom: 2px solid var(--primary);
-      background: #e8f0fe;
+    .tab-bar .add-tab-btn:hover,
+    .drafts-btn:hover {
+      background: linear-gradient(90deg, var(--primary), var(--primary2));
+      transform: scale(1.05);
+      color: #fff;
     }
-    .saved-status {
-      font-size: 1.01em;
-      color: var(--accent);
-      font-weight: 600;
-      opacity: 0.9;
-      margin-left: 7px;
-      transition: color 0.2s;
-    }
-    .drafts-link {
+    .drafts-btn {
       margin-left: auto;
-      font-size: 1.04em;
-      text-decoration: none;
-      color: var(--primary);
+      font-size: 1.05rem;
+      padding: 7px 25px;
+      border-radius: 11px;
       font-weight: 600;
-      background: #e8f0fe;
-      padding: 8px 17px;
-      border-radius: var(--radius-small);
-      border: 1.2px solid #e3e7ea;
+      letter-spacing: 0.02em;
+    }
+    .editor-toolbar {
+      background: var(--toolbar-bg);
+      border-radius: 0 0 0 0;
+      box-shadow: 0 1.5px 10px #7c3aed11;
+      padding: 0 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 11px;
+      border-bottom: 1.5px solid var(--border);
+      z-index: 10;
+      min-height: 68px;
+      position: sticky;
+      top: 48px;
+    }
+    .toolbar-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: background 0.13s, color 0.13s;
+      margin-right: 7px;
     }
-    .drafts-link:hover {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    /* Toolbar */
-    .editor-toolbar {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 2px;
-      background: var(--surface-alt);
-      border-bottom: 1px solid #e0e0e0;
-      padding: 0 24px;
-      min-height: var(--toolbar-height);
-      height: var(--toolbar-height);
-      position: sticky;
-      top: 71px;
-      z-index: 20;
-      overflow-x: auto;
-      scrollbar-width: thin;
-      border-radius: 0 0 var(--radius) var(--radius);
-      white-space: nowrap;
-    }
-    .editor-toolbar .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      margin-right: 9px;
-    }
-    .editor-toolbar button, .editor-toolbar select, .editor-toolbar input[type="color"] {
-      border: none;
-      background: none;
-      font-size: 1.22em;
+    .toolbar-btn, .toolbar-select, .toolbar-input {
+      background: #fff;
+      color: #29294d;
+      border: 1.3px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 1.06rem;
+      font-family: inherit;
       cursor: pointer;
-      padding: 8px 9px;
-      border-radius: var(--radius-small);
-      transition: background 0.11s, color 0.11s;
-      color: var(--text-light);
-      margin: 0 0.5px;
+      transition: background 0.13s, border 0.13s;
       outline: none;
-      min-width: 38px;
-      min-height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .editor-toolbar button.active, .editor-toolbar button:hover, .editor-toolbar select:focus, .editor-toolbar input[type="color"]:hover {
-      background: #d2e3fc;
-      color: var(--primary);
-    }
-    .editor-toolbar select, .editor-toolbar input[type="color"] {
-      font-size: 1.06em;
-      color: var(--text-main);
-      background: #f6f8fa;
-      border: 1.2px solid #e3e7ea;
-      margin-right: 3px;
-      min-width: 48px;
-      padding: 7px 8px;
-      border-radius: var(--radius-small);
-      height: 36px;
-    }
-    .editor-toolbar input[type="color"] {
-      padding: 0;
-      width: 27px;
-      height: 27px;
-      min-width: 27px;
-      min-height: 27px;
-      border-radius: 50%;
-      border: 2px solid #e3e7ea;
-      margin: 0 2px;
-      background: none;
+      min-width: 0;
+      margin-right: 0;
+      margin-bottom: 0;
       vertical-align: middle;
     }
-    .editor-toolbar label {
-      margin: 0 2px 0 3px;
-      font-weight: 600;
-      color: var(--text-light);
-      font-size: 1.06em;
+    .toolbar-btn[aria-pressed="true"], .toolbar-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1.3px solid var(--primary2);
+    }
+    .toolbar-btn:focus, .toolbar-select:focus, .toolbar-input:focus {
+      border: 1.3px solid var(--primary2);
+    }
+    .toolbar-select {
+      min-width: 38px;
+      font-size: 1.01rem;
+      padding: 7px 8px;
+    }
+    .toolbar-input[type="number"], .toolbar-input[type="text"] {
+      width: 110px;
+      padding: 7px 5px;
+      font-size: 1.01rem;
+      margin-right: 0;
     }
     .toolbar-divider {
-      width: 1.5px;
-      height: 25px;
-      background: #e0e0e0;
-      margin: 0 8px;
-      border-radius: 1.5px;
-      display: inline-block;
+      width: 2px;
+      height: 30px;
+      background: var(--border);
+      margin: 0 13px;
+      border-radius: 2px;
     }
-
-    /* Editor area - like Google Docs page */
-    .editor-area {
-      min-height: 70vh;
-      max-width: 700px;
-      margin: 34px auto 0 auto;
+    .editor-wrap {
+      flex: 1;
       background: #fff;
-      border-radius: 7px;
-      border: 1.5px solid #e0e0e0;
-      padding: 44px 34px 44px 34px;
-      font-size: 1.19em;
-      font-family: inherit;
-      color: var(--text-main);
-      outline: none;
-      box-shadow: 0 2px 24px #c9d6f10c;
-      transition: border 0.19s, box-shadow 0.19s;
-      width: 96%;
-      overflow-y: auto;
-      word-break: break-word;
-      margin-bottom: 20px;
-    }
-    .editor-area:focus {
-      border: 1.5px solid var(--primary);
-      box-shadow: 0 4px 24px #c7e0fc33;
-      background: #f8faff;
-    }
-
-    /* Buttons - floating style */
-    .editor-buttons {
-      display: flex;
-      gap: 13px;
-      margin: 0 auto 22px auto;
-      justify-content: flex-end;
-      padding: 0 27px;
-      flex-wrap: wrap;
-      max-width: 700px;
-      width: 96%;
-    }
-    .editor-buttons button, .editor-buttons a.dashboard-btn {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-small);
-      padding: 13px 27px;
-      font-size: 1.09em;
-      font-weight: 700;
-      letter-spacing: 0.9px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #4285f414;
-      transition: background 0.16s, box-shadow 0.17s, color 0.14s;
-      outline: none;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      text-decoration: none;
-    }
-    .editor-buttons button:hover, .editor-buttons a.dashboard-btn:hover {
-      background: var(--primary-dark);
-      color: #fff;
-      box-shadow: 0 4px 18px #4285f425;
-      text-decoration: none;
-    }
-
-    /* Share link */
-    .share-link-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 12px auto 0 auto;
-      font-size: 1.02em;
-      color: var(--primary);
-      flex-wrap: wrap;
-      max-width: 700px;
-      width: 96%;
-      padding-left: 0;
-    }
-    .share-link-box {
-      background: #f3f8fd;
-      border: 1.2px solid #dde6ee;
-      border-radius: 7px;
-      padding: 5px 12px;
-      font-size: 1em;
-      user-select: all;
-      color: var(--primary);
-      word-break: break-all;
-      max-width: 60vw;
-    }
-    .copy-link-btn {
-      background: #d2e3fc;
-      border: none;
-      color: var(--primary);
-      border-radius: 8px;
-      padding: 6px 13px;
-      font-size: 1em;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.13s, color 0.12s;
-    }
-    .copy-link-btn:hover {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    /* Comments panel */
-    .comments-panel {
-      position: fixed;
-      top: 0;
-      right: -360px;
-      width: 340px;
-      height: 100vh;
-      background: #fff;
-      box-shadow: -2px 0 16px #c3d1ea35;
-      z-index: 123;
-      transition: right 0.28s cubic-bezier(.5,.33,.26,.86);
+      border-radius: 0 0 var(--editor-radius) var(--editor-radius);
+      padding: 0;
       display: flex;
       flex-direction: column;
-      border-radius: 13px 0 0 13px;
-    }
-    .comments-panel.open { right: 0; }
-    .comments-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 17px 18px 7px 18px;
-      border-bottom: 1px solid #e0e0e0;
-      font-weight: 700;
-      font-size: 1.18em;
-      color: var(--primary);
-      background: #f7fafc;
-    }
-    .comments-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 9px 18px 18px 18px;
-      background: #f7fafc;
-    }
-    .comment-item {
-      background: #f1f6fa;
-      border-radius: 8px;
-      margin-bottom: 13px;
-      padding: 8px 10px;
-      font-size: 1em;
-      color: #333;
-      box-shadow: 0 1px 2px #e0e7f780;
+      min-height: 400px;
       position: relative;
+      overflow: auto;
     }
-    .comment-item .comment-date {
-      font-size: 0.93em;
-      color: #8792a2;
-      margin-top: 1px;
-      margin-bottom: 0;
-      text-align: right;
-    }
-    .comment-item .delete-comment {
-      position: absolute;
-      top: 7px;
-      right: 7px;
-      background: none;
-      border: none;
-      color: #c65c5c;
-      font-size: 1.21em;
-      cursor: pointer;
-      opacity: 0.7;
-      transition: opacity .13s;
-    }
-    .comment-item .delete-comment:hover {
-      opacity: 1;
-    }
-    .add-comment-row {
-      border-top: 1px solid #e0e0e0;
-      background: #f3f6fa;
-      padding: 12px 18px 14px 18px;
-      display: flex;
-      gap: 9px;
-      align-items: center;
-    }
-    .add-comment-row input, .add-comment-row textarea {
-      flex: 1;
-      font-size: 1em;
-      border: 1.2px solid #e3e7ea;
-      border-radius: 7px;
-      padding: 7px 12px;
-      min-height: 34px;
+    .editor-area {
+      min-height: 480px;
+      padding: var(--editor-padding);
+      font-size: 1.15rem;
+      font-family: var(--font-docs);
       outline: none;
-      resize: none;
-    }
-    .add-comment-row button {
-      background: var(--primary);
-      color: #fff;
       border: none;
-      border-radius: 7px;
-      padding: 7px 14px;
-      font-size: 1em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.13s;
+      background: transparent;
+      color: #23213a;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+      overflow-x: auto;
+      border-radius: 0 0 var(--editor-radius) var(--editor-radius);
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      transition: font-size 0.17s;
     }
-    .add-comment-row button:hover {
-      background: var(--primary-dark);
+    .editor-area img {
+      max-width: 92%;
+      display: block;
+      margin: 18px auto;
+      border-radius: 10px;
+      box-shadow: 0 1px 12px #7c3aed18;
+      border: 1.1px solid #ececec;
     }
-
-    /* Find/replace bar */
-    .find-bar {
+    .editor-area:empty:before {
+      content: "Start typing or paste content here...";
+      color: #bbb;
+      font-size: 1.1rem;
+    }
+    .image-resizer {
       position: absolute;
-      top: 13px;
-      right: 26px;
-      background: #f1f3f4;
-      border-radius: 8px;
-      box-shadow: 0 1.5px 7px #e0e0e0;
-      padding: 9px 12px 9px 15px;
+      border: 2px dashed #7c3aed;
+      pointer-events: none;
+      z-index: 999;
+      display: none;
+    }
+    .editor-area .checklist {list-style-type: none; padding-left: 1.5em; margin: 1em 0;}
+    .editor-area .checklist li {
+      position: relative;
+      margin-bottom: 0.4em;
       display: flex;
       align-items: center;
-      gap: 5px;
-      z-index: 99;
-      transition: top 0.18s;
+      min-height: 1.6em;
     }
-    .find-bar input {
-      font-size: 1em;
-      border: 1.2px solid #e3e7ea;
-      border-radius: 6px;
-      padding: 6px 10px;
-      outline: none;
-      min-width: 90px;
+    .editor-area .checklist input[type="checkbox"] {
+      margin-right: 0.65em;
+      width: 1.3em;
+      height: 1.3em;
+      accent-color: var(--primary);
+      vertical-align: middle;
     }
-    .find-bar button {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 5px 9px;
-      font-size: 1em;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.13s;
+    @media (max-width: 1000px) {
+      .container {max-width: 99vw; margin: 16px 0 0 0; border-radius: 0;}
     }
-    .find-bar button:hover { background: var(--primary-dark);}
-    .find-bar .close-find { background: none; color: #c65c5c; font-size: 1.3em; padding: 0 3px; }
-
-    /* Word count and live stats */
-    .stats-bar {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      color: #5f6368;
-      font-size: 1em;
-      font-weight: 500;
-      justify-content: flex-end;
-      padding: 0 37px 17px 37px;
+    @media (max-width: 700px) {
+      .container { margin: 0; border-radius: 0; box-shadow: none; min-height: 100vh;}
+      .tab-bar {padding-left: 2vw;}
+      .tab {font-size: 1em; padding: 10px 13px;}
+      .tab-bar .add-tab-btn, .drafts-btn {font-size: 1em; padding: 7px 14px;}
+      .editor-toolbar { padding: 0 4px; gap: 5px; min-height: 54px;}
+      .editor-wrap {border-radius: 0;}
+      .editor-area { font-size: 1.02rem; padding: 11vw 2vw 14vw 2vw; min-height: 62vh;}
     }
-
-    /* Responsive: Google Docs mobile look */
-  @media (max-width: 950px) {
-  .sidebar {
-    width: var(--sidebar-width-mobile);
-    background: rgba(255,255,255,0.25) !important;
-    box-shadow: none !important;
-    pointer-events: none;
-  }
-  .sidebar .sidebar-btn {
-    pointer-events: auto;
-    background: rgba(255,255,255,0.65);
-    margin-bottom: 4px;
-  }
-}
-      .editor-container {
-        max-width: 100vw;
-        border-radius: 0;
-        margin: 0;
-        box-shadow: none;
-      }
-      .editor-area, .editor-buttons, .share-link-row, .stats-bar {
-        max-width: 100vw;
-        width: 100vw;
-        border-radius: 0;
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 4vw;
-        padding-right: 4vw;
-      }
-      .editor-area {
-        padding: 12vw 2vw 14vw 2vw;
-        min-height: 53vh;
-        font-size: 1.04em;
-      }
-      .editor-buttons {
-        flex-direction: column;
-        gap: 6px;
-        padding: 0 4vw;
-        margin: 0 0 13px 0;
-      }
-      .editor-buttons button, .editor-buttons a.dashboard-btn {
-        width: 100%;
-        min-width: 0;
-        padding: 12px 0;
-        font-size: 1em;
-        border-radius: 7px;
-      }
-      .share-link-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        font-size: 0.98em;
-        padding: 0 4vw;
-      }
-      .share-link-box {
-        max-width: 99vw;
-        font-size: 0.97em;
-        padding: 4px 5px;
-        border-radius: 6px;
-      }
-      .copy-link-btn {
-        padding: 7px 0;
-        border-radius: 6px;
-        margin-top: 2px;
-      }
-      .doc-title-row {
-        flex-direction: row;
-        gap: 5px;
-        font-size: 0.98em;
-        padding: 11px 4vw 6px 4vw;
-        border-radius: 0;
-        min-height: 56px;
-      }
-      .doc-title-row input {
-        font-size: 1.08em;
-        max-width: 60vw;
-        padding: 6px 5px 6px 0;
-      }
-      .drafts-link {
-        font-size: 0.97em;
-        padding: 7px 10px;
-        border-radius: var(--radius-small);
-        margin-left: auto;
-      }
-      .editor-toolbar {
-        padding: 0 3vw;
-        font-size: 0.95em;
-        min-height: var(--toolbar-height-mobile);
-        height: var(--toolbar-height-mobile);
-        border-radius: 0;
-        top: 41px;
-      }
-      .editor-toolbar button, .editor-toolbar select, .editor-toolbar input[type="color"] {
-        font-size: 1em;
-        padding: 5px 5px;
-        border-radius: 7px;
-        min-width: 27px;
-        min-height: 31px;
-      }
-      .editor-toolbar label {
-        font-size: 0.95em;
-      }
-      .comments-panel {
-        width: 98vw;
-        right: -100vw;
-        border-radius: 0;
-      }
-      .comments-panel.open { right: 0; }
+    @media (max-width: 480px) {
+      .editor-area { padding: 9vw 2vw 19vw 2vw;}
     }
-    /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 7px; background: #f1f3f4; }
-    ::-webkit-scrollbar-thumb { background: #e3e7ea; border-radius: 7px; }
-    ::-webkit-scrollbar-thumb:hover { background: #d2e3fc; }
-    ::selection { background: #cbe6ff; }
+    ::-webkit-scrollbar { width: 8px; background: #efeefd;}
+    ::-webkit-scrollbar-thumb { background: #ede9fe; border-radius: 16px;}
+    ::-webkit-scrollbar-thumb:hover { background: #d1c4e9; }
+    ::selection { background: #ede9fe;}
   </style>
 </head>
 <body>
-  <!-- Sidebar for menu (add more features here) -->
-  <div class="sidebar" id="sidebar">
-    <button class="sidebar-btn" title="Edit" onclick="scrollToEditor()"><span class="material-icons">edit</span></button>
-    <button class="sidebar-btn" title="Comments" onclick="toggleCommentsPanel()"><span class="material-icons">chat</span></button>
-    <button class="sidebar-btn" title="Find/Replace" onclick="toggleFindBar()"><span class="material-icons">find_replace</span></button>
-    <div class="sidebar-separator"></div>
-    <button class="sidebar-btn" title="Download" onclick="downloadDoc()"><span class="material-icons">download</span></button>
-    <button class="sidebar-btn" title="Share" onclick="shareDoc()"><span class="material-icons">share</span></button>
-    <div class="sidebar-separator"></div>
-    <button class="sidebar-btn" title="Dashboard" onclick="window.location='index.html'"><span class="material-icons">dashboard</span></button>
-  </div>
-
-  <div class="editor-container">
-    <div class="doc-title-row">
-      <input id="docTitle" placeholder="Untitled Document" maxlength="50" autocomplete="off" autocapitalize="sentences" spellcheck="true">
-      <span class="saved-status" id="savedStatus">Saved</span>
-      <a href="drafts.html" class="drafts-link" title="My Drafts"><span class="material-icons">folder_open</span>Drafts</a>
+  <div class="container">
+    <!-- Tab Bar -->
+    <div class="tab-bar" id="tabBar">
+      <!-- Tabs will be injected here -->
+      <button class="add-tab-btn" id="newDocBtn" title="Create New Document">＋ New Document</button>
+      <button class="drafts-btn" id="draftsBtn" onclick="window.location.href='drafts.html'">📄 Drafts</button>
     </div>
+    <!-- Toolbar -->
     <div class="editor-toolbar" id="toolbar">
       <div class="toolbar-group">
-        <button title="Bold (Ctrl+B)" onclick="format('bold')" type="button" id="btnBold"><span class="material-icons">format_bold</span></button>
-        <button title="Italic (Ctrl+I)" onclick="format('italic')" type="button" id="btnItalic"><span class="material-icons">format_italic</span></button>
-        <button title="Underline (Ctrl+U)" onclick="format('underline')" type="button" id="btnUnderline"><span class="material-icons">format_underlined</span></button>
-        <button title="Strikethrough" onclick="format('strikeThrough')" type="button"><span class="material-icons">strikethrough_s</span></button>
-      </div>
-      <span class="toolbar-divider"></span>
-      <div class="toolbar-group">
-        <select id="fontSelect" onchange="changeFont(this.value)" title="Font">
-          <option value="Google Sans">Google Sans</option>
-          <option value="Arial">Arial</option>
-          <option value="Baloo 2">Baloo 2</option>
-          <option value="Courier New">Courier New</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Verdana">Verdana</option>
+        <input class="toolbar-input" id="docTitleInput" type="text" maxlength="70" placeholder="Document Title..." />
+        <select class="toolbar-select" id="fontFamily">
+          <option value="'Inter', Arial, sans-serif" selected>Inter</option>
+          <option value="'Roboto', Arial, sans-serif">Roboto</option>
+          <option value="'Montserrat', Arial, sans-serif">Montserrat</option>
+          <option value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</option>
+          <option value="'Lato', Arial, sans-serif">Lato</option>
+          <option value="'Open Sans', Arial, sans-serif">Open Sans</option>
+          <option value="'PT Serif', serif">PT Serif</option>
+          <option value="'Fira Mono', monospace">Fira Mono</option>
+          <option value="'Oswald', Arial, sans-serif">Oswald</option>
+          <option value="'Raleway', Arial, sans-serif">Raleway</option>
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="'Quicksand', Arial, sans-serif">Quicksand</option>
+          <option value="'Space Mono', monospace">Space Mono</option>
+          <option value="serif">Serif</option>
+          <option value="monospace">Monospace</option>
         </select>
-        <select id="fontSizeSelect" onchange="changeFontSize(this.value)" title="Font Size">
-          <option value="3">Normal</option>
-          <option value="1">Small</option>
-          <option value="2">Medium</option>
-          <option value="4">Large</option>
-          <option value="5">X-Large</option>
-          <option value="6">XX-Large</option>
-          <option value="7">Huge</option>
+        <select class="toolbar-select" id="fontSize">
+          <option value="10px">10</option>
+          <option value="12px">12</option>
+          <option value="14px">14</option>
+          <option value="16px" selected>16</option>
+          <option value="18px">18</option>
+          <option value="20px">20</option>
+          <option value="24px">24</option>
+          <option value="30px">30</option>
+          <option value="36px">36</option>
+          <option value="48px">48</option>
+          <option value="60px">60</option>
+          <option value="72px">72</option>
+          <option value="custom">Custom</option>
         </select>
+        <input class="toolbar-input" id="customFontSize" type="number" min="8" max="200" placeholder="px" style="display:none;width:60px;">
       </div>
-      <span class="toolbar-divider"></span>
       <div class="toolbar-group">
-        <label for="colorInput" title="Text color"><span class="material-icons" style="font-size:1.2em;vertical-align:middle;">format_color_text</span></label>
-        <input type="color" id="colorInput" value="#202124" onchange="changeColor(this.value)">
-        <label for="bgColorInput" title="Highlight"><span class="material-icons" style="font-size:1.2em;vertical-align:middle;">format_color_fill</span></label>
-        <input type="color" id="bgColorInput" value="#f8f9fa" onchange="changeBgColor(this.value)">
+        <button class="toolbar-btn" type="button" data-command="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+        <button class="toolbar-btn" type="button" data-command="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+        <button class="toolbar-btn" type="button" data-command="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+        <button class="toolbar-btn" type="button" data-command="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <button class="toolbar-btn" type="button" id="textColorBtn" title="Text Color"><span style="font-weight:700;color:#d26c39;">A</span></button>
+        <input type="color" id="textColorPicker" style="display:none;">
+        <button class="toolbar-btn" type="button" id="highlightBtn" title="Highlight"><span style="background:#ffd966;padding:2px 6px;border-radius:2px;">A</span></button>
+        <input type="color" id="highlightColorPicker" value="#ffd966" style="display:none;">
       </div>
-      <span class="toolbar-divider"></span>
       <div class="toolbar-group">
-        <button title="Left Align" onclick="format('justifyLeft')" type="button"><span class="material-icons">format_align_left</span></button>
-        <button title="Center Align" onclick="format('justifyCenter')" type="button"><span class="material-icons">format_align_center</span></button>
-        <button title="Right Align" onclick="format('justifyRight')" type="button"><span class="material-icons">format_align_right</span></button>
+        <button class="toolbar-btn" type="button" data-command="justifyLeft" title="Align Left"><span style="font-size:1.12em;">&#8676;</span></button>
+        <button class="toolbar-btn" type="button" data-command="justifyCenter" title="Align Center"><span style="font-size:1.12em;">&#8596;</span></button>
+        <button class="toolbar-btn" type="button" data-command="justifyRight" title="Align Right"><span style="font-size:1.12em;">&#8677;</span></button>
+        <button class="toolbar-btn" type="button" data-command="justifyFull" title="Justify"><span style="font-size:1.12em;">&#8597;</span></button>
       </div>
-      <span class="toolbar-divider"></span>
       <div class="toolbar-group">
-        <button title="Numbered List" onclick="format('insertOrderedList')" type="button"><span class="material-icons">format_list_numbered</span></button>
-        <button title="Bulleted List" onclick="format('insertUnorderedList')" type="button"><span class="material-icons">format_list_bulleted</span></button>
+        <button class="toolbar-btn" type="button" data-command="insertUnorderedList" title="Bullet List">&#8226;•&#8226;</button>
+        <button class="toolbar-btn" type="button" data-command="insertOrderedList" title="Numbered List">1.2.3.</button>
+        <button class="toolbar-btn" type="button" data-command="outdent" title="Outdent">&#8672;</button>
+        <button class="toolbar-btn" type="button" data-command="indent" title="Indent">&#8674;</button>
+        <button class="toolbar-btn" type="button" id="checklistBtn" title="Checklist">&#9745;</button>
       </div>
-      <span class="toolbar-divider"></span>
+      <div class="toolbar-divider"></div>
       <div class="toolbar-group">
-        <button title="Undo" onclick="format('undo')" type="button"><span class="material-icons">undo</span></button>
-        <button title="Redo" onclick="format('redo')" type="button"><span class="material-icons">redo</span></button>
-        <button title="Clear Formatting" onclick="clearFormatting()" type="button"><span class="material-icons">format_clear</span></button>
+        <button class="toolbar-btn" type="button" id="insertLinkBtn" title="Insert Link">🔗</button>
+        <button class="toolbar-btn" type="button" id="insertImageBtn" title="Insert Image">🖼️</button>
+        <input type="file" id="imageInput" accept="image/*" style="display:none;">
+      </div>
+      <div class="toolbar-group">
+        <button class="toolbar-btn" type="button" data-command="undo" title="Undo (Ctrl+Z)">⎌</button>
+        <button class="toolbar-btn" type="button" data-command="redo" title="Redo (Ctrl+Y)">⎌⎌</button>
+        <button class="toolbar-btn" type="button" data-command="removeFormat" title="Clear Formatting">✕</button>
+        <button class="toolbar-btn" type="button" id="saveDocBtn" title="Save">💾 Save</button>
       </div>
     </div>
-    <!-- Find/replace bar -->
-    <div class="find-bar" id="findBar" style="display:none;">
-      <input type="text" id="findInput" placeholder="Find..." />
-      <input type="text" id="replaceInput" placeholder="Replace..." />
-      <button onclick="findNext()">Next</button>
-      <button onclick="replaceOne()">Replace</button>
-      <button onclick="replaceAll()">All</button>
-      <button class="close-find" onclick="toggleFindBar()" title="Close"><span class="material-icons">close</span></button>
-    </div>
-    <div id="editor" class="editor-area" contenteditable="true" spellcheck="true" aria-label="Document area"></div>
-    <div class="stats-bar" id="statsBar">
-      <span id="wordCount">Words: 0</span>
-      <span id="charCount">Chars: 0</span>
-      <span id="readingTime">Reading time: 0 min</span>
-    </div>
-    <div class="editor-buttons">
-      <button onclick="saveDraft()" title="Save Draft" type="button"><span class="material-icons">save</span>Save</button>
-      <button onclick="newDraft()" title="New Draft" type="button"><span class="material-icons">note_add</span>New</button>
-      <button onclick="downloadDoc()" title="Download" type="button"><span class="material-icons">download</span>Download</button>
-      <button onclick="shareDoc()" title="Share" type="button"><span class="material-icons">share</span>Share</button>
-      <a href="index.html" class="dashboard-btn" title="Back to Dashboard"><span class="material-icons">dashboard</span>Dashboard</a>
-    </div>
-    <div id="shareLinkRow" class="share-link-row" style="display:none;">
-      <span>Shareable Link:</span>
-      <span id="shareLinkBox" class="share-link-box"></span>
-      <button class="copy-link-btn" onclick="copyShareLink()" type="button"><span class="material-icons">content_copy</span> Copy</button>
-    </div>
-  </div>
-  <!-- Comments side panel -->
-  <div class="comments-panel" id="commentsPanel">
-    <div class="comments-header">
-      Comments
-      <button class="close-find" onclick="toggleCommentsPanel()" title="Close"><span class="material-icons">close</span></button>
-    </div>
-    <div class="comments-list" id="commentsList"></div>
-    <form class="add-comment-row" onsubmit="addComment(event)">
-      <textarea id="commentInput" placeholder="Add a comment..." rows="2"></textarea>
-      <button type="submit">Add</button>
-    </form>
+    <!-- Editor -->
+    <div class="editor-wrap"></div>
   </div>
   <script>
-    // --- Toolbar Functions ---
-    function format(cmd, val = null) {
-      document.execCommand(cmd, false, val);
-      saveAuto();
-      highlightActiveToolbar();
-      updateStats();
-    }
-    function changeFont(font) {
-      document.execCommand("fontName", false, font);
-      saveAuto();
-    }
-    function changeFontSize(size) {
-      document.execCommand("fontSize", false, size);
-      saveAuto();
-    }
-    function changeColor(color) {
-      document.execCommand("foreColor", false, color);
-      saveAuto();
-    }
-    function changeBgColor(color) {
-      document.execCommand("hiliteColor", false, color);
-      saveAuto();
-    }
-    function clearFormatting() {
-      document.execCommand('removeFormat', false, null);
-      saveAuto();
-    }
-
-    // --- Drafts Management ---
+    const tabBar = document.getElementById('tabBar');
+    const editorWrap = document.querySelector('.editor-wrap');
     const draftsKey = "taskflows_drafts";
-    let currentDraftId = null;
-    let autoSaveTimeout = null;
-
-    function getDrafts() {
-      return JSON.parse(localStorage.getItem(draftsKey) || "[]");
-    }
-    function setDrafts(drafts) {
-      localStorage.setItem(draftsKey, JSON.stringify(drafts));
-    }
-    function getDraft(id) {
-      const drafts = getDrafts();
-      return drafts.find(d => d.id === id);
-    }
-    function saveDraft() {
-      const title = document.getElementById('docTitle').value.trim() || "Untitled Document";
-      const html = document.getElementById('editor').innerHTML;
-      let drafts = getDrafts();
-      let now = new Date().toISOString();
-      if (currentDraftId) {
-        const idx = drafts.findIndex(d => d.id === currentDraftId);
-        if (idx >= 0) {
-          drafts[idx].title = title;
-          drafts[idx].html = html;
-          drafts[idx].updated = now;
-        } else {
-          drafts.push({id: currentDraftId, title, html, updated: now});
-        }
-      } else {
-        currentDraftId = "draft-" + Date.now();
-        drafts.push({id: currentDraftId, title, html, updated: now});
-      }
-      setDrafts(drafts);
-      showSaved("Saved");
-    }
-    function saveAuto() {
-      document.getElementById('savedStatus').textContent = "Saving...";
-      clearTimeout(autoSaveTimeout);
-      autoSaveTimeout = setTimeout(saveDraft, 800);
-    }
-    function showSaved(msg) {
-      const status = document.getElementById('savedStatus');
-      status.textContent = msg;
-      status.style.color = "#34a853";
-      setTimeout(() => { status.textContent = "Saved"; status.style.color = "#34a853"; }, 1200);
-    }
-    function newDraft() {
-      if (!confirm("Create a new draft? Unsaved changes will be lost.")) return;
-      document.getElementById('docTitle').value = "";
-      document.getElementById('editor').innerHTML = "";
-      currentDraftId = null;
-      showSaved("New Draft");
-      document.getElementById('shareLinkRow').style.display = "none";
-      updateStats();
-      clearComments();
-    }
-    function loadDraft(id) {
-      const draft = getDraft(id);
-      if (draft) {
-        document.getElementById('docTitle').value = draft.title;
-        document.getElementById('editor').innerHTML = draft.html;
-        currentDraftId = id;
-        showSaved("Draft Loaded");
-        document.getElementById('shareLinkRow').style.display = "none";
-        updateStats();
-        clearComments();
-      }
-    }
-
-    // --- Download Document ---
-    function downloadDoc() {
-      const title = document.getElementById('docTitle').value.trim() || "Untitled_Document";
-      const html = document.getElementById('editor').innerHTML;
-      const blob = new Blob([html], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = title.replace(/\s+/g, '_') + ".html";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-      showSaved("Downloaded");
-    }
-    // --- Share Document ---
-    function shareDoc() {
-      const data = {
-        title: document.getElementById('docTitle').value.trim() || "Untitled Document",
-        html: document.getElementById('editor').innerHTML
+    let docs = JSON.parse(localStorage.getItem(draftsKey) || "[]");
+    let activeDoc = null;
+    const defaultFonts = [
+      "'Inter', Arial, sans-serif",
+      "'Roboto', Arial, sans-serif",
+      "'Montserrat', Arial, sans-serif",
+      "'Source Sans Pro', Arial, sans-serif",
+      "'Lato', Arial, sans-serif",
+      "'Open Sans', Arial, sans-serif",
+      "'PT Serif', serif",
+      "'Fira Mono', monospace",
+      "'Oswald', Arial, sans-serif",
+      "'Raleway', Arial, sans-serif",
+      "'Playfair Display', serif",
+      "'Quicksand', Arial, sans-serif",
+      "'Space Mono', monospace",
+      "serif",
+      "monospace"
+    ];
+    function createDoc(name, content = "", font = defaultFonts[0], size = "16px") {
+      return {
+        id: "doc-" + Date.now() + "-" + Math.floor(Math.random() * 10000),
+        title: name || "Untitled Document",
+        content: content || "",
+        font: font,
+        size: size,
+        created: new Date().toISOString(),
+        updated: new Date().toISOString()
       };
-      const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
-      const shareURL = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
-      document.getElementById('shareLinkBox').textContent = shareURL;
-      document.getElementById('shareLinkRow').style.display = "";
     }
-    function copyShareLink() {
-      const link = document.getElementById('shareLinkBox').textContent;
-      if (navigator.clipboard) { navigator.clipboard.writeText(link); }
-      else {
-        let tmp = document.createElement("textarea");
-        tmp.value = link;
-        document.body.appendChild(tmp);
-        tmp.select();
-        document.execCommand("copy");
-        document.body.removeChild(tmp);
+    function saveDrafts() {
+      localStorage.setItem(draftsKey, JSON.stringify(docs));
+    }
+    function openTab(id) {
+      activeDoc = docs.find(d => d.id === id);
+      renderTabs();
+      renderEditor();
+    }
+    function closeTab(id) {
+      let idx = docs.findIndex(d => d.id === id);
+      if (idx === -1) return;
+      docs.splice(idx, 1);
+      saveDrafts();
+      if (!docs.length) {
+        docs.push(createDoc("Untitled Document"));
       }
-      showSaved("Link Copied!");
+      activeDoc = docs[docs.length - 1];
+      renderTabs();
+      renderEditor();
     }
+    function addNewTab() {
+      const newDoc = createDoc("Untitled Document");
+      docs.push(newDoc);
+      saveDrafts();
+      openTab(newDoc.id);
+    }
+    function renderTabs() {
+      [...tabBar.querySelectorAll('.tab')].forEach(e => e.remove());
+      docs.forEach(doc => {
+        const btn = document.createElement('button');
+        btn.className = "tab" + (activeDoc && doc.id === activeDoc.id ? " selected" : "");
+        btn.innerHTML = `<span>${doc.title || "Untitled"}</span> <button class="close-tab" title="Close tab">&times;</button>`;
+        btn.onclick = (e) => {
+          if (e.target.classList.contains("close-tab")) {
+            closeTab(doc.id);
+          } else {
+            openTab(doc.id);
+          }
+        };
+        tabBar.insertBefore(btn, document.getElementById('newDocBtn'));
+      });
+    }
+    function renderEditor() {
+      editorWrap.innerHTML = "";
+      if (!activeDoc) return;
+      const editor = document.createElement('div');
+      editor.className = "editor-area";
+      editor.id = "editor";
+      editor.contentEditable = true;
+      editor.spellcheck = true;
+      editor.setAttribute('aria-label', "Document");
+      editor.innerHTML = activeDoc.content || "";
+      editor.style.fontFamily = activeDoc.font;
+      editor.style.fontSize = activeDoc.size;
+      editorWrap.appendChild(editor);
 
-    // --- Keyboard Shortcuts ---
-    document.addEventListener('keydown', function(e){
-      if(e.ctrlKey && e.key.toLowerCase() === "b"){ e.preventDefault(); format('bold'); }
-      if(e.ctrlKey && e.key.toLowerCase() === "i"){ e.preventDefault(); format('italic'); }
-      if(e.ctrlKey && e.key.toLowerCase() === "u"){ e.preventDefault(); format('underline'); }
-      if(e.ctrlKey && e.key.toLowerCase() === "s"){ e.preventDefault(); saveDraft(); }
-      if(e.ctrlKey && e.key.toLowerCase() === "n"){ e.preventDefault(); newDraft(); }
-      // Quick open find/replace (Ctrl+F)
-      if(e.ctrlKey && e.key.toLowerCase() === "f"){ e.preventDefault(); toggleFindBar(); }
+      // Image resizer overlay
+      const resizer = document.createElement('div');
+      resizer.className = "image-resizer";
+      resizer.id = "imageResizer";
+      editorWrap.appendChild(resizer);
+
+      // Selection change: update toolbar
+      editor.addEventListener('keyup', updateToolbarState);
+      editor.addEventListener('mouseup', updateToolbarState);
+
+      // Save on edit
+      editor.addEventListener('input', () => {
+        activeDoc.content = editor.innerHTML;
+        activeDoc.updated = new Date().toISOString();
+        saveDrafts();
+      });
+
+      // Paste, drag & drop, and image resizing
+      setupEditorFeatures(editor, resizer);
+
+      editor.addEventListener('focus', updateToolbarState);
+      document.getElementById('fontFamily').value = activeDoc.font;
+      document.getElementById('fontSize').value = parseInt(activeDoc.size) + "px";
+      document.getElementById('docTitleInput').value = activeDoc.title || "";
+    }
+    document.getElementById('docTitleInput').addEventListener('input', function() {
+      if (activeDoc) {
+        activeDoc.title = this.value.replace(/^\s+|\s+$/g, "") || "Untitled Document";
+        saveDrafts();
+        renderTabs();
+      }
     });
-
-    // --- Auto Save on changes ---
-    document.getElementById('editor').addEventListener('input', function() {
-      saveAuto();
-      updateStats();
-    });
-    document.getElementById('docTitle').addEventListener('input', saveAuto);
-
-    // --- Load shared doc if present ---
-    function tryImportSharedDoc() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const shared = urlParams.get('share');
-      if (shared) {
-        let data;
-        try {
-          data = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(shared)))));
-        } catch (e) {
-          alert('Failed to import shared document.');
-          return;
+    function openDraftFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const draftId = params.get("draft");
+      if (draftId) {
+        const idx = docs.findIndex(d => d.id === draftId);
+        if (idx !== -1) {
+          activeDoc = docs[idx];
+          renderTabs();
+          renderEditor();
         }
-        document.getElementById('docTitle').value = data.title || "Untitled Document";
-        document.getElementById('editor').innerHTML = data.html || "";
-        currentDraftId = null;
-        showSaved("Imported");
-        document.getElementById('shareLinkRow').style.display = "none";
-        window.history.replaceState({}, document.title, window.location.pathname);
-        updateStats();
-        clearComments();
       }
     }
-    // --- On page load, load last draft ---
-    function loadLastDraft() {
-      const drafts = getDrafts();
-      if (drafts.length > 0) {
-        const last = drafts[drafts.length-1];
-        document.getElementById('docTitle').value = last.title || "";
-        document.getElementById('editor').innerHTML = last.html || "";
-        currentDraftId = last.id;
+    openDraftFromQuery();
+
+    // ---------- Toolbar Actions ----------
+    const toolbarBtns = document.querySelectorAll('.toolbar-btn[data-command]');
+    const fontFamilySelect = document.getElementById('fontFamily');
+    const fontSizeSelect = document.getElementById('fontSize');
+    const customFontSizeInput = document.getElementById('customFontSize');
+    const textColorBtn = document.getElementById('textColorBtn');
+    const textColorPicker = document.getElementById('textColorPicker');
+    const highlightBtn = document.getElementById('highlightBtn');
+    const highlightColorPicker = document.getElementById('highlightColorPicker');
+    const checklistBtn = document.getElementById('checklistBtn');
+    const insertLinkBtn = document.getElementById('insertLinkBtn');
+    const insertImageBtn = document.getElementById('insertImageBtn');
+    const imageInput = document.getElementById('imageInput');
+    const saveDocBtn = document.getElementById('saveDocBtn');
+
+    function getEditor() {
+      return document.getElementById('editor');
+    }
+
+    toolbarBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const command = btn.getAttribute('data-command');
+        exec(command);
+        updateToolbarState();
+      });
+    });
+
+    fontFamilySelect.addEventListener('change', function() {
+      exec('fontName', this.value);
+      if (activeDoc) {
+        activeDoc.font = this.value;
+        saveDrafts();
       }
-      updateStats();
-    }
+      getEditor().style.fontFamily = this.value;
+      getEditor().focus();
+    });
 
-    // --- Toolbar Highlighting (Bold/Italic/Underline) ---
-    function highlightActiveToolbar() {
-      try {
-        document.queryCommandState('bold') ? document.getElementById('btnBold').classList.add('active') : document.getElementById('btnBold').classList.remove('active');
-        document.queryCommandState('italic') ? document.getElementById('btnItalic').classList.add('active') : document.getElementById('btnItalic').classList.remove('active');
-        document.queryCommandState('underline') ? document.getElementById('btnUnderline').classList.add('active') : document.getElementById('btnUnderline').classList.remove('active');
-      } catch (e) {}
-    }
-    document.getElementById('editor').addEventListener('keyup', highlightActiveToolbar);
-    document.getElementById('editor').addEventListener('mouseup', highlightActiveToolbar);
-
-    // --- Word/char count and reading time ---
-    function updateStats() {
-      const text = document.getElementById('editor').innerText || "";
-      const words = (text.match(/\b\S+\b/g) || []).length;
-      const chars = text.replace(/\s/g, "").length;
-      const readingTime = Math.ceil(words / 200);
-      document.getElementById('wordCount').textContent = `Words: ${words}`;
-      document.getElementById('charCount').textContent = `Chars: ${chars}`;
-      document.getElementById('readingTime').textContent = `Reading time: ${readingTime} min`;
-    }
-
-    // --- Sidebar actions ---
-    function scrollToEditor() {
-      document.getElementById('editor').focus();
-      window.scrollTo({ top: document.getElementById('editor').getBoundingClientRect().top + window.scrollY - 60, behavior: "smooth" });
-    }
-
-    // --- Comments panel ---
-    function toggleCommentsPanel() {
-      const panel = document.getElementById('commentsPanel');
-      panel.classList.toggle('open');
-      if (panel.classList.contains('open')) document.getElementById('commentInput').focus();
-    }
-    function addComment(e) {
-      e.preventDefault();
-      const comment = document.getElementById('commentInput').value.trim();
-      if (!comment) return;
-      const now = new Date();
-      const dateStr = now.toLocaleString(undefined, {dateStyle:'short', timeStyle:'short'});
-      const list = document.getElementById('commentsList');
-      const div = document.createElement('div');
-      div.className = 'comment-item';
-      div.innerHTML = `<button class="delete-comment" title="Delete" onclick="this.parentNode.remove()"><span class="material-icons">delete</span></button>
-        <div>${comment}</div><div class="comment-date">${dateStr}</div>`;
-      list.prepend(div);
-      document.getElementById('commentInput').value = "";
-    }
-    function clearComments() {
-      document.getElementById('commentsList').innerHTML = "";
-      document.getElementById('commentInput').value = "";
-    }
-
-    // --- Find/replace ---
-    let findMatches = [], findIndex = 0;
-    function toggleFindBar() {
-      const bar = document.getElementById('findBar');
-      bar.style.display = bar.style.display === "none" ? "" : "none";
-      if (bar.style.display !== "none") {
-        document.getElementById('findInput').focus();
+    fontSizeSelect.addEventListener('change', function() {
+      if(this.value === "custom") {
+        customFontSizeInput.style.display = "";
+        customFontSizeInput.focus();
       } else {
-        clearFindHighlights();
-      }
-    }
-    function findNext() {
-      clearFindHighlights();
-      const findVal = document.getElementById('findInput').value;
-      const editor = document.getElementById('editor');
-      if (!findVal) return;
-      const html = editor.innerHTML;
-      // Highlight all matches
-      const regex = new RegExp(findVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
-      let m, matchArr = [];
-      let idx = 0;
-      let markedHtml = html.replace(regex, function(match) {
-        matchArr.push(idx++);
-        return `<mark class="findmark">${match}</mark>`;
-      });
-      editor.innerHTML = markedHtml;
-      findMatches = Array.from(editor.querySelectorAll('mark.findmark'));
-      findIndex = 0;
-      if (findMatches.length) highlightFindIndex();
-    }
-    function highlightFindIndex() {
-      if (!findMatches.length) return;
-      findMatches.forEach((el, i) => {
-        el.style.background = i === findIndex ? "#ffe082" : "#cbe6ff";
-        el.scrollIntoView({block: "center", behavior: "smooth"});
-      });
-      findIndex = (findIndex + 1) % findMatches.length;
-    }
-    function clearFindHighlights() {
-      const editor = document.getElementById('editor');
-      editor.innerHTML = editor.innerHTML.replace(/<mark class="findmark">(.*?)<\/mark>/gi, "$1");
-      findMatches = [];
-      findIndex = 0;
-    }
-    function replaceOne() {
-      const findVal = document.getElementById('findInput').value;
-      const repVal = document.getElementById('replaceInput').value;
-      if (!findVal) return;
-      findNext();
-      if (findMatches.length) {
-        findMatches[findIndex ? findIndex - 1 : 0].outerHTML = repVal;
-      }
-      clearFindHighlights();
-      updateStats();
-    }
-    function replaceAll() {
-      const findVal = document.getElementById('findInput').value;
-      const repVal = document.getElementById('replaceInput').value;
-      const editor = document.getElementById('editor');
-      if (!findVal) return;
-      const regex = new RegExp(findVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
-      editor.innerHTML = editor.innerHTML.replace(regex, repVal);
-      clearFindHighlights();
-      updateStats();
-    }
-
-    // --- Initial Load ---
-    tryImportSharedDoc();
-    loadLastDraft();
-    updateStats();
-
-    // --- Auto-close find bar and comments on outside click ---
-    document.addEventListener('mousedown', function(e){
-      // Find bar
-      const bar = document.getElementById('findBar');
-      if (bar.style.display !== "none" && !bar.contains(e.target) && !e.target.classList.contains('sidebar-btn')) {
-        bar.style.display = "none";
-        clearFindHighlights();
-      }
-      // Comments
-      const panel = document.getElementById('commentsPanel');
-      if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('sidebar-btn')) {
-        panel.classList.remove('open');
+        customFontSizeInput.style.display = "none";
+        exec('fontSize', "7");
+        setTimeout(() => {
+          document.queryCommandValue('fontSize');
+          const fontElements = getEditor().querySelectorAll('font[size="7"]');
+          fontElements.forEach(f => {
+            f.removeAttribute('size');
+            f.style.fontSize = this.value;
+            f.style.lineHeight = "1.7";
+          });
+        }, 0);
+        if (activeDoc) {
+          activeDoc.size = this.value;
+          saveDrafts();
+        }
+        getEditor().style.fontSize = this.value;
+        getEditor().focus();
       }
     });
 
-    // --- Accessibility: scroll to editor on sidebar edit click ---
-    function scrollToEditor() {
-      document.getElementById('editor').focus();
-      window.scrollTo({ top: document.getElementById('editor').getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+    customFontSizeInput.addEventListener('change', function() {
+      let px = this.value;
+      if (!px || isNaN(px) || px < 8 || px > 200) {
+        this.value = '';
+        return;
+      }
+      exec('fontSize', "7");
+      setTimeout(() => {
+        const fontElements = getEditor().querySelectorAll('font[size="7"]');
+        fontElements.forEach(f => {
+          f.removeAttribute('size');
+          f.style.fontSize = px + 'px';
+          f.style.lineHeight = "1.7";
+        });
+      }, 0);
+      if (activeDoc) {
+        activeDoc.size = px + "px";
+        saveDrafts();
+      }
+      getEditor().style.fontSize = px + "px";
+      fontSizeSelect.value = "custom";
+      getEditor().focus();
+    });
+
+    textColorBtn.onclick = () => textColorPicker.click();
+    textColorPicker.oninput = function() {
+      exec('foreColor', this.value);
+    };
+    highlightBtn.onclick = () => highlightColorPicker.click();
+    highlightColorPicker.oninput = function() {
+      exec('hiliteColor', this.value);
+    };
+    checklistBtn.onclick = function() {
+      const editor = getEditor();
+      document.execCommand('insertUnorderedList', false, null);
+      let sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      let node = sel.anchorNode;
+      while (node && node.tagName !== 'UL') node = node.parentNode;
+      if (node) node.classList.add('checklist');
+      setTimeout(() => {
+        node && node.querySelectorAll('li').forEach(li => {
+          if (!li.querySelector('input[type="checkbox"]')) {
+            const cb = document.createElement('input');
+            cb.type = "checkbox";
+            cb.onclick = function(e) {
+              e.stopPropagation();
+              if (this.checked) li.style.textDecoration = "line-through";
+              else li.style.textDecoration = "none";
+            };
+            li.insertBefore(cb, li.firstChild);
+          }
+        });
+      }, 0);
+    };
+    insertLinkBtn.onclick = function() {
+      let url = prompt("Enter the link URL:");
+      if (!url) return;
+      if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+      exec('createLink', url);
+    };
+    insertImageBtn.onclick = () => imageInput.click();
+    imageInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          insertImage(e.target.result);
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+      this.value = '';
+    });
+    saveDocBtn.onclick = function() {
+      if (activeDoc && getEditor()) {
+        activeDoc.content = getEditor().innerHTML;
+        activeDoc.updated = new Date().toISOString();
+        saveDrafts();
+        alert("Document saved to Drafts!");
+      }
+    };
+    document.getElementById('newDocBtn').onclick = addNewTab;
+    document.getElementById('draftsBtn').onclick = function() {
+      window.location.href = "drafts.html";
+    };
+    function setupEditorFeatures(editor, resizer) {
+      editor.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        editor.style.background = "#f5f2fe";
+      });
+      editor.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        editor.style.background = "";
+      });
+      editor.addEventListener('drop', function(e) {
+        e.preventDefault();
+        editor.style.background = "";
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0 && files[0].type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            insertImage(event.target.result);
+          };
+          reader.readAsDataURL(files[0]);
+        }
+      });
+      editor.addEventListener('paste', function(e) {
+        if (e.clipboardData) {
+          const items = e.clipboardData.items;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+              const file = items[i].getAsFile();
+              const reader = new FileReader();
+              reader.onload = function(event) {
+                insertImage(event.target.result);
+              };
+              reader.readAsDataURL(file);
+              e.preventDefault();
+              break;
+            }
+          }
+        }
+      });
+      let resizingImg = null;
+      let startX = 0, startWidth = 0;
+      editor.addEventListener('mousedown', function(e) {
+        if (e.target.tagName === 'IMG') {
+          e.preventDefault();
+          resizingImg = e.target;
+          showImageResizer(resizingImg, resizer);
+        } else {
+          hideImageResizer(resizer);
+        }
+      });
+      resizer.addEventListener('mousedown', function(e) {
+        if (resizingImg) {
+          e.preventDefault();
+          startX = e.pageX;
+          startWidth = resizingImg.offsetWidth;
+          document.addEventListener('mousemove', doResizeImage);
+          document.addEventListener('mouseup', endResizeImage);
+        }
+      });
+      function doResizeImage(e) {
+        if (!resizingImg) return;
+        let newWidth = Math.max(50, startWidth + (e.pageX - startX));
+        resizingImg.style.width = newWidth + "px";
+        showImageResizer(resizingImg, resizer);
+      }
+      function endResizeImage() {
+        document.removeEventListener('mousemove', doResizeImage);
+        document.removeEventListener('mouseup', endResizeImage);
+        hideImageResizer(resizer);
+      }
     }
+    function showImageResizer(img, resizer) {
+      resizer.style.display = 'block';
+      resizer.style.left = img.offsetLeft + 'px';
+      resizer.style.top = img.offsetTop + 'px';
+      resizer.style.width = img.offsetWidth + 'px';
+      resizer.style.height = img.offsetHeight + 'px';
+      resizer.style.position = "absolute";
+    }
+    function hideImageResizer(resizer) {
+      resizer.style.display = 'none';
+    }
+    function insertImage(src) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = "Pasted Image";
+      img.style.maxWidth = "92%";
+      img.style.display = "block";
+      img.style.margin = "18px auto";
+      img.style.borderRadius = "10px";
+      img.style.boxShadow = "0 1px 12px #7c3aed18";
+      img.style.border = "1.1px solid #ececec";
+      insertNodeAtCaret(img);
+    }
+    function insertNodeAtCaret(node) {
+      let sel = window.getSelection();
+      if (!sel || !sel.rangeCount) {
+        getEditor().appendChild(node);
+        return;
+      }
+      let range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(node);
+      sel.collapseToEnd();
+    }
+    function exec(command, value = null) {
+      document.execCommand(command, false, value);
+      getEditor().focus();
+    }
+    function updateToolbarState() {
+      toolbarBtns.forEach(btn => {
+        const cmd = btn.getAttribute('data-command');
+        let active = false;
+        try {
+          if (cmd === 'bold') active = document.queryCommandState('bold');
+          if (cmd === 'italic') active = document.queryCommandState('italic');
+          if (cmd === 'underline') active = document.queryCommandState('underline');
+          if (cmd === 'strikeThrough') active = document.queryCommandState('strikeThrough');
+        } catch {}
+        btn.setAttribute('aria-pressed', active);
+        if (active) btn.classList.add('active'); else btn.classList.remove('active');
+      });
+    }
+    document.body.addEventListener('keydown', function(e) {
+      if (!getEditor() || document.activeElement !== getEditor()) return;
+      if (e.ctrlKey && e.key.toLowerCase() === "b") { exec('bold'); e.preventDefault(); }
+      if (e.ctrlKey && e.key.toLowerCase() === "i") { exec('italic'); e.preventDefault(); }
+      if (e.ctrlKey && e.key.toLowerCase() === "u") { exec('underline'); e.preventDefault(); }
+      if (e.ctrlKey && e.key.toLowerCase() === "z") { exec('undo'); e.preventDefault(); }
+      if (e.ctrlKey && e.key.toLowerCase() === "y") { exec('redo'); e.preventDefault(); }
+      if (e.ctrlKey && e.key === "Tab") {
+        let idx = docs.findIndex(d=>d.id===activeDoc.id);
+        let newIdx = e.shiftKey ? (idx-1+docs.length)%docs.length : (idx+1)%docs.length;
+        openTab(docs[newIdx].id);
+        e.preventDefault();
+      }
+    });
+
+    if (!docs.length) {
+      docs.push(createDoc("Untitled Document"));
+      saveDrafts();
+    }
+    activeDoc = docs[docs.length-1];
+    renderTabs();
+    renderEditor();
+
+    window.addEventListener('resize', function() {
+      if (getEditor()) {
+        if (window.innerWidth < 600) {
+          getEditor().style.fontSize = "1.03rem";
+        } else {
+          getEditor().style.fontSize = activeDoc.size;
+        }
+      }
+    });
   </script>
 </body>
 </html>
