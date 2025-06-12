@@ -83,6 +83,7 @@
       padding-left: 14px;
       overflow-x: auto;
       scrollbar-width: thin;
+      gap: 7px;
     }
     .tab {
       font-weight: 600;
@@ -120,13 +121,14 @@
       background: #fbe1f6;
     }
     .tab-bar .add-tab-btn,
-    .drafts-btn {
+    .drafts-btn,
+    .dashboard-btn {
       background: var(--btn-gradient);
       color: #fff;
       border: none;
       font-size: 1.23rem;
       font-weight: 700;
-      margin: 7px 7px 7px 0;
+      margin: 7px 0 7px 0;
       border-radius: 12px;
       padding: 7px 24px 7px 24px;
       cursor: pointer;
@@ -134,20 +136,34 @@
       transition: background 0.15s, transform 0.13s;
       outline: none;
       display: flex; align-items: center; gap: 7px;
+      text-decoration: none;
+      line-height: 1.2;
     }
     .tab-bar .add-tab-btn:hover,
-    .drafts-btn:hover {
+    .drafts-btn:hover,
+    .dashboard-btn:hover {
       background: linear-gradient(90deg, var(--primary), var(--primary2));
       transform: scale(1.05);
       color: #fff;
+      text-decoration: none;
     }
     .drafts-btn {
-      margin-left: auto;
       font-size: 1.05rem;
       padding: 7px 25px;
       border-radius: 11px;
       font-weight: 600;
       letter-spacing: 0.02em;
+      margin-left: auto;
+      margin-right: 0;
+    }
+    .dashboard-btn {
+      font-size: 1.05rem;
+      padding: 7px 25px;
+      border-radius: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-left: 7px;
+      margin-right: 0;
     }
     .editor-toolbar {
       background: var(--toolbar-bg);
@@ -283,7 +299,7 @@
       .container { margin: 0; border-radius: 0; box-shadow: none; min-height: 100vh;}
       .tab-bar {padding-left: 2vw;}
       .tab {font-size: 1em; padding: 10px 13px;}
-      .tab-bar .add-tab-btn, .drafts-btn {font-size: 1em; padding: 7px 14px;}
+      .tab-bar .add-tab-btn, .drafts-btn, .dashboard-btn {font-size: 1em; padding: 7px 14px;}
       .editor-toolbar { padding: 0 4px; gap: 5px; min-height: 54px;}
       .editor-wrap {border-radius: 0;}
       .editor-area { font-size: 1.02rem; padding: 11vw 2vw 14vw 2vw; min-height: 62vh;}
@@ -304,6 +320,7 @@
       <!-- Tabs will be injected here -->
       <button class="add-tab-btn" id="newDocBtn" title="Create New Document">＋ New Document</button>
       <button class="drafts-btn" id="draftsBtn" onclick="window.location.href='drafts.html'">📄 Drafts</button>
+      <a href="index.html" class="dashboard-btn" id="dashboardBtn" title="Back to Dashboard">🏠 Back to Dashboard</a>
     </div>
     <!-- Toolbar -->
     <div class="editor-toolbar" id="toolbar">
@@ -666,6 +683,8 @@
     document.getElementById('draftsBtn').onclick = function() {
       window.location.href = "drafts.html";
     };
+    // No JS for dashboardBtn needed: it's a link
+
     function setupEditorFeatures(editor, resizer) {
       editor.addEventListener('dragover', function(e) {
         e.preventDefault();
