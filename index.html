@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RQR9BDLJ26');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RQR9BDLJ26');
+  </script>
   <meta charset="UTF-8">
   <title>TaskFlows</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- FIXED FOR MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -64,7 +63,6 @@
       position: relative;
       backdrop-filter: none;
     }
-    /* Sidebar */
     .sidebar {
       background: var(--glass2);
       width: 260px;
@@ -77,9 +75,48 @@
       height: 100vh;
       z-index: 2;
       left: 0;
+      top: 0;
       box-shadow: 4px 0 24px #885af829;
       backdrop-filter: blur(13px) saturate(1.2);
       transition: left 0.3s;
+    }
+    .sidebar.hide {
+      left: -290px;
+    }
+    .sidebar.open {
+      left: 0;
+    }
+    .hamburger {
+      display: none;
+      position: fixed;
+      z-index: 10001;
+      left: 18px;
+      top: 20px;
+      width: 46px;
+      height: 46px;
+      background: var(--primary-light);
+      border: 2px solid var(--primary2);
+      border-radius: 12px;
+      box-shadow: 0 4px 18px #885af822;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border 0.2s;
+    }
+    .hamburger:focus { outline: 2px solid var(--primary2);}
+    .hamburger-icon {
+      width: 28px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hamburger-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: all 0.3s;
     }
     .logo {
       display: flex;
@@ -171,7 +208,6 @@
       background: #f4f2f8;
       color: var(--primary2);
     }
-    /* Main */
     .main {
       flex: 1;
       margin-left: 260px;
@@ -197,24 +233,6 @@
       gap: 20px;
       flex: 1;
     }
-    .menu-btn {
-      background: var(--glass);
-      border: none;
-      border-radius: 10px;
-      width: 38px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.32rem;
-      cursor: pointer;
-      box-shadow: 0 2px 10px #885af822;
-      margin-right: 8px;
-      display: none;
-      color: var(--primary);
-      transition: background 0.14s, color 0.13s;
-    }
-    .menu-btn:hover { background: var(--primary-light); color: var(--primary2);}
     .search-bar {
       flex: 1;
       position: relative;
@@ -251,7 +269,6 @@
       align-items: center;
       gap: 24px;
     }
-    /* Main Content */
     .main-content {
       flex: 1;
       padding: 22px 38px 44px 38px;
@@ -367,7 +384,6 @@
     .stat-value.orange {
       color: #f97316;
     }
-    /* Project Cards */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -409,10 +425,10 @@
       align-items: center;
       gap: 10px;
       letter-spacing: 0.01em;
-      background: linear-gradient(90deg, var(--primary), var(--primary2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #2d1f46;
+    }
+    .project-title .dot {
+      margin-top: 2px;
     }
     .dot {
       width: 12px;
@@ -434,27 +450,33 @@
       font-size: 1.04rem;
       font-weight: 600;
       text-transform: lowercase;
-      background: #f3f6fa;
+      background: #e4e8f7;
       color: #5d8ffd;
       display: inline-block;
       vertical-align: middle;
       letter-spacing: 0.03em;
+      border: 1.5px solid #d2d2fe;
+      box-shadow: 0 1px 8px #885af822;
     }
     .status-badge.inprogress {
       background: #e9f2fe;
       color: #357bff;
+      border: 1.5px solid #b0d6ff;
     }
     .status-badge.completed {
       background: #d9f7e8;
       color: #19b35a;
+      border: 1.5px solid #9be8c7;
     }
     .status-badge.planning {
       background: #fdf6eb;
       color: #eaa13c;
+      border: 1.5px solid #ffe1ab;
     }
     .status-badge.review {
       background: #f4eafc;
       color: #ae6ae7;
+      border: 1.5px solid #e2c7fc;
     }
     .project-menu-btn {
       background: none;
@@ -568,7 +590,6 @@
       margin-right: 4px;
       vertical-align: middle;
     }
-    /* Responsive: Laptops/Tablets */
     @media (max-width: 1300px) {
       .projects-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -581,88 +602,35 @@
       }
     }
     @media (max-width: 950px) {
-      .projects-grid {
-        grid-template-columns: 1fr;
-      }
       .sidebar {
-        width: 100vw;
-        height: auto;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: flex-start;
-        border-right: none;
-        border-bottom: 1.5px solid var(--primary-light);
-        position: static;
-        z-index: 1;
+        left: -290px;
+      }
+      .sidebar.open {
+        left: 0;
+      }
+      .hamburger {
+        display: flex;
       }
       .main {
         margin-left: 0;
       }
     }
     @media (max-width: 700px) {
-      .topbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
+      .hamburger {
+        width: 38px;
+        height: 38px;
+        left: 8px;
+        top: 10px;
       }
-      .projects-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-    }
-    /* --- MOBILE (<600px) --- */
-    @media (max-width: 600px) {
-      .container {
-        flex-direction: column;
-        min-height: 100vh;
+      .hamburger-icon {
+        width: 18px;
+        height: 16px;
       }
       .sidebar {
-        position: fixed;
-        left: -100vw;
-        top: 0;
         width: 80vw;
+        min-width: 220px;
         max-width: 330px;
-        height: 100vh;
-        z-index: 999;
-        transition: left 0.3s;
-        box-shadow: 2px 0 14px #885af822;
-        padding: 32px 12px 20px 12px;
-        border-bottom: none;
-        border-right: 1.5px solid var(--primary-light);
-        flex-direction: column;
-        align-items: stretch;
-        backdrop-filter: blur(14px) saturate(1.3);
       }
-      .sidebar.open { left: 0; }
-      .main { margin-left: 0; min-width: 0; width: 100vw; }
-      .topbar {
-        padding: 14px 4vw 0 4vw;
-        min-height: 44px;
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-      }
-      .menu-btn { display: flex; margin-right: 8px; }
-      .topbar-left { gap: 10px;}
-      .main-content { padding: 13px 2vw 18px 2vw;}
-      .projects-header { flex-direction: column; align-items: stretch; gap: 7px;}
-      .projects-title { font-size: 1.22rem; gap: 7px;}
-      .projects-title-icon { width: 32px; height: 32px; font-size: 1rem;}
-      .projects-desc { font-size: 0.98rem; margin-left: 0; margin-top: 1px;}
-      .new-project-btn { width: 100%; padding: 10px 0; font-size: 1rem;}
-      .stats-row { flex-direction: column; gap: 12px; margin-bottom: 13px;}
-      .stat-card { min-width: 0; padding: 13px 7px 12px 11px; font-size: 0.96rem;}
-      .projects-grid { grid-template-columns: 1fr; gap: 13px; margin-top: 7px;}
-      .project-card { padding: 12px 4px 10px 7px; min-height: 90px; font-size: 0.97rem;}
-      .project-header { margin-bottom: 2px;}
-      .project-title { font-size: 0.99rem; gap: 4px;}
-      .project-desc { font-size: 0.96rem;}
-      .priority { font-size: 0.94rem;}
-      #modalBox { max-width: 98vw !important; width: 98vw; margin: 8vw auto 0 auto !important; padding: 13px 4px 15px 4px !important;}
-      #modalOverlay { align-items: flex-start;}
-      input, select, textarea { font-size: 1rem !important;}
-      .sidebar::after { display: none;}
     }
     ::-webkit-scrollbar { width: 8px; background: #f4f3fa;}
     ::-webkit-scrollbar-thumb { background: #ede9fe; border-radius: 16px;}
@@ -671,9 +639,16 @@
   </style>
 </head>
 <body>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <span class="hamburger-icon">
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </span>
+  </button>
   <div class="container">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div>
         <div class="logo">
           <span class="logo-icon"><svg width="21" height="21" fill="none"><rect x="1" y="1" width="19" height="19" rx="5" fill="#fff"/><rect x="1" y="1" width="19" height="19" rx="5" stroke="#885af8" stroke-width="2"/><rect x="6" y="6" width="9" height="9" rx="2" fill="#885af8"/></svg></span>
@@ -707,7 +682,6 @@
       <!-- Topbar -->
       <div class="topbar">
         <div class="topbar-left">
-          <button class="menu-btn" aria-label="Open sidebar"><span>☰</span></button>
           <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search tasks, notes, projects…">
             <span class="search-icon">🔍</span>
@@ -792,7 +766,64 @@
     </div>
   </div>
   <script>
-    // Persist projects in localStorage so new projects are saved
+    // Hamburger menu logic
+    const sidebar = document.getElementById('sidebar');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebar.classList.remove('hide');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebar.classList.add('hide');
+    }
+    function toggleSidebar() {
+      if (sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    }
+    // Responsive: hide sidebar by default on small screens
+    function handleSidebarOnResize() {
+      if (window.innerWidth <= 950) {
+        closeSidebar();
+        hamburgerBtn.style.display = 'flex';
+      } else {
+        sidebar.classList.remove('hide');
+        sidebar.classList.remove('open');
+        hamburgerBtn.style.display = 'none';
+      }
+    }
+    window.addEventListener('resize', handleSidebarOnResize);
+    handleSidebarOnResize();
+    hamburgerBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleSidebar();
+    });
+    // Close sidebar when click outside
+    document.addEventListener('click', function(e) {
+      if (
+        window.innerWidth <= 950 &&
+        sidebar.classList.contains('open') &&
+        !sidebar.contains(e.target) &&
+        !hamburgerBtn.contains(e.target)
+      ) {
+        closeSidebar();
+      }
+    });
+    // Close on navigation
+    sidebar.addEventListener('click', function(e) {
+      if (
+        (e.target.tagName === 'A' || e.target.classList.contains('nav-item'))
+        && window.innerWidth <= 950
+      ) {
+        closeSidebar();
+      }
+    });
+
+    // ---- TaskFlows JS (projects, modal, etc) ----
     const PROJECTS_KEY = 'taskflows-projects';
     let projectsData = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]');
 
@@ -834,9 +865,9 @@
           <div class="project-header">
             <span class="project-title">
               <span class="${dotClass}"></span>
-              ${p.title}
-              <span class="${badge.class}">${badge.text}</span>
+              <span>${p.title}</span>
             </span>
+            <span class="${badge.class}" style="margin-top:2px; margin-left:8px;">${badge.text}</span>
             <button class="project-menu-btn" tabindex="0" aria-label="Show menu">⋯</button>
             <div class="project-menu-dropdown">
               <button class="complete-btn">${p.status !== "completed" ? "Mark as Completed" : "Mark as In Progress"}</button>
@@ -860,7 +891,6 @@
         </div>
         `;
       });
-      // Attach event listeners for project menus after rendering
       attachProjectMenus();
     }
 
@@ -883,12 +913,10 @@
       document.getElementById('statAvgProgress').className = "stat-value orange";
     }
 
-    // Save projects to localStorage
     function saveProjects() {
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(projectsData));
     }
 
-    // Sidebar nav functionality
     document.querySelectorAll('.nav-item[data-page]').forEach(item => {
       item.addEventListener('click', function(e) {
         if (e.target.tagName === "A") return;
@@ -916,7 +944,6 @@
     }
     function capitalize(str){ return str.charAt(0).toUpperCase()+str.slice(1); }
 
-    // New Project Modal
     function showModal() {
       document.getElementById('modalOverlay').style.display = '';
       document.getElementById('newProjectTitle').focus();
@@ -1070,30 +1097,8 @@
       });
     }
 
-    // --- MOBILE SIDEBAR TOGGLE ---
-    const sidebar = document.querySelector('.sidebar');
-    const menuBtn = document.querySelector('.menu-btn');
-    menuBtn.addEventListener('click', function(e) {
-      sidebar.classList.toggle('open');
-      e.stopPropagation();
-    });
-    document.addEventListener('click', function(e) {
-      if (window.innerWidth <= 600 && sidebar.classList.contains('open')) {
-        if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-          sidebar.classList.remove('open');
-        }
-      }
-    });
-    sidebar.addEventListener('click', function(e) {
-      if (e.target.tagName === 'A' || e.target.classList.contains('nav-item')) {
-        sidebar.classList.remove('open');
-      }
-    });
-
-    // Initial render
     renderProjects(projectsData);
     updateStats();
-
   </script>
 </body>
 </html>
