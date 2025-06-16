@@ -360,7 +360,6 @@
     @media (max-width: 400px) {
       .draft-item { padding: 7px 2vw 7px 7px; }
     }
-    /* Button ripple effect */
     .ripple {
       position: absolute;
       border-radius: 50%;
@@ -388,6 +387,9 @@
         </button>
         <button class="header-btn" onclick="window.location.href='index.html'" id="dashboardBtn">
           <span class="icon">🏠</span>Back to Dashboard
+        </button>
+        <button class="header-btn" onclick="addNewDraft()" id="newDraftBtn" style="background: var(--secondary);">
+          <span class="icon">➕</span>New Draft
         </button>
       </div>
       <div class="search-bar-container">
@@ -500,8 +502,15 @@
       if (e) ripple(e);
       // Store the selected draft id in sessionStorage to communicate to the editor
       sessionStorage.setItem('selectedDraftId', id);
+      // Also store the full draft object for immediate access (fix for "new draft can't open")
+      const drafts = getDrafts();
+      const draft = drafts.find(d => d.id === id);
+      if (draft) {
+        sessionStorage.setItem('selectedDraft', JSON.stringify(draft));
+      }
       window.location.href = `texteditor.html?draft=${encodeURIComponent(id)}`;
     }
+
     function deleteDraft(id, e) {
       if (e) ripple(e, "red");
       setTimeout(()=>{
@@ -532,6 +541,7 @@
       let idx = drafts.findIndex(d=>d.id===id);
       if(idx > -1) {
         drafts[idx].notes = value;
+        drafts[idx].updated = new Date().toISOString();
         setDrafts(drafts);
       }
       editingDraftId = null;
@@ -586,14 +596,34 @@
       if (e.target.tagName === 'BUTTON') e.target.classList.remove('pressed');
     }, {passive:true});
 
+    // Add New Draft feature (Fix: after adding, opens the draft directly in editor)
+    function addNewDraft() {
+      let drafts = getDrafts();
+      // Generate unique ID
+      let id = "draft-"+Date.now()+"-"+Math.floor(Math.random()*10000);
+      const newDraft = {
+        id,
+        title: "Untitled",
+        notes: "",
+        updated: new Date().toISOString(),
+        content: ""
+      };
+      drafts.push(newDraft);
+      setDrafts(drafts);
+      renderDrafts(document.getElementById('searchBar').value);
+      // Open in editor right away, and set selectedDraft in sessionStorage
+      sessionStorage.setItem('selectedDraftId', id);
+      sessionStorage.setItem('selectedDraft', JSON.stringify(newDraft));
+      window.location.href = `texteditor.html?draft=${encodeURIComponent(id)}`;
+    }
+    window.addNewDraft = addNewDraft;
+
     renderDrafts();
 
-    // Focus first element for accessibility
     setTimeout(()=>{
       let first = document.querySelector('.draft-item');
       if(first) first.focus();
     }, 200);
-
   </script>
 </body>
 </html>
