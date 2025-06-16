@@ -472,11 +472,12 @@
           <span class="draft-date">${formatDate(draft.updated)}</span>
           ${notesSection}
           <div class="draft-actions">
-            <button class="open-btn" data-draft-id="${draft.id}" title="Open in Editor">${icons.open} Open</button>
-            <button class="delete-btn" onclick="deleteDraft('${draft.id}', event)" title="Delete draft">${icons.delete} Delete</button>
+            <button class="open-btn" data-draft-id="${draft.id}" title="Open in Editor" type="button">${icons.open} Open</button>
+            <button class="delete-btn" onclick="deleteDraft('${draft.id}', event)" title="Delete draft" type="button">${icons.delete} Delete</button>
           </div>
         `;
         li.onclick = (e) => {
+          // Only trigger open if NOT clicking on a button and NOT editing
           if(!e.target.closest('button') && editingDraftId === null) loadDraft(draft.id, e)
         };
         if(editingDraftId === draft.id) li.classList.add("editing");
@@ -485,15 +486,20 @@
 
       // Make sure all open buttons work:
       document.querySelectorAll('.open-btn').forEach(btn => {
-        btn.onclick = function(e) {
+        // Remove any previous event listeners by cloning the node
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener("click", function(e) {
           e.stopPropagation();
           loadDraft(this.getAttribute('data-draft-id'), e);
-        };
+        });
       });
     }
 
     function loadDraft(id, e) {
       if (e) ripple(e);
+      // Store the selected draft id in sessionStorage to communicate to the editor
+      sessionStorage.setItem('selectedDraftId', id);
       window.location.href = `texteditor.html?draft=${encodeURIComponent(id)}`;
     }
     function deleteDraft(id, e) {
