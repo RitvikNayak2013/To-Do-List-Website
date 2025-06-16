@@ -472,7 +472,7 @@
           <span class="draft-date">${formatDate(draft.updated)}</span>
           ${notesSection}
           <div class="draft-actions">
-            <button onclick="loadDraft('${draft.id}', event)" title="Open in Editor">${icons.open} Open</button>
+            <button class="open-btn" data-draft-id="${draft.id}" title="Open in Editor">${icons.open} Open</button>
             <button class="delete-btn" onclick="deleteDraft('${draft.id}', event)" title="Delete draft">${icons.delete} Delete</button>
           </div>
         `;
@@ -481,6 +481,14 @@
         };
         if(editingDraftId === draft.id) li.classList.add("editing");
         list.appendChild(li);
+      });
+
+      // Make sure all open buttons work:
+      document.querySelectorAll('.open-btn').forEach(btn => {
+        btn.onclick = function(e) {
+          e.stopPropagation();
+          loadDraft(this.getAttribute('data-draft-id'), e);
+        };
       });
     }
 
