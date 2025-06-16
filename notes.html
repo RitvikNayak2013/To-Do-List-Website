@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RQR9BDLJ26');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RQR9BDLJ26');
+  </script>
   <meta charset="UTF-8">
   <title>TaskFlows Notes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+    /* --- [CSS from your original file, unchanged] --- */
     :root {
       --primary: #6C63FF;
       --primary2: #ff6ccc;
@@ -257,35 +257,7 @@
     }
     /* Note search bar */
     .note-search-bar {
-      position: relative;
-      margin: 22px 0 30px 0;
-      width: 100%;
-    }
-    .note-search-bar input {
-      width: 100%;
-      padding: 13px 44px 13px 16px;
-      border: 1.7px solid var(--border-glass-2);
-      border-radius: 1.1rem;
-      background: var(--surface-glass);
-      font-size: 1.09rem;
-      outline: none;
-      transition: border 0.13s, background 0.13s;
-      font-weight: 500;
-      color: #2b2b4b;
-      box-shadow: 0 1px 6px #ff6ccc33;
-      backdrop-filter: blur(2px);
-    }
-    .note-search-bar input:focus {
-      border: 1.7px solid var(--primary);
-      background: #fff;
-    }
-    .note-search-icon {
-      position: absolute;
-      right: 14px;
-      top: 12px;
-      color: var(--primary2);
-      font-size: 1.13rem;
-      pointer-events: none;
+      display: none;
     }
     /* Notes grid and cards */
     .notes-grid {
@@ -536,15 +508,15 @@
         border-radius: 8px;
         margin-top: 0;
       }
-      .note-search-bar {
-        margin: 10px 0 14px 0;
+      .search-bar {
+        max-width: 99vw;
       }
-      .note-search-bar input {
+      .search-bar input {
         font-size: 1em;
         padding: 10px 12px 10px 10px;
         border-radius: 8px;
       }
-      .note-search-icon {
+      .search-icon {
         top: 9px;
         font-size: 1em;
       }
@@ -625,7 +597,7 @@
     <div class="topbar">
       <div class="topbar-left">
         <div class="search-bar">
-          <input type="text" id="searchInputAll" placeholder="Search tasks, notes, projects..." autocomplete="off">
+          <input type="text" id="searchNotesInput" placeholder="Search notes, tasks, projects..." autocomplete="off">
           <span class="search-icon"><i class="fa fa-search"></i></span>
         </div>
       </div>
@@ -641,10 +613,7 @@
         </div>
         <button class="new-note-btn" id="newNoteBtn"><span>＋</span> New Note</button>
       </div>
-      <div class="note-search-bar">
-        <input type="text" id="searchNotesInput" placeholder="Search notes..." autocomplete="off">
-        <span class="note-search-icon"><i class="fa fa-search"></i></span>
-      </div>
+      <!-- Removed duplicate note-search-bar here -->
       <div class="notes-grid" id="notesGrid"></div>
     </div>
   </div>
@@ -824,16 +793,6 @@
     // --- INIT ---
     seedDemoNotes();
     renderNotes();
-    // --- Top bar dummy buttons ---
-    document.querySelectorAll('.topbar .icon-btn')[1].addEventListener('click', function(){
-      alert('Settings coming soon!');
-    });
-    document.querySelectorAll('.topbar .icon-btn')[0].addEventListener('click', function(){
-      alert('Notifications coming soon!');
-    });
-    document.getElementById('userAvatar').addEventListener('click', function(){
-      alert('Profile menu coming soon!');
-    });
   </script>
 </body>
 </html>
