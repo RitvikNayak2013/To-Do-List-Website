@@ -42,7 +42,7 @@
       width: 100vw;
       min-height: 100vh;
       font-family: 'Inter', Arial, sans-serif;
-      background: linear-gradient(-45deg, #f7b267, #70a1d7, #b5faff, #eeecfc, #fff8e1, #f5f2fe);
+      background: linear-gradient(-45deg, #86f767, #70a1d7, #b5faff, #eeecfc, #fff8e1, #f5f2fe);
       background-size: 400% 400%;
       animation: animatedGradient 14s ease-in-out infinite;
       color: #222;
@@ -72,7 +72,7 @@
       border-right: 1.5px solid var(--border);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       position: fixed;
       height: 100vh;
       z-index: 12;
@@ -87,6 +87,12 @@
     }
     .sidebar.open {
       left: 0;
+    }
+    .sidebar .profile-btn-container {
+      margin-top: 0px;
+      margin-bottom: 0;
+      display: flex;
+      justify-content: center;
     }
     .hamburger {
       display: none;
@@ -595,8 +601,6 @@
       margin-right: 4px;
       vertical-align: middle;
     }
-
-    /* --------- Responsive Mobile --------- */
     @media (max-width: 950px) {
       .sidebar {
         left: -290px;
@@ -630,7 +634,6 @@
       .stat-icon { font-size: 1.1rem; padding: 8px; }
       .sidebar .logo { margin-bottom: 22px;}
     }
-
     @media (max-width: 700px) {
       html, body { font-size: 15px;}
       .container {
@@ -741,7 +744,6 @@
         font-size: 1.1rem !important;
       }
     }
-
     @media (max-width: 500px) {
       html, body { font-size: 14px;}
       .sidebar {
@@ -760,6 +762,169 @@
     ::-webkit-scrollbar-thumb { background: #ede9fe; border-radius: 16px;}
     ::-webkit-scrollbar-thumb:hover { background: #d1c4e9; }
     ::selection { background: #ede9fe;}
+    #topProfileBtn {
+      width: 38px; height: 38px; border-radius:50%; object-fit:cover;
+      border:2.5px solid #ff6ccc77; background:#fff;
+      box-shadow: 0 1px 8px #885af822;
+      cursor:pointer; transition:box-shadow .16s,border .12s;
+      margin-right: 6px;
+      display:inline-block;
+    }
+    #topProfileBtn:hover {
+      box-shadow:0 5px 16px #885af844;
+      border:2.5px solid #885af8;
+    }
+    .profile-dropdown {
+      position: absolute;
+      top: 48px; right: 0;
+      background: rgba(255,255,255,0.97);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      border: 1.4px solid var(--primary2);
+      z-index: 10010;
+      min-width: 240px;
+      padding: 14px 0 7px 0;
+      animation: fadeIn .18s;
+      display: none; flex-direction: column;
+      transition: background .2s;
+    }
+    .profile-dropdown.show { display:flex; }
+    .profile-dropdown .pd-avatar {
+      width:62px;height:62px;border-radius:50%;margin:0 auto 10px auto;display:block;
+      border:2px solid #885af8;
+      background:#fff;object-fit:cover;
+    }
+    .profile-dropdown .pd-name {
+      text-align:center;font-weight:700;font-size:1.17rem;color:#885af8;margin-bottom:2px;
+    }
+    .profile-dropdown .pd-email {
+      text-align:center;color:#888;font-size:.98rem;margin-bottom:8px;user-select:all;
+    }
+    .profile-dropdown .pd-bio {
+      text-align:center;font-size:.99rem;color:#4a5568;margin:0 1.1em 10px 1.1em;
+      background:rgba(255,255,255,0.58);border-radius:8px;padding:3px 8px;min-height:1.7em;
+    }
+    .profile-dropdown .pd-actions {
+      display:flex;flex-direction:column;gap:5px;margin:10px 0 0 0;padding:0 20px;
+    }
+    .profile-dropdown .pd-action-btn {
+      background:linear-gradient(90deg, var(--primary2), var(--primary));
+      color:#fff;font-weight:700;font-size:1.06rem;border:none;border-radius:8px;padding:7px 0;margin:0;
+      cursor:pointer;transition:background .15s;
+      margin-bottom:4px;
+    }
+    .profile-dropdown .pd-action-btn:hover {
+      background:linear-gradient(90deg, var(--primary), var(--primary2));
+    }
+    .profile-dropdown .pd-action-btn.logout {
+      background:#ff5449;color:#fff;font-weight:800;
+    }
+    .profile-dropdown .pd-action-btn.logout:hover {background:#f97316;}
+    .profile-dropdown .pd-action-btn.secondary {
+      background:#ececec;
+      color:#885af8;
+      font-weight:700;
+    }
+    .profile-dropdown .pd-action-btn.secondary:hover {
+      background: #f5f2fe;
+      color: #ad6eea;
+    }
+    .profile-dropdown .pd-divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 13px 0 7px 0;
+    }
+    .auth-modal {
+      position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(26,32,44,0.20);
+      display:flex;align-items:center;justify-content:center;z-index:20000;
+    }
+    .auth-modal-box {
+      background: var(--glass);
+      border-radius: 1.2em;
+      max-width: 370px;
+      margin: 100px auto 0 auto;
+      padding: 32px 30px 28px 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      backdrop-filter: blur(13px) saturate(1.2);
+      border: 1.7px solid var(--primary2);
+      animation: fadeIn .19s;
+    }
+    .auth-modal-box h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 17px;
+      background: linear-gradient(90deg,#3ea8ff 13%,#ad6eea 78%,#81fbb8 95%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      text-fill-color:transparent;
+      text-align:center;
+    }
+    .auth-modal-box label {
+      font-size: 1.07rem;
+      margin: 0.5em 0 0.17em 0.09em;
+      font-weight: 600;
+      color: #885af8;
+      display: block;
+      letter-spacing: 0.01em;
+    }
+    .auth-modal-box input, .auth-modal-box textarea {
+      width: 100%;
+      font-size: 1.07rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--primary2);
+      padding: 10px 13px;
+      margin-bottom: 10px;
+      margin-top: 0.1em;
+      box-sizing: border-box;
+      background:rgba(255,255,255,0.89);
+      font-family: inherit;
+      resize: none;
+    }
+    .auth-modal-box textarea {min-height:55px;}
+    .auth-modal-box input[type="file"]{border:none;padding:0;}
+    .auth-modal-box .pfp-preview {
+      width: 64px; height: 64px; object-fit:cover; border-radius:50%;
+      margin: 0.2em auto 0.8em auto; display:block; border:2px solid #ad6eea77; background:#fff;
+    }
+    .auth-modal-box .primary-btn {
+      margin-top:0.25rem;
+      width:100%;
+      padding:1.09rem 0;
+      border:none;
+      border-radius:15px;
+      font-size:1.08rem;
+      font-weight:800;
+      cursor:pointer;
+      background: linear-gradient(90deg, #3ea8ff 0%, #ad6eea 100%);
+      color:#fff;
+      box-shadow:0 5px 18px 0 rgba(44,69,160,0.14);
+      outline:none;
+      transition: background .23s,transform .14s,box-shadow .19s, letter-spacing .17s;
+      letter-spacing:0.01em;
+      display:block;
+      min-width:0;
+    }
+    .close-btn {
+      position:absolute;top:14px;right:13px;
+      background:none;border:none;font-size:1.3rem;cursor:pointer;color:#ad6eea;
+      z-index:11;
+    }
+    .switch-link {
+      background:none;border:none;color:#3ea8ff;cursor:pointer;font-weight:600;font-size:1.01rem;margin-top:0.5em;
+      text-decoration:underline;
+    }
+    .error {
+      color:#e74c3c;
+      text-align:center;
+      font-size:1.07rem;
+      min-height:22px;
+      margin-bottom:4px;
+      font-weight:600;
+      letter-spacing:0.01em;
+      user-select:none;
+    }
   </style>
 </head>
 <body>
@@ -798,6 +963,9 @@
           </ul>
         </div>
       </div>
+      <div class="profile-btn-container">
+        <button id="userProfileBtn" style="width:100%;background:linear-gradient(90deg, var(--primary2), var(--primary));color:#fff;padding:10px 0;border:none;border-radius:10px;font-size:1.09rem;font-weight:700;box-shadow:0 2px 12px #885af830;cursor:pointer;transition:background .16s;">Profile</button>
+      </div>
     </aside>
     <!-- Main -->
     <div class="main">
@@ -809,7 +977,10 @@
             <span class="search-icon">🔍</span>
           </div>
         </div>
-        <div class="topbar-right"></div>
+        <div class="topbar-right">
+          <!-- Profile avatar button will be injected here -->
+          <div id="topProfileBtnBox" style="position:relative;"></div>
+        </div>
       </div>
       <!-- Main Content -->
       <div class="main-content" id="mainContent">
@@ -887,22 +1058,256 @@
       </div>
     </div>
   </div>
+  <!-- AUTH & PROFILE MODALS (injected by JS) -->
+  <div id="modals"></div>
   <script>
-    // Hamburger menu logic
+    // --- User Auth/Profile LocalStorage System ---
+    // Users: { email, name, password, avatar, bio }
+    const USER_KEY = 'taskflows-users';
+    const ACTIVE_USER_KEY = 'taskflows-activeuser';
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem(USER_KEY) || "[]");
+    }
+    function setUsers(users) {
+      localStorage.setItem(USER_KEY, JSON.stringify(users));
+    }
+    function findUser(email) {
+      return getUsers().find(u=>u.email===email);
+    }
+    function saveUser(user) {
+      let users = getUsers();
+      let idx = users.findIndex(u=>u.email===user.email);
+      if(idx === -1) users.push(user);
+      else users[idx] = user;
+      setUsers(users);
+    }
+    function setActiveUser(email) {
+      localStorage.setItem(ACTIVE_USER_KEY, email);
+    }
+    function getActiveUser() {
+      return localStorage.getItem(ACTIVE_USER_KEY);
+    }
+    function removeActiveUser() {
+      localStorage.removeItem(ACTIVE_USER_KEY);
+    }
+    function defaultAvatar(email) {
+      return "https://api.dicebear.com/8.x/identicon/svg?seed="+encodeURIComponent(email||"user");
+    }
+    // --- Profile Avatar in Topbar & Dropdown ---
+    const PROFILE_BTN_BOX_ID = 'topProfileBtnBox';
+    const PROFILE_DROPDOWN_ID = 'profileDropdownMenu';
+
+    let currentUserAvatar = null; // Track latest avatar
+
+    function renderProfileTopBtn() {
+      const box = document.getElementById(PROFILE_BTN_BOX_ID);
+      if (!box) return;
+      let email = getActiveUser && getActiveUser();
+      let user = email && findUser && findUser(email);
+      let avatar = currentUserAvatar || ((user && user.avatar) ? user.avatar : (user && user.email ? defaultAvatar(user.email) : "https://api.dicebear.com/8.x/identicon/svg?seed=user"));
+      box.innerHTML = `
+        <img src="${avatar}" id="topProfileBtn" title="Profile" alt="Profile" tabindex="0"/>
+        <div class="profile-dropdown" id="${PROFILE_DROPDOWN_ID}"></div>
+      `;
+      const btn = document.getElementById('topProfileBtn');
+      const dropdown = document.getElementById(PROFILE_DROPDOWN_ID);
+      if (!btn || !dropdown) return;
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        showProfileDropdown();
+      };
+      btn.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault(); showProfileDropdown();
+        }
+      };
+      document.addEventListener('click', function closeDropdown(e) {
+        if (dropdown.classList.contains('show') && !dropdown.contains(e.target) && e.target !== btn) {
+          dropdown.classList.remove('show');
+        }
+      });
+    }
+    function showProfileDropdown() {
+      const dropdown = document.getElementById(PROFILE_DROPDOWN_ID);
+      const email = getActiveUser && getActiveUser();
+      const user = email && findUser && findUser(email);
+      if (!dropdown || !user) return;
+      dropdown.innerHTML = `
+        <img src="${currentUserAvatar || user.avatar || defaultAvatar(user.email)}" class="pd-avatar" alt="Avatar"/>
+        <div class="pd-name">${user.name||user.email}</div>
+        <div class="pd-email">${user.email}</div>
+        <div class="pd-bio">${user.bio||"<span style='color:#bbb'>No bio yet.</span>"}</div>
+        <div class="pd-actions">
+          <button class="pd-action-btn" id="profileEditBtn">Edit Profile</button>
+          <button class="pd-action-btn secondary" id="changeThemeBtn">Toggle Theme</button>
+          <button class="pd-action-btn secondary" id="copyEmailBtn">Copy Email</button>
+          <hr class="pd-divider"/>
+          <button class="pd-action-btn logout" id="profileLogoutBtn">Log Out</button>
+        </div>
+      `;
+      dropdown.classList.add('show');
+      document.getElementById('profileEditBtn').onclick = function() {
+        dropdown.classList.remove('show');
+        showProfileEditModal(user);
+      };
+      document.getElementById('profileLogoutBtn').onclick = function() {
+        removeActiveUser && removeActiveUser();
+        location.reload();
+      };
+      document.getElementById('changeThemeBtn').onclick = function() {
+        document.body.classList.toggle('dark');
+        dropdown.classList.remove('show');
+      };
+      document.getElementById('copyEmailBtn').onclick = function() {
+        navigator.clipboard.writeText(user.email);
+        this.textContent = "Copied!";
+        setTimeout(()=>{this.textContent="Copy Email";},1200);
+      };
+    }
+    function showProfileEditModal(user) {
+      const m = document.getElementById('modals');
+      m.innerHTML = `
+      <div class="auth-modal" id="authModal" style="z-index:10020;">
+        <div class="auth-modal-box">
+          <button class="close-btn" onclick="document.getElementById('modals').innerHTML=''">✕</button>
+          <h2>Edit Profile</h2>
+          <form id="profileEditForm">
+            <img src="${user.avatar||defaultAvatar(user.email)}" class="pfp-preview" id="editPfpPreview" alt="Avatar"/>
+            <input type="file" id="editPfpUpload" accept="image/*">
+            <label for="editProfileName">Full Name</label>
+            <input type="text" id="editProfileName" required value="${user.name||""}">
+            <label for="editProfileEmail">Email</label>
+            <input type="email" id="editProfileEmail" required value="${user.email||""}" readonly style="opacity:0.7;">
+            <label for="editProfileBio">Bio</label>
+            <textarea id="editProfileBio" maxlength="160" placeholder="Tell us about you...">${user.bio||""}</textarea>
+            <div class="error" id="editProfileError"></div>
+            <button type="submit" class="primary-btn">Save Changes</button>
+          </form>
+        </div>
+      </div>
+      `;
+      let newAvatarDataUrl = null;
+      document.getElementById('editPfpUpload').onchange = function(e){
+        let file = this.files[0];
+        if(file) {
+          let reader = new FileReader();
+          reader.onload = function(ev) {
+            document.getElementById('editPfpPreview').src = ev.target.result;
+            newAvatarDataUrl = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      document.getElementById('profileEditForm').onsubmit = function(e){
+        e.preventDefault();
+        let name = document.getElementById('editProfileName').value.trim();
+        let bio = document.getElementById('editProfileBio').value.trim();
+        let avatar = newAvatarDataUrl || document.getElementById('editPfpPreview').src;
+        let email = user.email;
+        let u = findUser(email);
+        if(!u) return;
+        u.name = name;
+        u.bio = bio;
+        if(avatar && avatar.startsWith('data:image/')) u.avatar = avatar;
+        saveUser(u);
+        currentUserAvatar = u.avatar;
+        m.innerHTML = '';
+        setTimeout(renderProfileTopBtn, 0);
+        setTimeout(updateProfileBtn, 0);
+      };
+    }
+    function showAuthModal(type="signin") {
+      const m = document.getElementById('modals');
+      m.innerHTML = `
+      <div class="auth-modal" id="authModal">
+        <div class="auth-modal-box">
+          <button class="close-btn" onclick="document.getElementById('modals').innerHTML=''">✕</button>
+          <h2>${type === "signin" ? "Sign In" : "Create Account"}</h2>
+          <form id="authForm">
+            <label for="authEmail">Email</label>
+            <input type="email" id="authEmail" required autocomplete="username" placeholder="me@email.com">
+            ${type === "signup" ? `
+              <label for="authName">Full Name</label>
+              <input type="text" id="authName" required autocomplete="name" placeholder="Full Name">
+            ` : ""}
+            <label for="authPassword">Password</label>
+            <input type="password" id="authPassword" required minlength="6" autocomplete="${type==="signup"?"new-password":"current-password"}" placeholder="Password">
+            <div class="error" id="authError"></div>
+            <button type="submit" class="primary-btn">${type==="signin"?"Sign In":"Create Account"}</button>
+          </form>
+          <div style="text-align:center;margin-top:7px;">
+            <button class="switch-link" id="switchAuthMode">
+              ${type==="signin"?"New here? Create account":"Already have an account? Sign In"}
+            </button>
+          </div>
+        </div>
+      </div>
+      `;
+      document.getElementById('switchAuthMode').onclick = () => showAuthModal(type==="signin"?"signup":"signin");
+      document.getElementById('authForm').onsubmit = function(e){
+        e.preventDefault();
+        let email = document.getElementById('authEmail').value.trim().toLowerCase();
+        let password = document.getElementById('authPassword').value;
+        let errorBox = document.getElementById('authError');
+        if(type==="signin") {
+          let user = findUser(email);
+          if(!user || user.password !== password) {
+            errorBox.textContent = "❌ Invalid email or password";
+            return;
+          }
+          setActiveUser(email);
+          currentUserAvatar = user.avatar;
+          m.innerHTML = '';
+          renderProfileTopBtn();
+          updateProfileBtn();
+        } else {
+          let name = document.getElementById('authName').value.trim();
+          if(findUser(email)) {
+            errorBox.textContent = "❌ Email already registered";
+            return;
+          }
+          let user = {
+            email, name, password,
+            avatar: defaultAvatar(email),
+            bio: "",
+            created: Date.now()
+          };
+          saveUser(user);
+          setActiveUser(email);
+          currentUserAvatar = user.avatar;
+          m.innerHTML = '';
+          renderProfileTopBtn();
+          updateProfileBtn();
+        }
+      };
+    }
+    function updateProfileBtn() {
+      let btn = document.getElementById("userProfileBtn");
+      let email = getActiveUser();
+      let user = email && findUser(email);
+      if(user) {
+        btn.innerHTML = `<img src="${currentUserAvatar||user.avatar||defaultAvatar(user.email)}" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:7px;border:1.5px solid #ff6ccc77;">${user.name||user.email}`;
+        btn.onclick = ()=>showProfileEditModal(user);
+      } else {
+        btn.innerHTML = "Sign In";
+        btn.onclick = ()=>showAuthModal("signin");
+      }
+    }
+    updateProfileBtn();
+    if(!getActiveUser() || !findUser(getActiveUser())) showAuthModal("signin");
     const sidebar = document.getElementById('sidebar');
     const hamburgerBtn = document.getElementById('hamburgerBtn');
-
- function openSidebar() {
-  sidebar.classList.add('open');
-  sidebar.classList.remove('hide');
-  if(window.innerWidth <= 950) sidebar.style.display = 'flex';
-}
-function closeSidebar() {
-  sidebar.classList.remove('open');
-  sidebar.classList.add('hide');
-  if(window.innerWidth <= 950) sidebar.style.display = 'none';
-}
-  
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebar.classList.remove('hide');
+      if(window.innerWidth <= 950) sidebar.style.display = 'flex';
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebar.classList.add('hide');
+      if(window.innerWidth <= 950) sidebar.style.display = 'none';
+    }
     function toggleSidebar() {
       if (sidebar.classList.contains('open')) {
         closeSidebar();
@@ -944,11 +1349,8 @@ function closeSidebar() {
         closeSidebar();
       }
     });
-
-    // ---- TaskFlows JS (projects, modal, etc) ----
     const PROJECTS_KEY = 'taskflows-projects';
     let projectsData = JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]');
-
     const statusBadges = {
       "in progress": { text: "in progress", class: "status-badge inprogress" },
       "planning": { text: "planning", class: "status-badge planning" },
@@ -972,7 +1374,6 @@ function closeSidebar() {
       "medium": "priority medium",
       "low": "priority low"
     };
-
     function renderProjects(projects) {
       const grid = document.getElementById('projectsGrid');
       grid.innerHTML = '';
@@ -1015,14 +1416,12 @@ function closeSidebar() {
       });
       attachProjectMenus();
     }
-
     function formatDate(dateStr) {
       if(!dateStr) return "--";
       const d = new Date(dateStr);
       if (isNaN(d.getTime())) return dateStr;
       return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
     }
-
     function updateStats() {
       const total = projectsData.length;
       const inProgress = projectsData.filter(p=>p.status==="in progress").length;
@@ -1034,11 +1433,9 @@ function closeSidebar() {
       document.getElementById('statAvgProgress').textContent = avg + "%";
       document.getElementById('statAvgProgress').className = "stat-value orange";
     }
-
     function saveProjects() {
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(projectsData));
     }
-
     document.querySelectorAll('.nav-item[data-page]').forEach(item => {
       item.addEventListener('click', function(e) {
         if (e.target.tagName === "A") return;
@@ -1048,11 +1445,6 @@ function closeSidebar() {
         showPage(page);
       });
     });
-    document.querySelector('.settings-link').addEventListener('click', function() {
-      document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('selected'));
-      showPage('settings');
-    });
-
     function showPage(page) {
       const mc = document.getElementById('mainContent');
       if (page === "projects") {
@@ -1065,7 +1457,6 @@ function closeSidebar() {
       }
     }
     function capitalize(str){ return str.charAt(0).toUpperCase()+str.slice(1); }
-
     function showModal() {
       document.getElementById('modalOverlay').style.display = '';
       document.getElementById('newProjectTitle').focus();
@@ -1104,7 +1495,6 @@ function closeSidebar() {
       updateStats();
       hideModal();
     });
-
     document.getElementById('searchInput').addEventListener('input', function() {
       const val = this.value.toLowerCase();
       const filtered = projectsData.filter(p =>
@@ -1114,7 +1504,6 @@ function closeSidebar() {
       renderProjects(filtered);
       updateStats();
     });
-
     function attachMainEvents() {
       if(document.getElementById('newProjectBtn')){
         document.getElementById('newProjectBtn').addEventListener('click', showModal);
@@ -1151,16 +1540,12 @@ function closeSidebar() {
       }
       attachProjectMenus();
     }
-
     function attachProjectMenus() {
       document.querySelectorAll('.project-menu-btn').forEach((menuBtn, idx) => {
         const card = menuBtn.closest('.project-card');
         const dropdown = card.querySelector('.project-menu-dropdown');
-
-        // Only one menu open at a time
         menuBtn.addEventListener('click', function(e) {
           e.stopPropagation();
-          // If this menu is already open, close it
           const isOpen = dropdown.classList.contains('show');
           document.querySelectorAll('.project-menu-dropdown').forEach(d => d.classList.remove('show'));
           document.querySelectorAll('.project-menu-btn').forEach(btn => btn.classList.remove('active'));
@@ -1172,16 +1557,12 @@ function closeSidebar() {
             menuBtn.classList.remove('active');
           }
         });
-
-        // Close menu on outside click (mobile & desktop)
         document.addEventListener('click', function hideDropdowns(e) {
           if (!dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
             dropdown.classList.remove('show');
             menuBtn.classList.remove('active');
           }
         });
-
-        // Menu actions
         const completeBtn = card.querySelector('.complete-btn');
         const duplicateBtn = card.querySelector('.duplicate-btn');
         const deleteBtn = card.querySelector('.delete-btn');
@@ -1226,13 +1607,9 @@ function closeSidebar() {
         });
       });
     }
-    
-
     renderProjects(projectsData);
     updateStats();
-
-    renderProjects(projectsData);
-    updateStats();
+    renderProfileTopBtn();
   </script>
 </body>
 </html>
