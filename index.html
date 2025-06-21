@@ -925,6 +925,38 @@
       letter-spacing:0.01em;
       user-select:none;
     }
+    .profile-dropdown { z-index: 99999; }
+/* Responsive mobile dropdown centering and width */
+@media (max-width: 700px) {
+  .profile-dropdown {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    min-width: 90vw;
+    max-width: 98vw;
+  }
+  #topProfileBtnBox {
+    min-width: 0 !important;
+    width: auto;
+    position: static !important;
+    display: flex;
+    justify-content: flex-end;
+  }
+  #topProfileBtn {
+    margin-right: 0 !important;
+  }
+}
+@media (max-width: 400px) {
+  .profile-dropdown {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    min-width: 98vw;
+    max-width: 99vw;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
   </style>
 </head>
 <body>
@@ -1140,6 +1172,7 @@
         <div class="pd-bio">${user.bio||"<span style='color:#bbb'>No bio yet.</span>"}</div>
         <div class="pd-actions">
           <button class="pd-action-btn" id="profileEditBtn">Edit Profile</button>
+
           <button class="pd-action-btn secondary" id="copyEmailBtn">Copy Email</button>
           <hr class="pd-divider"/>
           <button class="pd-action-btn logout" id="profileLogoutBtn">Log Out</button>
