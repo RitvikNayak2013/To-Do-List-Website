@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Taskflows – Reimagine Task Automation</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(120deg, #181c1f 0%, #252e38 100%);
+      color: #f6f6fd;
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    #particle-bg {
+      position: fixed; inset: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0; pointer-events: none;
+      opacity: 0.97;
+    }
+    .navbar {
+      z-index: 10;
+      background: rgba(20,24,34,0.93);
+      position: fixed; top: 0; left: 0; width: 100vw;
+      box-shadow: 0 2px 18px #00ffb31a;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.5em 2em;
+      backdrop-filter: blur(7px);
+    }
+    .navbar-logo {
+      font-size: 1.5em; font-weight: 900; color: #00ffd9;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 12px #00ffd933;
+      text-decoration: none;
+    }
+    .navbar-menu {
+      display: flex; gap: 1.5em;
+      align-items: center;
+    }
+    .navbar-menu a {
+      color: #b6eaff; text-decoration: none; font-weight: 700;
+      font-size: 1em; transition: color 0.13s;
+      padding: 0.3em 0.7em; border-radius: 20px;
+    }
+    .navbar-menu a:hover { color: #e55fff; background: #262d44; }
+    .navbar-signin {
+      background: linear-gradient(90deg, #e55fff 5%, #00ffd9 94%);
+      color: #181c1f; font-weight: 800; border: none;
+      padding: 0.7em 1.8em; border-radius: 22px; margin-left: 1em;
+      cursor: pointer; font-size: 1em; transition: filter 0.17s;
+      box-shadow: 0 2px 18px #e55fff66;
+    }
+    .navbar-signin:hover { filter: brightness(1.13) saturate(1.18); }
+    .hero {
+      max-width: 1020px; margin: 0 auto;
+      text-align: center; position: relative; z-index: 2;
+      padding-top: 120px;
+    }
+    .hero-title {
+      font-size: 3.5rem; font-weight: 900;
+      letter-spacing: -0.04em; color: #f5f8fa;
+      margin-bottom: 0.10em; line-height: 1.1;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.17);
+      display: block;
+    }
+    .hero-gradient {
+      background: linear-gradient(90deg, #00ffb3 8%, #4a90e2 60%, #e55fff 97%);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent; font-size: 3.2rem; font-weight: 900;
+      margin-bottom: 0.2em; display: block;
+      text-shadow: 0 2px 32px rgba(202, 127, 255, 0.16);
+    }
+    .hero-dynamic {
+      display: inline-block;
+      min-width: 110px;
+      font-size: 1em;
+      font-weight: 900;
+      perspective: 800px;
+      vertical-align: middle;
+      letter-spacing: 0.02em;
+      will-change: transform, color;
+    }
+    .hero-dynamic-word {
+      display: inline-block;
+      transition: color 0.2s, transform 0.6s cubic-bezier(.5,1.6,.4,1);
+      color: transparent;
+      background: linear-gradient(90deg, #00ffb3 0%, #e55fff 100%);
+      -webkit-background-clip: text; background-clip: text;
+      will-change: transform, opacity;
+    }
+    .hero-dynamic-word.spin-x {
+      animation: spinWord3DX .9s cubic-bezier(.68,-0.2,.32,1.2);
+      transform-origin: 50% 60%;
+    }
+    @keyframes spinWord3DX {
+      0%   { opacity: 1; transform: rotateX(0deg) scale(1);}
+      35%  { opacity: 0; transform: rotateX(90deg) scale(0.7);}
+      65%  { opacity: 0; transform: rotateX(270deg) scale(0.7);}
+      100% { opacity: 1; transform: rotateX(360deg) scale(1);}
+    }
+    /* Keep the original spin in case it's used elsewhere */
+    .hero-dynamic-word.spin {
+      animation: spinWord .9s cubic-bezier(.68,-0.2,.32,1.2);
+      transform-origin: 50% 60%;
+    }
+    @keyframes spinWord {
+      0%   { opacity: 1; transform: rotateY(0) scale(1);}
+      35%  { opacity: 0; transform: rotateY(90deg) scale(0.7);}
+      65%  { opacity: 0; transform: rotateY(270deg) scale(0.7);}
+      100% { opacity: 1; transform: rotateY(360deg) scale(1);}
+    }
+    .hero-sub {
+      font-size: 1.3rem; color: #b6eaff; margin: 0.7em 0 2em 0;
+      text-shadow: 0 1px 5px rgba(0,0,0,0.18);
+    }
+    .hero-buttons {
+      margin-top: 1.8em;
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.85em 2.2em; border-radius: 30px;
+      font-size: 1.13rem; font-weight: 700;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.14s;
+      box-shadow: 0 4px 32px rgba(0,255,179,0.03);
+      display: inline-block;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00ffb3 5%, #4a90e2 94%);
+      color: #181c1f;
+      box-shadow: 0 2px 18px #00ffb388;
+    }
+    .btn-primary:hover { filter: brightness(1.13) saturate(1.2); }
+    .btn-secondary {
+      background: transparent; border: 2px solid #4a90e2;
+      color: #4a90e2;
+    }
+    .btn-secondary:hover {
+      background: #0c1a35; border-color: #00ffb3; color: #00ffb3;
+    }
+    .btn-git {
+      background: linear-gradient(90deg, #16181e 4%, #222c3a 96%);
+      border: 2px solid #e55fff;
+      color: #e55fff;
+      font-weight: 800;
+    }
+    .btn-git:hover {
+      background: #2d1553;
+      border-color: #00ffd9;
+      color: #00ffd9;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #00ffb3;
+      color: #00ffb3;
+      font-weight: 800;
+    }
+    .btn-outline:hover {
+      background: #0f2923;
+      border-color: #e55fff;
+      color: #e55fff;
+    }
+    .feature-showcase {
+      display: flex; gap: 2vw; justify-content: center;
+      max-width: 1200px; margin: 80px auto 0 auto;
+      flex-wrap: wrap; position: relative; z-index: 2;
+      min-height: 320px;
+    }
+    .feature-card {
+      background: linear-gradient(120deg, #1b2030 80%, #222c3a 100%);
+      border-radius: 24px; box-shadow: 0 2px 24px #0002;
+      padding: 2.5em 2em 2.2em 2em; min-width: 240px; max-width: 340px;
+      flex: 1 1 240px; margin: 1vw 0; text-align: center;
+      border: 1.5px solid #22b0ff22;
+      transition: transform 0.28s cubic-bezier(.5,1.6,.4,1), border 0.19s, box-shadow 0.22s;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center;
+      background-blend-mode: lighten;
+      margin-left: 12px; margin-right: 12px;
+    }
+    .feature-card:hover {
+      transform: scale(1.07) translateY(-7px) rotateZ(-1deg);
+      border-color: #5df6ff99;
+      box-shadow: 0 10px 50px #00ffb311;
+      z-index: 1;
+    }
+    .feature-icon {
+      font-size: 2.7em; margin-bottom: 0.6em;
+      filter: drop-shadow(0 2px 7px #00ffb355);
+      animation: floatY 2.6s ease-in-out infinite alternate;
+    }
+    @keyframes floatY {
+      0% { transform: translateY(0);}
+      100% { transform: translateY(-8px);}
+    }
+    .feature-card h2 {
+      font-size: 1.22em; font-weight: 800; margin-bottom: 0.5em;
+      color: #5df6ff;
+      letter-spacing: -0.02em;
+    }
+    .feature-card p {
+      font-size: 1.08em; color: #ebebf7cc;
+      line-height: 1.62;
+      font-weight: 500;
+      margin: 0;
+    }
+    .feature-badge {
+      background: linear-gradient(90deg, #e55fff 10%, #00ffd9 90%);
+      color: #252e38;
+      font-weight: 800;
+      font-size: 0.98em;
+      padding: 0.22em 1.1em;
+      border-radius: 13px;
+      margin-bottom: 1em;
+      margin-top: -0.7em;
+      box-shadow: 0 2px 8px #00ffb333;
+      letter-spacing: 0.06em;
+      display: inline-block;
+      animation: pulseBadge 2.2s infinite alternate;
+    }
+    @keyframes pulseBadge {
+      0% { filter: brightness(1.1);}
+      50% { filter: brightness(1.34);}
+      100% { filter: brightness(1);}
+    }
+    .feature-card::after {
+      content: '';
+      position: absolute; left: 0; bottom: 0; width: 100%; height: 5px;
+      background: linear-gradient(90deg, #00ffb3, #e55fff, #4a90e2, #00ffb3);
+      background-size: 200% 100%;
+      animation: glowLine 3s linear infinite;
+      opacity: 0.25;
+    }
+    @keyframes glowLine {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 0%; }
+    }
+    .features-row {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2vw;
+    }
+    .about-founder {
+      background: linear-gradient(110deg, #211c28 70%, #1b2233 100%);
+      border-radius: 2.3em;
+      box-shadow: 0 8px 32px #0008;
+      max-width: 900px;
+      margin: 90px auto 0 auto;
+      text-align: center;
+      padding: 2.8em 2.2em 2.2em 2.2em;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 2.7em;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .founder-photo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00ffb355 10%, #e55fff44 80%);
+      box-shadow: 0 6px 32px #0007;
+      object-fit: cover;
+      border: 3.5px solid #00ffd9;
+      margin-bottom: 1em;
+    }
+    .about-founder-content {
+      flex: 1 1 360px;
+      min-width: 230px;
+      text-align: left;
+    }
+    .about-founder-content h2 {
+      font-size: 1.5em;
+      color: #00ffd9;
+      margin-bottom: 0.5em;
+      font-weight: 900;
+    }
+    .about-founder-content p {
+      font-size: 1.09em;
+      color: #f6f6fd;
+      margin-bottom: 0.4em;
+    }
+    .about-founder-content .founder-name {
+      font-weight: 800;
+      color: #e55fff;
+      font-size: 1.12em;
+      margin-top: 0.9em;
+    }
+    /* --- REVIEWS --- */
+    .review-carousel-outer {
+      margin: 120px 0 0 0;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      overflow-x: hidden;
+    }
+    .review-carousel {
+      width: 100vw;
+      max-width: 100vw;
+      min-height: 290px;
+      display: flex;
+      align-items: stretch;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(90deg, #181c2a 70%, #292e44 100%);
+      box-shadow: 0 6px 48px #000a;
+      border-radius: 2.5em;
+      border: 4px solid transparent;
+      background-clip: padding-box, border-box;
+      background-origin: padding-box, border-box;
+      animation: megaGlow 8s linear infinite;
+    }
+    @keyframes megaGlow {
+      0% { box-shadow: 0 0px 48px #00ffd911, 0 0px 0px #e55fff11; }
+      50% { box-shadow: 0 0px 120px #e55fff33, 0 0px 32px #00ffd944; }
+      100% { box-shadow: 0 0px 48px #00ffd911, 0 0px 0px #e55fff11; }
+    }
+    .review-slider-track {
+      display: flex;
+      width: 500vw;
+      transition: transform 0.66s cubic-bezier(.85, .1, .22, 1.1);
+      will-change: transform;
+    }
+    .review-slide {
+      width: 100vw;
+      min-width: 100vw;
+      display: flex; flex-direction: row; align-items: center; justify-content: center;
+      gap: 2.5em;
+      padding: 2.7em 8vw 2.7em 8vw;
+      box-sizing: border-box;
+      opacity: 0.86;
+      transform: scale(0.985);
+      transition: opacity 0.5s cubic-bezier(.67,0,.2,1), transform 0.65s cubic-bezier(.79,-0.11,.22,1.21);
+      position: relative;
+      pointer-events: none;
+      filter: blur(0.5px) grayscale(0.18) brightness(0.98);
+      will-change: opacity, filter, transform;
+    }
+    .review-slide.active {
+      opacity: 1;
+      transform: scale(1.03);
+      z-index: 1;
+      background: linear-gradient(90deg, #24213a 80%, #181c2a 100%);
+      box-shadow: 0 8px 60px #00ffd933, 0 0px 0px #e55fff18;
+      border-radius: 2.2em;
+      pointer-events: all;
+      filter: none;
+      will-change: opacity, filter, transform;
+    }
+    .review-photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #222c3a;
+      border: 4.5px solid #00ffd9;
+      box-shadow: 0 4px 32px #00ffd955, 0 2px 12px #e55fff33;
+      margin-right: 1.2em;
+      flex-shrink: 0;
+      transition: box-shadow 0.4s;
+      background-blend-mode: luminosity;
+    }
+    .review-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      min-width: 200px;
+    }
+    .review-stars {
+      color: #ffd700;
+      font-size: 1.46em;
+      display: flex; align-items: center; gap: 0.12em;
+      margin-bottom: 0.38em;
+      letter-spacing: 0.05em;
+      text-shadow: 0 1px 6px #ffd70044;
+      filter: drop-shadow(0 0px 8px #e55fff44);
+      animation: pulseStar 2.5s infinite alternate;
+    }
+    @keyframes pulseStar {
+      0%, 100% { filter: drop-shadow(0 0px 8px #e55fff44); }
+      50% { filter: drop-shadow(0 0px 18px #ffd700aa); }
+    }
+    .review-text {
+      font-size: 1.25em; color: #f5f8ff;
+      font-style: italic; line-height: 1.68;
+      margin-bottom: 0.7em;
+      text-shadow: 0 2px 16px #222a, 0 1px 6px #00ffd933;
+      letter-spacing: 0.01em;
+      font-weight: 600;
+      min-width: 320px;
+      max-width: 600px;
+    }
+    .review-author {
+      margin-top: 0.8em; color: #5df6ff; font-weight: 800;
+      letter-spacing: 0.01em;
+      font-size: 1.14em;
+      text-align: left;
+      width: 100%;
+      display: block;
+      text-shadow: 0 2px 10px #00ffd933;
+    }
+    .review-nav {
+      display: flex; gap: 1.2em; justify-content: center;
+      margin-top: 2.7em;
+      z-index: 10;
+      position: relative;
+    }
+    .review-nav-btn {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: linear-gradient(120deg,#e55fff44 20%, #00ffd944 80%);
+      border: 3px solid #e55fff;
+      color: #fff; font-weight: 900; font-size: 1.9em;
+      cursor: pointer; transition: background 0.16s, border 0.16s, color 0.18s, transform 0.14s;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 0.2em;
+      box-shadow: 0 2px 12px #e55fff44;
+      user-select: none;
+    }
+    .review-nav-btn:hover {
+      background: linear-gradient(120deg,#00ffd9 40%, #e55fff 80%);
+      color: #222c3a;
+      border-color: #00ffd9;
+      transform: scale(1.09);
+    }
+    .review-dots {
+      display: flex; gap: 0.5em; justify-content: center;
+      margin-top: 1.3em;
+    }
+    .review-dot {
+      width: 17px; height: 17px; border-radius: 50%;
+      background: #e55fff55;
+      border: 2.5px solid #00ffd922;
+      cursor: pointer;
+      transition: background 0.18s, border 0.18s, transform 0.15s;
+      margin: 0 0.12em;
+    }
+    .review-dot.active {
+      background: linear-gradient(120deg, #00ffd9 40%, #e55fff 80%);
+      border-color: #00ffd9;
+      transform: scale(1.21);
+      box-shadow: 0 2px 8px #00ffd9aa;
+    }
+    .cta {
+      margin: 90px 0 0 0; text-align: center; position: relative; z-index: 2;
+    }
+    .cta h2 {
+      font-size: 2em; font-weight: 800;
+      margin-bottom: 1.5em; color: #00ffb3;
+      text-shadow: 0 1px 22px #00ffb355;
+    }
+    .btn-lg { font-size: 1.3em; padding: 1.18em 2.8em; }
+    footer {
+      margin-top: 80px;
+      background: #16181e;
+      border-top: 1.5px solid #222533;
+      padding: 42px 0 22px 0;
+      color: #aee0ffcc; font-size: 1em;
+      text-align: center; position: relative; z-index: 2;
+    }
+    .footer-content {
+      display: flex; justify-content: center; align-items: center;
+      gap: 2.8em; flex-wrap: wrap; max-width: 900px; margin: 0 auto;
+    }
+    .footer-content nav a {
+      color: #5df6ff; margin: 0 0.7em; text-decoration: none;
+      font-weight: 600; transition: color 0.13s;
+    }
+    .footer-content nav a:hover { color: #e55fff; }
+    @media (max-width: 1200px) {
+      .feature-card { min-width: 220px; max-width: 95vw;}
+      .review-slide { padding: 2.7em 2vw 2.7em 2vw; }
+    }
+    @media (max-width: 900px) {
+      .about-founder { flex-direction: column; text-align: center; }
+      .about-founder-content { text-align: center; }
+      .review-slide { flex-direction: column; gap: 1em; align-items: center; }
+      .review-content, .review-author { text-align: center; align-items: center; }
+    }
+    @media (max-width: 800px) {
+      .navbar { flex-direction: column; gap: 0.7em; padding: 0.65em 1.3em; }
+      .hero-title, .hero-gradient { font-size: 2.1rem !important; }
+      .feature-showcase { flex-direction: column; gap: 1.5em; }
+      .footer-content { flex-direction: column; gap: 1.2em; }
+      .review-carousel { border-radius: 1.2em; }
+      .review-slide { padding: 1.1em 0.5em; }
+      .review-photo { width: 75px; height: 75px; }
+      .review-content { font-size: 1em; }
+      .feature-card { margin-left: 0; margin-right: 0;}
+    }
+    @media (max-width: 420px) {
+      .feature-card { padding: 1.5em 0.5em 1.3em 0.5em; }
+      .navbar-menu a, .navbar-signin { font-size: 0.92em; }
+      .about-founder { padding: 1em 0.3em 1.2em 0.3em; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle-bg"></canvas>
+  <nav class="navbar">
+    <a href="#" class="navbar-logo">Taskflows</a>
+    <div class="navbar-menu">
+      <a href="#features">Features</a>
+      <a href="#founder">Founder</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#faq">FAQ</a>
+      <a href="#pricing">Pricing</a>
+      <button class="navbar-signin" id="sign-in-btn">Sign In</button>
+    </div>
+  </nav>
+  <section class="hero">
+    <h1>
+      <span class="hero-title">Where Productivity Meets <span id="dynamic-word" class="hero-dynamic"><span class="hero-dynamic-word">Precision</span></span>.</span>
+      <span class="hero-gradient">Meet Taskflows.</span>
+    </h1>
+    <div class="hero-sub">
+      Build, automate, and scale your workflows visually.<br>As simple as drag-and-drop.<br>
+      <span style="color:#fff8; font-size:1.05em;">Inspired by the best, built for everyone.</span>
+    </div>
+    <div class="hero-buttons">
+      <a href="dashboard.html" class="btn btn-primary">Get Started</a>
+      <a href="#" class="btn btn-secondary">Docs</a>
+      <a href="#" class="btn btn-outline">Community</a>
+      <a href="https://github.com/" target="_blank" class="btn btn-git">GitHub</a>
+      <a href="#features" class="btn btn-outline">Explore Features</a>
+    </div>
+  </section>
+  <section class="feature-showcase" id="features">
+    <div class="features-row">
+      <div class="feature-card">
+        <span class="feature-badge">Visual</span>
+        <div class="feature-icon">🗺️</div>
+        <h2>Visual Workflow Builder</h2>
+        <p>Drag, drop, and connect tasks and triggers. Interactive canvas with real-time updates and context-aware snapping. Build complex flows with zero code.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-badge">AI</span>
+        <div class="feature-icon">🤖</div>
+        <h2>AI-Powered Suggestions</h2>
+        <p>Auto-generate steps and integrations with AI. Get smart, context-aware recommendations as you build and optimize your flows.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-badge">Integrations</span>
+        <div class="feature-icon">🔗</div>
+        <h2>Connect Everything</h2>
+        <p>Native support for 120+ apps: GitHub, Notion, Slack, Figma, Jira, and more. API builder for custom integrations.</p>
+      </div>
+    </div>
+    <div class="features-row">
+      <div class="feature-card">
+        <span class="feature-badge">Team</span>
+        <div class="feature-icon">🤝</div>
+        <h2>Real-Time Collaboration</h2>
+        <p>Edit flows together, assign roles, leave comments, and track changes live. Built-in activity feeds and approvals.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-badge">Secure</span>
+        <div class="feature-icon">🔒</div>
+        <h2>Enterprise-Grade Security</h2>
+        <p>SSO, RBAC, audit trails, encrypted secrets, approval gates, and compliance controls. Privacy by design.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-badge">Analytics</span>
+        <div class="feature-icon">📊</div>
+        <h2>Smart Monitoring</h2>
+        <p>Track run stats, get error alerts, inspect logs, and visualize bottlenecks. Export beautiful reports.</p>
+      </div>
+    </div>
+  </section>
+  <section class="about-founder" id="founder">
+    <img class="founder-photo" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Founder Photo">
+    <div class="about-founder-content">
+      <h2>Meet the Founder</h2>
+      <p>
+        Hi, I'm <span class="founder-name">Kunal Nayak</span>, the creator of Taskflows.<br>
+        My mission is to empower every team, engineer, and creator to do more—with joy.<br>
+        Let's reimagine workflow, together.
+      </p>
+    </div>
+  </section>
+  <section class="review-carousel-outer" id="reviews">
+    <div class="review-carousel" id="review-carousel">
+      <div class="review-slider-track" id="review-slider-track">
+        <div class="review-slide active">
+          <img class="review-photo" src="https://randomuser.me/api/portraits/men/15.jpg" alt="Alex G. photo">
+          <div class="review-content">
+            <div class="review-stars" title="5 stars">★★★★★</div>
+            <div class="review-text">
+              “Taskflows changed the way our team works. The visual builder made it easy for everyone (not just devs) to automate daily tasks, and the AI suggestions helped us discover integrations we never thought of. Our productivity has taken off!”
+            </div>
+            <span class="review-author">Alex G., Project Manager</span>
+          </div>
+        </div>
+        <div class="review-slide">
+          <img class="review-photo" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya S. photo">
+          <div class="review-content">
+            <div class="review-stars" title="4.5 stars">
+              ★★★★<span style="color:#ffd700;opacity:0.6;">★</span>
+            </div>
+            <div class="review-text">
+              “I set up an entire deployment pipeline without writing a single line of code. The integrations ecosystem is fantastic, and error tracking is so clear. Highly recommended for any DevOps team looking to simplify their workflow.”
+            </div>
+            <span class="review-author">Priya S., DevOps Lead</span>
+          </div>
+        </div>
+        <div class="review-slide">
+          <img class="review-photo" src="https://randomuser.me/api/portraits/men/31.jpg" alt="Jamie L. photo">
+          <div class="review-content">
+            <div class="review-stars" title="5 stars">★★★★★</div>
+            <div class="review-text">
+              “Collaboration is a breeze and the real-time updates are awesome. We onboarded new hires in hours, not days, and can see who changed what, when. Taskflows is our not-so-secret weapon for organized, scalable ops.”
+            </div>
+            <span class="review-author">Jamie L., Startup Founder</span>
+          </div>
+        </div>
+        <div class="review-slide">
+          <img class="review-photo" src="https://randomuser.me/api/portraits/women/20.jpg" alt="Sara N. photo">
+          <div class="review-content">
+            <div class="review-stars" title="5 stars">★★★★★</div>
+            <div class="review-text">
+              “The UI is gorgeous and intuitive. With analytics and mobile notifications, I’m always in the loop. Our team has never felt more empowered to automate and monitor our work.”
+            </div>
+            <span class="review-author">Sara N., Product Designer</span>
+          </div>
+        </div>
+        <div class="review-slide">
+          <img class="review-photo" src="https://randomuser.me/api/portraits/men/29.jpg" alt="Daniel B. photo">
+          <div class="review-content">
+            <div class="review-stars" title="4.5 stars">
+              ★★★★<span style="color:#ffd700;opacity:0.6;">★</span>
+            </div>
+            <div class="review-text">
+              “From cron jobs to cloud deployments, Taskflows handles it all for our company. Security controls and audit logs gave our IT team peace of mind, and the plugin system is a game changer.”
+            </div>
+            <span class="review-author">Daniel B., CTO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="review-nav">
+      <button class="review-nav-btn" id="review-prev" aria-label="Previous review">‹</button>
+      <button class="review-nav-btn" id="review-next" aria-label="Next review">›</button>
+    </div>
+    <div class="review-dots" id="review-dots"></div>
+  </section>
+  <section class="cta" id="pricing">
+    <h2>Ready to streamline your tasks?</h2>
+    <a href="#" class="btn btn-lg btn-primary">Start Building Now</a>
+    <a href="#" class="btn btn-lg btn-secondary">Plans & Pricing</a>
+    <a href="#" class="btn btn-lg btn-outline">Request a Demo</a>
+  </section>
+  <footer>
+    <div class="footer-content">
+      <span>© <span id="year"></span> Taskflows. All rights reserved.</span>
+      <nav>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="https://github.com/" target="_blank">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+  <script>
+    // Set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Make Sign In button go to dashboard.html
+    document.getElementById('sign-in-btn').onclick = function () {
+      window.location.href = 'dashboard.html';
+    };
+
+    // Particle background (same as before)
+    (function () {
+      const canvas = document.getElementById("particle-bg");
+      const ctx = canvas.getContext("2d");
+      let w = window.innerWidth, h = window.innerHeight, dpr = window.devicePixelRatio || 1;
+      let running = true;
+      function resize() {
+        w = window.innerWidth; h = window.innerHeight; dpr = window.devicePixelRatio || 1;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        canvas.style.width = w + "px"; canvas.style.height = h + "px";
+        ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr, dpr);
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      // 1100+ particles
+      const N = 1100, particles = [];
+      for (let i = 0; i < N; ++i) {
+        particles.push({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.7,
+          r: Math.random() * 1.4 + 0.6,
+          hue: Math.floor(Math.random() * 60 + 180)
+        });
+      }
+      function animate() {
+        if (!running) return;
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < N; ++i) {
+          let p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > w) p.vx *= -1;
+          if (p.y < 0 || p.y > h) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+          ctx.fillStyle = `hsla(${p.hue}, 70%, 70%, 0.16)`;
+          ctx.shadowColor = `hsla(${p.hue}, 95%, 75%, 0.10)`;
+          ctx.shadowBlur = 8;
+          ctx.fill();
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+      window.addEventListener('beforeunload', function(){ running = false; });
+    })();
+
+    // Hero dynamic spinning word (with 3D X-axis spin)
+    const words = ["Precision", "Clarity", "Rhythm", "Flow", "Control", "Focus", "Balance"];
+    let wordIndex = 0;
+    const dynamicWordContainer = document.getElementById('dynamic-word');
+    let lastWordSpan = dynamicWordContainer.querySelector('.hero-dynamic-word');
+
+    function switchHeroWord() {
+      // Animate spin out using 3D X-axis
+      lastWordSpan.classList.add('spin-x');
+      setTimeout(() => {
+        // Change word after half of spin
+        lastWordSpan.textContent = words[wordIndex];
+        lastWordSpan.classList.remove('spin-x');
+        wordIndex = (wordIndex + 1) % words.length;
+      }, 450);
+    }
+    setInterval(switchHeroWord, 2100);
+
+    // Mega Review Carousel (sliding full width, smooth)
+    const reviewSliderTrack = document.getElementById('review-slider-track');
+    const reviewSlides = document.querySelectorAll('.review-slide');
+    const reviewDotsContainer = document.getElementById('review-dots');
+    let currentReview = 0;
+    let reviewInterval;
+
+    function renderDots() {
+      reviewDotsContainer.innerHTML = '';
+      for (let i = 0; i < reviewSlides.length; ++i) {
+        const dot = document.createElement('div');
+        dot.className = 'review-dot' + (i === currentReview ? ' active' : '');
+        dot.onclick = () => { gotoReview(i, true); };
+        reviewDotsContainer.appendChild(dot);
+      }
+    }
+    renderDots();
+
+    function gotoReview(idx, manual=false) {
+      currentReview = idx;
+      const offset = -idx * window.innerWidth;
+      reviewSliderTrack.style.transform = `translateX(${offset}px)`;
+      reviewSlides.forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+      });
+      renderDots();
+      if (manual) resetReviewInterval();
+    }
+
+    function showNextReview(manual=false) {
+      currentReview = (currentReview + 1) % reviewSlides.length;
+      gotoReview(currentReview, manual);
+    }
+    function showPrevReview(manual=false) {
+      currentReview = (currentReview - 1 + reviewSlides.length) % reviewSlides.length;
+      gotoReview(currentReview, manual);
+    }
+
+    document.getElementById('review-prev').onclick = () => showPrevReview(true);
+    document.getElementById('review-next').onclick = () => showNextReview(true);
+
+    function resetReviewInterval() {
+      clearInterval(reviewInterval);
+      reviewInterval = setInterval(() => showNextReview(false), 6000);
+    }
+
+    window.addEventListener('resize', () => gotoReview(currentReview));
+    gotoReview(currentReview);
+    resetReviewInterval();
+
+    // Touch events for swipe navigation
+    let startX = 0, dx = 0, tracking = false;
+    reviewSliderTrack.addEventListener('touchstart', e => {
+      tracking = true;
+      startX = e.touches[0].clientX;
+      dx = 0;
+      reviewSliderTrack.style.transition = 'none';
+    });
+    reviewSliderTrack.addEventListener('touchmove', e => {
+      if (!tracking) return;
+      dx = e.touches[0].clientX - startX;
+      reviewSliderTrack.style.transform = `translateX(${(-currentReview * window.innerWidth + dx)}px)`;
+    });
+    reviewSliderTrack.addEventListener('touchend', e => {
+      reviewSliderTrack.style.transition = '';
+      if (dx > 70) showPrevReview(true);
+      else if (dx < -70) showNextReview(true);
+      else gotoReview(currentReview);
+      tracking = false;
+      dx = 0;
+    });
+
+    // Keyboard arrow navigation for review carousel
+    window.addEventListener('keydown', e => {
+      if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        if (e.key === "ArrowLeft") showPrevReview(true);
+        else if (e.key === "ArrowRight") showNextReview(true);
+      }
+    });
+
+    // Smooth scroll polyfill for older browsers
+    if (!('scrollBehavior' in document.documentElement.style)) {
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href.length > 1) {
+            e.preventDefault();
+            const el = document.getElementById(href.substring(1));
+            if (el) window.scrollTo(0, el.offsetTop-60);
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>
