@@ -16,7 +16,6 @@
     })();
   </script>
   <style>
-
     html, body {
       margin: 0; padding: 0;
       height: 100%;
@@ -75,7 +74,6 @@
       line-height: 1.25;
       position: relative;
       z-index: 1;
-      /* Fix cutting: add border and overflow */
       box-sizing: border-box;
       overflow: visible;
     }
@@ -84,6 +82,8 @@
       max-width: 1020px; margin: 0 auto;
       text-align: center; position: relative; z-index: 2;
       padding-top: 120px;
+      padding-left: 24px;
+      padding-right: 24px;
     }
     .hero-title {
       font-size: 3.5rem; font-weight: 900;
@@ -291,27 +291,6 @@
       color: #b6ffcb;
       opacity: 1;
     }
-    @media (max-width: 900px) {
-      .feature-pill {
-        min-width: 160px;
-        max-width: 94vw;
-        font-size: 0.89em;
-        padding: 0 7px 0 7px;
-        height: 55px;
-      }
-      .feature-pill .pill-emoji {
-        font-size: 1.15em;
-        margin-right: 5px;
-      }
-    }
-    @media (max-width: 440px) {
-      .feature-pill {
-        min-width: 110px;
-        font-size: 0.72em;
-        padding: 0 2px 0 2px;
-        height: 36px;
-      }
-    }
     /* Stat cards below features */
     .stats-cards-row {
       display: flex;
@@ -374,18 +353,6 @@
       font-weight: 500;
       margin-top: 0.2em;
     }
-    @media (max-width: 700px) {
-      .stats-cards-row {
-        gap: 14px;
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .stat-card {
-        min-width: 120px;
-        padding: 1em 0.7em;
-      }
-    }
-
     .about-founder {
       background: linear-gradient(110deg, #211c28 70%, #1b2233 100%);
       border-radius: 2.3em;
@@ -412,6 +379,8 @@
       border: 3.5px solid #00ffd9;
       margin-bottom: 1em;
       background-color: #191c21;
+      flex-shrink: 0;
+      transition: width .2s, height .2s;
     }
     .about-founder-content {
       flex: 1 1 360px;
@@ -619,33 +588,224 @@
       font-weight: 600; transition: color 0.13s;
     }
     .footer-content nav a:hover { color: #e55fff; }
-    @media (max-width: 1200px) {
-      .review-slide { padding: 2.7em 2vw 2.7em 2vw; }
-    }
-    @media (max-width: 900px) {
-      .about-founder { flex-direction: column; text-align: center; }
-      .about-founder-content { text-align: center; }
-      .review-slide { flex-direction: column; gap: 1em; align-items: center; }
-      .review-content, .review-author { text-align: center; align-items: center; }
-    }
-    @media (max-width: 800px) {
-      .navbar { flex-direction: column; gap: 0.7em; padding: 0.65em 1.3em; }
-      .hero-title, .hero-gradient { font-size: 2.1rem !important; }
-      .footer-content { flex-direction: column; gap: 1.2em; }
-      .review-carousel { border-radius: 1.2em; }
-      .review-slide { padding: 1.1em 0.5em; }
-      .review-photo { width: 75px; height: 75px; }
-      .review-content { font-size: 1em; }
-      .navbar-signin {
+
+    /* --- MOBILE REDESIGN --- */
+    @media (max-width: 700px) {
+      /* General padding and alignment */
+      body, html {
+        font-size: 15px;
+      }
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.6em 1em;
+        gap: 0.5em;
+        min-height: 54px;
+      }
+      .navbar-menu {
+        flex-direction: column;
+        gap: 0.5em;
+        align-items: stretch;
         width: 100%;
-        margin: 0.5em 0 0 0;
+      }
+      .navbar-menu a, .navbar-signin {
+        width: 100%;
+        font-size: 1em;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      .hero {
+        padding-top: 80px;
+        padding-left: 6vw;
+        padding-right: 6vw;
+        max-width: 98vw;
+      }
+      .hero-title, .hero-gradient {
+        font-size: 2.1rem !important;
+        text-align: center;
+        word-break: break-word;
+      }
+      .hero-gradient {
+        font-size: 1.6rem !important;
+      }
+      .hero-sub {
+        font-size: 1.05rem;
+        margin: 0.7em 0 1.5em 0;
+      }
+      .hero-buttons {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .btn, .btn-primary, .btn-outline, .btn-lg {
+        font-size: 1rem;
+        width: 100%;
+        padding: 0.8em 0.5em;
+        box-sizing: border-box;
+      }
+      .feature-marquees-inner {
+        gap: 7px;
+        padding: 9px 0 4px 0;
+      }
+      .feature-marquee-track, .feature-marquee-track.reverse1 {
+        gap: 10px;
+      }
+      .feature-pill {
+        min-width: 120px;
+        max-width: 88vw;
+        font-size: 0.80em;
+        padding: 0 4px 0 6px;
+        height: 38px;
+        border-radius: 12px;
+        margin: 0 1px;
+      }
+      .feature-pill .pill-emoji {
+        font-size: 1.0em;
+        margin-right: 3px;
+      }
+      .feature-pill .pill-title {
+        font-size: 1em;
+      }
+      .feature-pill .pill-desc {
+        font-size: 0.69em;
+      }
+      .stats-cards-row {
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 99vw;
+        margin: 18px auto 10px auto;
+      }
+      .stat-card {
         min-width: 0;
+        padding: 0.8em 0.7em;
+        font-size: 0.92em;
+        border-radius: 12px;
+      }
+      .stat-label, .stat-value, .stat-note {
+        font-size: 1em;
+      }
+      .about-founder {
+        flex-direction: column;
+        align-items: center;
+        padding: 1.6em 0.7em 1.2em 0.7em;
+        gap: 0.9em;
+        margin-top: 48px;
+        border-radius: 1.1em;
+      }
+      .founder-photo {
+        width: 86px;
+        height: 86px;
+        margin-bottom: 0.8em;
+      }
+      .about-founder-content {
+        min-width: 0;
+        text-align: center;
+      }
+      .about-founder-content h2 {
+        font-size: 1.07em;
+        margin-bottom: 0.28em;
+      }
+      .about-founder-content p {
+        font-size: 0.99em;
+      }
+      .about-founder-content .founder-name {
+        font-size: 1em;
+      }
+      .cta-banner {
+        margin-top: 1.6em;
+        padding: 1em 0.2em 0 0.2em;
+      }
+      .cta-banner h2 {
+        font-size: 1.12em;
+        margin-bottom: 1.1em;
+      }
+      .btn-lg {
+        font-size: 1.09em;
+        padding: 0.7em 0.2em;
+      }
+      .review-carousel-outer {
+        margin: 40px 0 0 0;
+        width: 100vw;
+        min-width: 0;
+        overflow-x: hidden;
+      }
+      .review-carousel {
+        border-radius: 0.8em;
+        min-height: 180px;
+      }
+      .review-slider-track {
+        width: 600vw;
+      }
+      .review-slide {
+        flex-direction: column;
+        gap: 0.6em;
+        align-items: center;
+        padding: 1.1em 0.5em;
+        min-width: 100vw;
+        width: 100vw;
+        box-sizing: border-box;
+      }
+      .review-photo {
+        width: 56px;
+        height: 56px;
+        margin-right: 0;
+      }
+      .review-content {
+        font-size: 0.98em;
+        align-items: center;
+        min-width: 0;
+        text-align: center;
+      }
+      .review-text {
+        font-size: 1.01em;
+        min-width: 0;
+        max-width: 98vw;
+      }
+      .review-author {
+        font-size: 0.99em;
+        margin-top: 0.6em;
+      }
+      .review-nav {
+        gap: 0.6em;
+        margin-top: 1.2em;
+      }
+      .review-nav-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1.3em;
+      }
+      .review-dots {
+        gap: 0.3em;
+        margin-top: 0.7em;
+      }
+      .review-dot {
+        width: 11px;
+        height: 11px;
+      }
+      footer {
+        margin-top: 32px;
+        padding: 18px 0 16px 0;
+        font-size: 0.97em;
+      }
+      .footer-content {
+        flex-direction: column;
+        gap: 0.9em;
+        padding: 0 0.1em;
       }
     }
     @media (max-width: 420px) {
       .navbar-menu a, .navbar-signin { font-size: 0.92em; }
-      .about-founder { padding: 1em 0.3em 1.2em 0.3em; }
+      .about-founder { padding: 1em 0.1em 1.0em 0.1em; }
+      .hero {
+        padding-left: 1vw;
+        padding-right: 1vw;
+      }
+      .btn, .btn-primary, .btn-outline, .btn-lg {
+        font-size: 0.95em;
+      }
     }
+    /* End mobile redesign */
   </style>
 </head>
 <body>
@@ -657,7 +817,7 @@
       <a href="#founder">Founder</a>
       <a href="#reviews">Reviews</a>
       <a href="#faq">FAQ</a>
-      <button class="navbar-signin" id="sign-in-btn">Sign In</button>
+      <button class="navbar-signin" id="sign-in-btn">Log In</button>
     </div>
   </nav>
   <section class="hero">
