@@ -6,6 +6,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
+     // Redirect to dashboard if already signed in
+  (function() {
+    // The same ACTIVE_USER_KEY as in your dashboard.js
+    const ACTIVE_USER_KEY = 'taskflows-activeuser';
+    const activeUser = localStorage.getItem(ACTIVE_USER_KEY);
+    if (activeUser) {
+      // Optionally, check if user exists in localStorage as well
+      // window.location.replace("dashboard.html"); // Use replace to prevent back navigation
+      window.location.href = "dashboard.html";
+    }
+  })();
     html, body {
       margin: 0; padding: 0;
       height: 100%;
