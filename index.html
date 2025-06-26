@@ -30,16 +30,19 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 0.5em 2em;
       backdrop-filter: blur(7px);
+      min-height: 64px;
     }
     .navbar-logo {
       font-size: 1.5em; font-weight: 900; color: #00ffd9;
       letter-spacing: -0.02em;
       text-shadow: 0 2px 12px #00ffd933;
       text-decoration: none;
+      flex-shrink: 0;
     }
     .navbar-menu {
       display: flex; gap: 1.5em;
       align-items: center;
+      flex-wrap: nowrap;
     }
     .navbar-menu a {
       color: #b6eaff; text-decoration: none; font-weight: 700;
@@ -57,6 +60,13 @@
       min-width: 96px;
       max-width: 100%;
       display: inline-block;
+      height: auto;
+      line-height: 1.25;
+      position: relative;
+      z-index: 1;
+      /* Fix cutting: add border and overflow */
+      box-sizing: border-box;
+      overflow: visible;
     }
     .navbar-signin:hover { filter: brightness(1.13) saturate(1.18); box-shadow: 0 4px 24px #e55fff99; }
     .hero {
@@ -181,8 +191,6 @@
       animation: marquee-scroll-slow 50s linear infinite;
     }
     .feature-marquee-track.reverse1 { animation-direction: reverse;}
-    .feature-marquee-track.reverse2 { animation-direction: alternate-reverse;}
-    /* The marquee track is duplicated by JS for seamless loop */
     @keyframes marquee-scroll-slow {
       0% { transform: translateX(0);}
       100% { transform: translateX(-50%);}
@@ -617,6 +625,11 @@
       .review-slide { padding: 1.1em 0.5em; }
       .review-photo { width: 75px; height: 75px; }
       .review-content { font-size: 1em; }
+      .navbar-signin {
+        width: 100%;
+        margin: 0.5em 0 0 0;
+        min-width: 0;
+      }
     }
     @media (max-width: 420px) {
       .navbar-menu a, .navbar-signin { font-size: 0.92em; }
@@ -647,7 +660,7 @@
     </h1>
     <div class="hero-sub">
       Launch faster. Automate easier. Scale endlessly.
-      <br>Workflows shouldn’t be complicated — Taskflows makes sure they’re not.<br>
+      <br>All your work, notes, lists, journals, projects, and to-dos — in one seamless workspace.<br>
       <span style="color:rgb(130, 237, 141); font-size:1.05em;">Inspired by the best. Made for everyone...</span>
     </div>
     <div class="hero-buttons">
@@ -656,12 +669,11 @@
       <a href="#features" class="btn btn-outline">Explore Features</a>
     </div>
   </section>
-  <!-- Feature Marquee Section with 3 rows, cards only, no container, smaller, with descriptions -->
+  <!-- Feature Marquee Section with 2 rows for performance, cards only, no container, smaller, with descriptions -->
   <section style="background:transparent;padding:0;" id="features">
     <div class="feature-marquees-inner">
       <div class="feature-marquee-track" id="feature-marquee-track-1"></div>
       <div class="feature-marquee-track reverse1" id="feature-marquee-track-2"></div>
-      <div class="feature-marquee-track reverse2" id="feature-marquee-track-3"></div>
     </div>
     <div class="stats-cards-row">
       <div class="stat-card" tabindex="0">
@@ -688,8 +700,8 @@
       <h2>Meet the Founder</h2>
       <p>
         Hi, I’m <span class="founder-name">Ritvik Nayak</span>, the creator of Taskflows.<br>
-I built Taskflows to help teams, builders, and creators work smarter — and actually enjoy the process.<br>
-Together, let’s reinvent how we get things done.
+        I built Taskflows to help teams, builders, and creators work smarter — and actually enjoy the process.<br>
+        Together, let’s reinvent how we get things done.
       </p>
     </div>
      <section class="cta-banner">
@@ -706,21 +718,19 @@ Together, let’s reinvent how we get things done.
           <div class="review-content">
             <div class="review-stars" title="5 stars">★★★★★</div>
             <div class="review-text">
-              “Taskflows changed the way our team works. The visual builder made it easy for everyone (not just devs) to automate daily tasks, and the AI suggestions helped us discover integrations we never thought of. Our productivity has taken off!”
+              “Taskflows is my all-in-one digital HQ. I track projects, jot quick notes, write daily journals, and run team to-dos — all in one place. Switching from tool to tool is history!”
             </div>
-            <span class="review-author">Alex G., Project Manager</span>
+            <span class="review-author">Alex G., Startup Founder</span>
           </div>
         </div>
         <div class="review-slide">
           <img class="review-photo" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya S. photo">
           <div class="review-content">
-            <div class="review-stars" title="4.5 stars">
-              ★★★★<span style="color:#ffd700;opacity:0.6;">★</span>
-            </div>
+            <div class="review-stars" title="5 stars">★★★★★</div>
             <div class="review-text">
-              “I set up an entire deployment pipeline without writing a single line of code. The integrations ecosystem is fantastic, and error tracking is so clear. Highly recommended for any DevOps team looking to simplify their workflow.”
+              “No more scattered sticky notes or docs. The unified workspace lets my team manage lists, edit docs, brainstorm on the whiteboard, and never miss a reminder. Taskflows just flows.”
             </div>
-            <span class="review-author">Priya S., DevOps Lead</span>
+            <span class="review-author">Priya S., Product Lead</span>
           </div>
         </div>
         <div class="review-slide">
@@ -728,9 +738,9 @@ Together, let’s reinvent how we get things done.
           <div class="review-content">
             <div class="review-stars" title="5 stars">★★★★★</div>
             <div class="review-text">
-              “Collaboration is a breeze and the real-time updates are awesome. We onboarded new hires in hours, not days, and can see who changed what, when. Taskflows is our not-so-secret weapon for organized, scalable ops.”
+              “It’s the only tool that handles my notes, lists, journal, and project boards together. Real-time sync, quick capture, and zero clutter UI — Taskflows really helps me focus!”
             </div>
-            <span class="review-author">Jamie L., Startup Founder</span>
+            <span class="review-author">Jamie L., Remote Team Manager</span>
           </div>
         </div>
         <div class="review-slide">
@@ -738,7 +748,7 @@ Together, let’s reinvent how we get things done.
           <div class="review-content">
             <div class="review-stars" title="5 stars">★★★★★</div>
             <div class="review-text">
-              “The UI is gorgeous and intuitive. With analytics and mobile notifications, I’m always in the loop. Our team has never felt more empowered to automate and monitor our work.”
+              “From planning sprints to daily journaling, Taskflows does it all. The interface is beautiful, the analytics are instant, and I can work offline on any device. Highly recommended.”
             </div>
             <span class="review-author">Sara N., Product Designer</span>
           </div>
@@ -750,7 +760,7 @@ Together, let’s reinvent how we get things done.
               ★★★★<span style="color:#ffd700;opacity:0.6;">★</span>
             </div>
             <div class="review-text">
-              “From cron jobs to cloud deployments, Taskflows handles it all for our company. Security controls and audit logs gave our IT team peace of mind, and the plugin system is a game changer.”
+              “It’s so easy to use. Notes, tasks, priorities, reminders, journal, and even a Pomodoro timer — all in one app. Taskflows is a total game changer for productivity.”
             </div>
             <span class="review-author">Daniel B., CTO</span>
           </div>
@@ -794,8 +804,8 @@ Together, let’s reinvent how we get things done.
       resize();
       window.addEventListener("resize", resize);
 
-      // 1100+ particles
-      const N = 1100, particles = [];
+      // 700 particles (lowered for perf)
+      const N = 700, particles = [];
       for (let i = 0; i < N; ++i) {
         particles.push({
           x: Math.random() * w, y: Math.random() * h,
@@ -859,111 +869,33 @@ Together, let’s reinvent how we get things done.
     setInterval(switchHeroWord, 2100);
 
     // --- FEATURE MARQUEE CARD DATA ---
-   const featurePillData = [
-  {
-    emoji: "✍️",
-    title: "Distraction-Free Editors",
-    desc: "Clean, minimal writing spaces built for deep focus."
-  },
-  {
-    emoji: "✅",
-    title: "Advanced To-Do Lists",
-    desc: "Smart, sortable lists with drag-and-drop and labels."
-  },
-  {
-    emoji: "📊",
-    title: "Unified Dashboard",
-    desc: "Everything you need — at a glance, beautifully organized."
-  },
-  {
-    emoji: "🗂️",
-    title: "Multi-Project Workspaces",
-    desc: "Manage multiple flows with ease, each fully customizable."
-  },
-  {
-    emoji: "📆",
-    title: "Interactive Calendar View",
-    desc: "Visualize your tasks and deadlines by day, week, or month."
-  },
-  {
-    emoji: "📈",
-    title: "Built-In Analytics",
-    desc: "Track progress, patterns, and productivity in real time."
-  },
-  {
-    emoji: "🧾",
-    title: "Smart Lists & Boards",
-    desc: "Switch between lists, Kanban, and hybrid views seamlessly."
-  },
-  {
-    emoji: "📓",
-    title: "Daily Journal",
-    desc: "Capture reflections, goals, or ideas in one tidy journal."
-  },
-  {
-    emoji: "🧠",
-    title: "QuickNotes",
-    desc: "Jot down thoughts instantly — no clicks, no friction."
-  },
-  {
-    emoji: "🧱",
-    title: "Visual Whiteboard",
-    desc: "Sketch, plan, and brainstorm on an infinite canvas."
-  },
-  {
-    emoji: "📱",
-    title: "Mobile-First Design",
-    desc: "Fully optimized for phones, tablets, and small screens."
-  },
-  {
-    emoji: "⚡",
-    title: "Lag-Free Performance",
-    desc: "Instant response — built from scratch with clean code."
-  },
-  {
-    emoji: "🌐",
-    title: "Offline Support",
-    desc: "Works even without internet — auto-syncs when back online."
-  },
-  {
-    emoji: "🔔",
-    title: "Smart Reminders",
-    desc: "Get gentle nudges so important tasks never slip by."
-  },
-  {
-    emoji: "🔖",
-    title: "Labels & Priorities",
-    desc: "Organize tasks with color-coded labels and priority levels."
-  },
-  {
-    emoji: "🎨",
-    title: "Custom Themes",
-    desc: "Switch between Focus, Minimal, and Fun UI modes."
-  },
-  {
-    emoji: "⏱️",
-    title: "Floating Pomodoro Timer",
-    desc: "Stay in flow with a lightweight, task-linked timer."
-  },
-  {
-    emoji: "💾",
-    title: "Auto Save",
-    desc: "Your data is saved locally in real time — no login needed."
-  },
-  {
-    emoji: "🧘",
-    title: "Zero Clutter",
-    desc: "No distractions, no bloat — just clean, focused design."
-  },
-  {
-    emoji: "✨",
-    title: "And More",
-    desc: "New features and refinements are always on the way."
-  }
-];
+    const featurePillData = [
+      { emoji: "✍️", title: "Distraction-Free Editors", desc: "Clean, minimal writing spaces built for deep focus." },
+      { emoji: "✅", title: "Advanced To-Do Lists", desc: "Smart, sortable lists with drag-and-drop and labels." },
+      { emoji: "📊", title: "Unified Dashboard", desc: "Everything you need — at a glance, beautifully organized." },
+      { emoji: "🗂️", title: "Multi-Project Workspaces", desc: "Manage multiple flows with ease, each fully customizable." },
+      { emoji: "📆", title: "Interactive Calendar View", desc: "Visualize your tasks and deadlines by day, week, or month." },
+      { emoji: "📈", title: "Built-In Analytics", desc: "Track progress, patterns, and productivity in real time." },
+      { emoji: "🧾", title: "Smart Lists & Boards", desc: "Switch between lists, Kanban, and hybrid views seamlessly." },
+      { emoji: "📓", title: "Daily Journal", desc: "Capture reflections, goals, or ideas in one tidy journal." },
+      { emoji: "🧠", title: "QuickNotes", desc: "Jot down thoughts instantly — no clicks, no friction." },
+      { emoji: "🧱", title: "Visual Whiteboard", desc: "Sketch, plan, and brainstorm on an infinite canvas." },
+      { emoji: "📱", title: "Mobile-First Design", desc: "Fully optimized for phones, tablets, and small screens." },
+      { emoji: "⚡", title: "Lag-Free Performance", desc: "Instant response — built from scratch with clean code." },
+      { emoji: "🌐", title: "Offline Support", desc: "Works even without internet — auto-syncs when back online." },
+      { emoji: "🔔", title: "Smart Reminders", desc: "Get gentle nudges so important tasks never slip by." },
+      { emoji: "🔖", title: "Labels & Priorities", desc: "Organize tasks with color-coded labels and priority levels." },
+      { emoji: "🎨", title: "Custom Themes", desc: "Switch between Focus, Minimal, and Fun UI modes." },
+      { emoji: "⏱️", title: "Floating Pomodoro Timer", desc: "Stay in flow with a lightweight, task-linked timer." },
+      { emoji: "💾", title: "Auto Save", desc: "Your data is saved locally in real time — no login needed." },
+      { emoji: "🧘", title: "Zero Clutter", desc: "No distractions, no bloat — just clean, focused design." },
+      { emoji: "✨", title: "And More", desc: "New features and refinements are always on the way." }
+    ];
 
+    // --- MARQUEE RENDERING / DUPLICATION FOR SEAMLESS (now two rows) ---
+    renderFeatureMarqueeRow('feature-marquee-track-1', 0);
+    renderFeatureMarqueeRow('feature-marquee-track-2', 2);
 
-    // --- MARQUEE RENDERING / DUPLICATION FOR SEAMLESS ---
     function renderFeatureMarqueeRow(trackId, offset) {
       const track = document.getElementById(trackId);
       // To ensure seamless movement, fill twice
@@ -977,28 +909,16 @@ Together, let’s reinvent how we get things done.
       }
       track.innerHTML = html;
     }
-    renderFeatureMarqueeRow('feature-marquee-track-1', 0);
-    renderFeatureMarqueeRow('feature-marquee-track-2', 2);
-    renderFeatureMarqueeRow('feature-marquee-track-3', 4);
 
-    // --- Make Marquee Seamless on Resize ---
     function updateMarqueeDuplication() {
       renderFeatureMarqueeRow('feature-marquee-track-1', 0);
       renderFeatureMarqueeRow('feature-marquee-track-2', 2);
-      renderFeatureMarqueeRow('feature-marquee-track-3', 4);
       setupFeaturePillHover(); // Reapply events
     }
     window.addEventListener('resize', updateMarqueeDuplication);
 
-    // Marquee pause/resume on hover
-    function marqueePauseOnHover(trackId) {
-      const track = document.getElementById(trackId);
-      track.addEventListener('mouseenter', () => { track.style.animationPlayState = 'paused'; });
-      track.addEventListener('mouseleave', () => { track.style.animationPlayState = 'running'; });
-    }
     marqueePauseOnHover('feature-marquee-track-1');
     marqueePauseOnHover('feature-marquee-track-2');
-    marqueePauseOnHover('feature-marquee-track-3');
 
     // Interactive hover for all pills
     function setupFeaturePillHover() {
@@ -1012,6 +932,13 @@ Together, let’s reinvent how we get things done.
       });
     }
     setupFeaturePillHover();
+
+    // Marquee pause/resume on hover
+    function marqueePauseOnHover(trackId) {
+      const track = document.getElementById(trackId);
+      track.addEventListener('mouseenter', () => { track.style.animationPlayState = 'paused'; });
+      track.addEventListener('mouseleave', () => { track.style.animationPlayState = 'running'; });
+    }
 
     // Mega Review Carousel (sliding full width, smooth)
     const reviewSliderTrack = document.getElementById('review-slider-track');
