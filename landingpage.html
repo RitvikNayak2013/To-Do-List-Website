@@ -50,11 +50,15 @@
     .navbar-signin {
       background: linear-gradient(90deg, #e55fff 5%, #00ffd9 94%);
       color: #181c1f; font-weight: 800; border: none;
-      padding: 0.7em 1.8em; border-radius: 22px; margin-left: 1em;
-      cursor: pointer; font-size: 1em; transition: filter 0.17s;
+      padding: 0.7em 1.6em; border-radius: 22px; margin-left: 1em;
+      cursor: pointer; font-size: 1.05em; transition: filter 0.17s, box-shadow 0.13s;
       box-shadow: 0 2px 18px #e55fff66;
+      white-space: nowrap;
+      min-width: 96px;
+      max-width: 100%;
+      display: inline-block;
     }
-    .navbar-signin:hover { filter: brightness(1.13) saturate(1.18); }
+    .navbar-signin:hover { filter: brightness(1.13) saturate(1.18); box-shadow: 0 4px 24px #e55fff99; }
     .hero {
       max-width: 1020px; margin: 0 auto;
       text-align: center; position: relative; z-index: 2;
@@ -76,42 +80,53 @@
     }
     .hero-dynamic {
       display: inline-block;
-      min-width: 110px;
+      min-width: 230px;
       font-size: 1em;
       font-weight: 900;
-      perspective: 800px;
       vertical-align: middle;
       letter-spacing: 0.02em;
+      position: relative;
+      height: 1.3em;
+      overflow: hidden;
+      width: 150px;
       will-change: transform, color;
     }
-    .hero-dynamic-word {
-      display: inline-block;
-      transition: color 0.2s, transform 0.6s cubic-bezier(.5,1.6,.4,1);
+    .hero-dynamic-word,
+    .hero-dynamic-word-next {
+      display: block;
+      transition: color 0.2s;
       color: transparent;
       background: linear-gradient(90deg, #00ffb3 0%, #e55fff 100%);
       -webkit-background-clip: text; background-clip: text;
       will-change: transform, opacity;
+      font-size: 1em;
+      font-weight: 900;
+      position: absolute;
+      left: 0; width: 100%;
+      text-align: left;
     }
-    .hero-dynamic-word.spin-x {
-      animation: spinWord3DX .9s cubic-bezier(.68,-0.2,.32,1.2);
-      transform-origin: 50% 60%;
+    .hero-dynamic-word {
+      top: 0;
+      animation: none;
     }
-    @keyframes spinWord3DX {
-      0%   { opacity: 1; transform: rotateX(0deg) scale(1);}
-      35%  { opacity: 0; transform: rotateX(90deg) scale(0.7);}
-      65%  { opacity: 0; transform: rotateX(270deg) scale(0.7);}
-      100% { opacity: 1; transform: rotateX(360deg) scale(1);}
+    .hero-dynamic-word.slide-down {
+      animation: heroWordSlideDown 0.7s cubic-bezier(.5,1.6,.4,1) forwards;
     }
-    /* Keep the original spin in case it's used elsewhere */
-    .hero-dynamic-word.spin {
-      animation: spinWord .9s cubic-bezier(.68,-0.2,.32,1.2);
-      transform-origin: 50% 60%;
+    .hero-dynamic-word-next {
+      top: -1.5em;
+      opacity: 0;
     }
-    @keyframes spinWord {
-      0%   { opacity: 1; transform: rotateY(0) scale(1);}
-      35%  { opacity: 0; transform: rotateY(90deg) scale(0.7);}
-      65%  { opacity: 0; transform: rotateY(270deg) scale(0.7);}
-      100% { opacity: 1; transform: rotateY(360deg) scale(1);}
+    .hero-dynamic-word-next.slide-in {
+      animation: heroWordSlideInDown 0.7s cubic-bezier(.5,1.6,.4,1) forwards;
+    }
+    @keyframes heroWordSlideDown {
+      0% { transform: translateY(0); opacity: 1;}
+      100% { transform: translateY(1.5em); opacity: 0;}
+    }
+    @keyframes heroWordSlideInDown {
+      0% { transform: translateY(-1.5em); opacity: 0;}
+      60% { opacity: 1;}
+      100% { transform: translateY(0); opacity: 1;}
     }
     .hero-sub {
       font-size: 1.3rem; color: #b6eaff; margin: 0.7em 0 2em 0;
@@ -135,24 +150,6 @@
       box-shadow: 0 2px 18px #00ffb388;
     }
     .btn-primary:hover { filter: brightness(1.13) saturate(1.2); }
-    .btn-secondary {
-      background: transparent; border: 2px solid #4a90e2;
-      color: #4a90e2;
-    }
-    .btn-secondary:hover {
-      background: #0c1a35; border-color: #00ffb3; color: #00ffb3;
-    }
-    .btn-git {
-      background: linear-gradient(90deg, #16181e 4%, #222c3a 96%);
-      border: 2px solid #e55fff;
-      color: #e55fff;
-      font-weight: 800;
-    }
-    .btn-git:hover {
-      background: #2d1553;
-      border-color: #00ffd9;
-      color: #00ffd9;
-    }
     .btn-outline {
       background: transparent;
       border: 2px solid #00ffb3;
@@ -164,88 +161,212 @@
       border-color: #e55fff;
       color: #e55fff;
     }
-    .feature-showcase {
-      display: flex; gap: 2vw; justify-content: center;
-      max-width: 1200px; margin: 80px auto 0 auto;
-      flex-wrap: wrap; position: relative; z-index: 2;
-      min-height: 320px;
+
+    /* --- FEATURE MARQUEE SECTION, CARDS ONLY, NO CONTAINER --- */
+    .feature-marquees-inner {
+      width: 100vw;
+      max-width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      align-items: center;
+      padding: 17px 0 5px 0;
     }
-    .feature-card {
-      background: linear-gradient(120deg, #1b2030 80%, #222c3a 100%);
-      border-radius: 24px; box-shadow: 0 2px 24px #0002;
-      padding: 2.5em 2em 2.2em 2em; min-width: 240px; max-width: 340px;
-      flex: 1 1 240px; margin: 1vw 0; text-align: center;
-      border: 1.5px solid #22b0ff22;
-      transition: transform 0.28s cubic-bezier(.5,1.6,.4,1), border 0.19s, box-shadow 0.22s;
-      position: relative; overflow: hidden;
-      display: flex; flex-direction: column; align-items: center;
-      background-blend-mode: lighten;
-      margin-left: 12px; margin-right: 12px;
+    .feature-marquee-track {
+      display: flex;
+      gap: 24px;
+      will-change: transform;
+      align-items: stretch;
+      animation: marquee-scroll-slow 50s linear infinite;
     }
-    .feature-card:hover {
-      transform: scale(1.07) translateY(-7px) rotateZ(-1deg);
-      border-color: #5df6ff99;
-      box-shadow: 0 10px 50px #00ffb311;
+    .feature-marquee-track.reverse1 { animation-direction: reverse;}
+    .feature-marquee-track.reverse2 { animation-direction: alternate-reverse;}
+    /* The marquee track is duplicated by JS for seamless loop */
+    @keyframes marquee-scroll-slow {
+      0% { transform: translateX(0);}
+      100% { transform: translateX(-50%);}
+    }
+    .feature-pill {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      background: #101214;
+      color: #f4fded;
+      border-radius: 20px;
+      box-shadow: 0 2px 16px #00ffd933, 0 0px 0px #e55fff08;
+      border: 2.5px solid #00ffb3;
+      min-width: 290px;
+      max-width: 355px;
+      height: 75px;
+      padding: 0 22px 0 16px;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-weight: 900;
+      font-size: 1.1em;
+      margin: 0;
+      white-space: normal;
+      gap: 0.18em;
+      letter-spacing: -0.02em;
+      transition: 
+        box-shadow 0.22s cubic-bezier(.6,1.3,.2,1),
+        border 0.13s,
+        transform 0.22s cubic-bezier(.6,1.3,.2,1),
+        background 0.13s,
+        color 0.16s;
+      cursor: pointer;
+      position: relative;
       z-index: 1;
     }
-    .feature-icon {
-      font-size: 2.7em; margin-bottom: 0.6em;
-      filter: drop-shadow(0 2px 7px #00ffb355);
-      animation: floatY 2.6s ease-in-out infinite alternate;
+    .feature-pill .pill-title-row {
+      display: flex; align-items: center; gap: 0.55em;
     }
-    @keyframes floatY {
-      0% { transform: translateY(0);}
-      100% { transform: translateY(-8px);}
+    .feature-pill .pill-emoji {
+      font-size: 1.45em;
+      margin-right: 9px;
+      flex-shrink: 0;
+      filter: none;
+      transition: filter 0.17s, transform 0.14s;
     }
-    .feature-card h2 {
-      font-size: 1.22em; font-weight: 800; margin-bottom: 0.5em;
-      color: #5df6ff;
-      letter-spacing: -0.02em;
-    }
-    .feature-card p {
-      font-size: 1.08em; color: #ebebf7cc;
-      line-height: 1.62;
-      font-weight: 500;
+    .feature-pill .pill-title {
+      font-weight: 900;
+      font-size: 1em;
+      color: #f4fded;
+      letter-spacing: -0.01em;
       margin: 0;
+      transition: color 0.17s;
     }
-    .feature-badge {
-      background: linear-gradient(90deg, #e55fff 10%, #00ffd9 90%);
-      color: #252e38;
-      font-weight: 800;
-      font-size: 0.98em;
-      padding: 0.22em 1.1em;
-      border-radius: 13px;
-      margin-bottom: 1em;
-      margin-top: -0.7em;
-      box-shadow: 0 2px 8px #00ffb333;
-      letter-spacing: 0.06em;
-      display: inline-block;
-      animation: pulseBadge 2.2s infinite alternate;
+    .feature-pill .pill-desc {
+      font-size: 0.61em;
+      font-weight: 500;
+      color: #c0f9e5;
+      margin: 0.07em 0 0 0.13em;
+      opacity: 0.87;
+      text-shadow: 0 0px 6px #00ffd933;
+      transition: color 0.18s, opacity 0.16s;
+      line-height: 1.2;
     }
-    @keyframes pulseBadge {
-      0% { filter: brightness(1.1);}
-      50% { filter: brightness(1.34);}
-      100% { filter: brightness(1);}
+    .feature-pill:hover, .feature-pill:focus-visible {
+      transform: scale(1.13) rotateZ(-1.2deg);
+      box-shadow: 0 8px 30px #00ffd999, 0 0px 0px #e55fff88;
+      border-color: #00ffb3;
+      background: linear-gradient(90deg, #161b1d 92%, #05383e 100%);
+      color: #b9ffe3;
+      z-index: 2;
     }
-    .feature-card::after {
-      content: '';
-      position: absolute; left: 0; bottom: 0; width: 100%; height: 5px;
-      background: linear-gradient(90deg, #00ffb3, #e55fff, #4a90e2, #00ffb3);
-      background-size: 200% 100%;
-      animation: glowLine 3s linear infinite;
-      opacity: 0.25;
+    .feature-pill:active {
+      transform: scale(1.07) rotateZ(1deg);
+      filter: brightness(0.98);
     }
-    @keyframes glowLine {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 100% 0%; }
+    .feature-pill:hover .pill-emoji,
+    .feature-pill:focus-visible .pill-emoji {
+      filter: drop-shadow(0 0 10px #00ffd988) drop-shadow(0 2px 8px #e55fff88);
+      transform: scale(1.13);
     }
-    .features-row {
-      width: 100%;
+    .feature-pill:hover .pill-title,
+    .feature-pill:focus-visible .pill-title {
+      color: #00ffd9;
+    }
+    .feature-pill:hover .pill-desc,
+    .feature-pill:focus-visible .pill-desc {
+      color: #b6ffcb;
+      opacity: 1;
+    }
+    @media (max-width: 900px) {
+      .feature-pill {
+        min-width: 160px;
+        max-width: 94vw;
+        font-size: 0.89em;
+        padding: 0 7px 0 7px;
+        height: 55px;
+      }
+      .feature-pill .pill-emoji {
+        font-size: 1.15em;
+        margin-right: 5px;
+      }
+    }
+    @media (max-width: 440px) {
+      .feature-pill {
+        min-width: 110px;
+        font-size: 0.72em;
+        padding: 0 2px 0 2px;
+        height: 36px;
+      }
+    }
+    /* Stat cards below features */
+    .stats-cards-row {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 2vw;
+      align-items: stretch;
+      gap: 32px;
+      max-width: 900px;
+      margin: 30px auto 12px auto;
+      z-index: 2;
+      position: relative;
+      flex-wrap: wrap;
     }
+    .stat-card {
+      background: #191f23;
+      border: 2.2px solid #00ffb3;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #00ffd91a, 0 0 0 #00ffd911;
+      padding: 1.2em 2.2em;
+      min-width: 150px;
+      min-height: 86px;
+      flex: 1 1 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #aaffee;
+      font-family: inherit;
+      transition: transform 0.18s cubic-bezier(.6,1.3,.2,1), box-shadow 0.18s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card:hover, .stat-card:focus-visible {
+      transform: scale(1.08) rotateZ(-0.7deg);
+      box-shadow: 0 8px 40px #00ffd977, 0 0 7px #5df6ff77;
+      background: linear-gradient(105deg, #181c1f 90%, #00ffd91a 100%);
+      z-index: 3;
+    }
+    .stat-card .stat-label {
+      font-size: 1.08em;
+      font-weight: 700;
+      color: #00ffd9;
+      margin-bottom: 0.4em;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0px 7px #00ffd955;
+    }
+    .stat-card .stat-value {
+      font-size: 2.08em;
+      font-weight: 900;
+      color: #e5fff7;
+      margin-bottom: 0.15em;
+      text-shadow: 0 0px 18px #00ffd944;
+      letter-spacing: 0.01em;
+      transition: color 0.16s;
+    }
+    .stat-card .stat-note {
+      font-size: 0.96em;
+      opacity: 0.83;
+      color: #b6eaff;
+      font-weight: 500;
+      margin-top: 0.2em;
+    }
+    @media (max-width: 700px) {
+      .stats-cards-row {
+        gap: 14px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .stat-card {
+        min-width: 120px;
+        padding: 1em 0.7em;
+      }
+    }
+
     .about-founder {
       background: linear-gradient(110deg, #211c28 70%, #1b2233 100%);
       border-radius: 2.3em;
@@ -271,6 +392,7 @@
       object-fit: cover;
       border: 3.5px solid #00ffd9;
       margin-bottom: 1em;
+      background-color: #191c21;
     }
     .about-founder-content {
       flex: 1 1 360px;
@@ -294,7 +416,6 @@
       font-size: 1.12em;
       margin-top: 0.9em;
     }
-    /* --- REVIEWS --- */
     .review-carousel-outer {
       margin: 120px 0 0 0;
       width: 100vw;
@@ -448,7 +569,7 @@
       margin: 0 0.12em;
     }
     .review-dot.active {
-      background: linear-gradient(120deg, #00ffd9 40%, #e55fff 80%);
+      background: linear-gradient(120deg, #00ffd9 40%, #183bc8 80%);
       border-color: #00ffd9;
       transform: scale(1.21);
       box-shadow: 0 2px 8px #00ffd9aa;
@@ -480,7 +601,6 @@
     }
     .footer-content nav a:hover { color: #e55fff; }
     @media (max-width: 1200px) {
-      .feature-card { min-width: 220px; max-width: 95vw;}
       .review-slide { padding: 2.7em 2vw 2.7em 2vw; }
     }
     @media (max-width: 900px) {
@@ -492,16 +612,13 @@
     @media (max-width: 800px) {
       .navbar { flex-direction: column; gap: 0.7em; padding: 0.65em 1.3em; }
       .hero-title, .hero-gradient { font-size: 2.1rem !important; }
-      .feature-showcase { flex-direction: column; gap: 1.5em; }
       .footer-content { flex-direction: column; gap: 1.2em; }
       .review-carousel { border-radius: 1.2em; }
       .review-slide { padding: 1.1em 0.5em; }
       .review-photo { width: 75px; height: 75px; }
       .review-content { font-size: 1em; }
-      .feature-card { margin-left: 0; margin-right: 0;}
     }
     @media (max-width: 420px) {
-      .feature-card { padding: 1.5em 0.5em 1.3em 0.5em; }
       .navbar-menu a, .navbar-signin { font-size: 0.92em; }
       .about-founder { padding: 1em 0.3em 1.2em 0.3em; }
     }
@@ -516,19 +633,22 @@
       <a href="#founder">Founder</a>
       <a href="#reviews">Reviews</a>
       <a href="#faq">FAQ</a>
-      <a href="#pricing">Pricing</a>
       <button class="navbar-signin" id="sign-in-btn">Sign In</button>
     </div>
   </nav>
   <section class="hero">
     <h1>
-      <span class="hero-title">Where Productivity Meets <span id="dynamic-word" class="hero-dynamic"><span class="hero-dynamic-word">Precision</span></span>.</span>
+      <span class="hero-title">Where Productivity Meets
+        <span id="dynamic-word" class="hero-dynamic">
+          <span class="hero-dynamic-word"> Clarity</span>
+        </span>
+      </span>
       <span class="hero-gradient">Meet Taskflows.</span>
     </h1>
     <div class="hero-sub">
       Launch faster. Automate easier. Scale endlessly.
       <br>Workflows shouldn’t be complicated — Taskflows makes sure they’re not.<br>
-      <span style="color:#fff8; font-size:1.05em;">Inspired by the best. Made for everyone...</span>
+      <span style="color:rgb(130, 237, 141); font-size:1.05em;">Inspired by the best. Made for everyone...</span>
     </div>
     <div class="hero-buttons">
       <a href="dashboard.html" class="btn btn-primary">Get Started</a>
@@ -536,58 +656,47 @@
       <a href="#features" class="btn btn-outline">Explore Features</a>
     </div>
   </section>
-  <section class="feature-showcase" id="features">
-    <div class="features-row">
-      <div class="feature-card">
-        <span class="feature-badge">Visual</span>
-        <div class="feature-icon">🗺️</div>
-        <h2>Visual Workflow Builder</h2>
-        <p>Drag, drop, and connect tasks and triggers. Interactive canvas with real-time updates and context-aware snapping. Build complex flows with zero code.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-badge">AI</span>
-        <div class="feature-icon">🤖</div>
-        <h2>AI-Powered Suggestions</h2>
-        <p>Auto-generate steps and integrations with AI. Get smart, context-aware recommendations as you build and optimize your flows.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-badge">Integrations</span>
-        <div class="feature-icon">🔗</div>
-        <h2>Connect Everything</h2>
-        <p>Native support for 120+ apps: GitHub, Notion, Slack, Figma, Jira, and more. API builder for custom integrations.</p>
-      </div>
+  <!-- Feature Marquee Section with 3 rows, cards only, no container, smaller, with descriptions -->
+  <section style="background:transparent;padding:0;" id="features">
+    <div class="feature-marquees-inner">
+      <div class="feature-marquee-track" id="feature-marquee-track-1"></div>
+      <div class="feature-marquee-track reverse1" id="feature-marquee-track-2"></div>
+      <div class="feature-marquee-track reverse2" id="feature-marquee-track-3"></div>
     </div>
-    <div class="features-row">
-      <div class="feature-card">
-        <span class="feature-badge">Team</span>
-        <div class="feature-icon">🤝</div>
-        <h2>Real-Time Collaboration</h2>
-        <p>Edit flows together, assign roles, leave comments, and track changes live. Built-in activity feeds and approvals.</p>
+    <div class="stats-cards-row">
+      <div class="stat-card" tabindex="0">
+        <div class="stat-label">Users</div>
+        <div class="stat-value" id="stat-users">164</div>
+        <div class="stat-note">Active Right Now</div>
       </div>
-      <div class="feature-card">
-        <span class="feature-badge">Secure</span>
-        <div class="feature-icon">🔒</div>
-        <h2>Enterprise-Grade Security</h2>
-        <p>SSO, RBAC, audit trails, encrypted secrets, approval gates, and compliance controls. Privacy by design.</p>
+      <div class="stat-card" tabindex="0">
+        <div class="stat-label">Views</div>
+        <div class="stat-value" id="stat-views">2,048</div>
+        <div class="stat-note">In the last 7 days</div>
       </div>
-      <div class="feature-card">
-        <span class="feature-badge">Analytics</span>
-        <div class="feature-icon">📊</div>
-        <h2>Smart Monitoring</h2>
-        <p>Track run stats, get error alerts, inspect logs, and visualize bottlenecks. Export beautiful reports.</p>
+      <div class="stat-card" tabindex="0">
+        <div class="stat-label">Countries</div>
+        <div class="stat-value" id="stat-countries">23</div>
+        <div class="stat-note">Global Reach</div>
       </div>
     </div>
   </section>
   <section class="about-founder" id="founder">
-    <img class="founder-photo" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Founder Photo">
+    <img class="founder-photo" src="suit.png" alt="Founder Photo"
+      onerror="this.onerror=null;this.src='https://randomuser.me/api/portraits/men/32.jpg';">
     <div class="about-founder-content">
       <h2>Meet the Founder</h2>
       <p>
-        Hi, I'm <span class="founder-name">Kunal Nayak</span>, the creator of Taskflows.<br>
-        My mission is to empower every team, engineer, and creator to do more—with joy.<br>
-        Let's reimagine workflow, together.
+        Hi, I’m <span class="founder-name">Ritvik Nayak</span>, the creator of Taskflows.<br>
+I built Taskflows to help teams, builders, and creators work smarter — and actually enjoy the process.<br>
+Together, let’s reinvent how we get things done.
       </p>
     </div>
+     <section class="cta-banner">
+    <h2>Ready to supercharge your team's productivity?</h2>
+    <a href="dashboard.html" class="btn btn-lg btn-primary">Sign Up Now</a>
+    <p>Completely Free. No strings attached.</p>
+  </section>
   </section>
   <section class="review-carousel-outer" id="reviews">
     <div class="review-carousel" id="review-carousel">
@@ -654,19 +763,10 @@
     </div>
     <div class="review-dots" id="review-dots"></div>
   </section>
-  <section class="cta" id="pricing">
-    <h2>Ready to streamline your tasks?</h2>
-    <a href="#" class="btn btn-lg btn-primary">Start Building Now</a>
-    <a href="#" class="btn btn-lg btn-secondary">Plans & Pricing</a>
-    <a href="#" class="btn btn-lg btn-outline">Request a Demo</a>
-  </section>
   <footer>
     <div class="footer-content">
       <span>© <span id="year"></span> Taskflows. All rights reserved.</span>
       <nav>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="https://github.com/" target="_blank">GitHub</a>
       </nav>
     </div>
   </footer>
@@ -726,23 +826,192 @@
       window.addEventListener('beforeunload', function(){ running = false; });
     })();
 
-    // Hero dynamic spinning word (with 3D X-axis spin)
-    const words = ["Precision", "Clarity", "Rhythm", "Flow", "Control", "Focus", "Balance"];
+    // Hero dynamic slide down word (instead of spin)
+    const words = [ "Clarity", "Rhythm", "Control", "Balance", "Flow", "Focus"];
     let wordIndex = 0;
     const dynamicWordContainer = document.getElementById('dynamic-word');
     let lastWordSpan = dynamicWordContainer.querySelector('.hero-dynamic-word');
 
     function switchHeroWord() {
-      // Animate spin out using 3D X-axis
-      lastWordSpan.classList.add('spin-x');
+      // Remove next word span if present
+      let oldNext = dynamicWordContainer.querySelector('.hero-dynamic-word-next');
+      if (oldNext) oldNext.remove();
+
+      // Create next word span
+      const nextWordSpan = document.createElement('span');
+      nextWordSpan.className = 'hero-dynamic-word-next';
+      nextWordSpan.textContent = words[(wordIndex+1)%words.length];
+      dynamicWordContainer.appendChild(nextWordSpan);
+
+      // Trigger downward animations
+      lastWordSpan.classList.add('slide-down');
       setTimeout(() => {
-        // Change word after half of spin
-        lastWordSpan.textContent = words[wordIndex];
-        lastWordSpan.classList.remove('spin-x');
+        nextWordSpan.classList.add('slide-in');
+      }, 40);
+
+      setTimeout(() => {
+        lastWordSpan.remove();
+        nextWordSpan.className = 'hero-dynamic-word'; // become the main
+        lastWordSpan = nextWordSpan;
         wordIndex = (wordIndex + 1) % words.length;
-      }, 450);
+      }, 650);
     }
     setInterval(switchHeroWord, 2100);
+
+    // --- FEATURE MARQUEE CARD DATA ---
+   const featurePillData = [
+  {
+    emoji: "✍️",
+    title: "Distraction-Free Editors",
+    desc: "Clean, minimal writing spaces built for deep focus."
+  },
+  {
+    emoji: "✅",
+    title: "Advanced To-Do Lists",
+    desc: "Smart, sortable lists with drag-and-drop and labels."
+  },
+  {
+    emoji: "📊",
+    title: "Unified Dashboard",
+    desc: "Everything you need — at a glance, beautifully organized."
+  },
+  {
+    emoji: "🗂️",
+    title: "Multi-Project Workspaces",
+    desc: "Manage multiple flows with ease, each fully customizable."
+  },
+  {
+    emoji: "📆",
+    title: "Interactive Calendar View",
+    desc: "Visualize your tasks and deadlines by day, week, or month."
+  },
+  {
+    emoji: "📈",
+    title: "Built-In Analytics",
+    desc: "Track progress, patterns, and productivity in real time."
+  },
+  {
+    emoji: "🧾",
+    title: "Smart Lists & Boards",
+    desc: "Switch between lists, Kanban, and hybrid views seamlessly."
+  },
+  {
+    emoji: "📓",
+    title: "Daily Journal",
+    desc: "Capture reflections, goals, or ideas in one tidy journal."
+  },
+  {
+    emoji: "🧠",
+    title: "QuickNotes",
+    desc: "Jot down thoughts instantly — no clicks, no friction."
+  },
+  {
+    emoji: "🧱",
+    title: "Visual Whiteboard",
+    desc: "Sketch, plan, and brainstorm on an infinite canvas."
+  },
+  {
+    emoji: "📱",
+    title: "Mobile-First Design",
+    desc: "Fully optimized for phones, tablets, and small screens."
+  },
+  {
+    emoji: "⚡",
+    title: "Lag-Free Performance",
+    desc: "Instant response — built from scratch with clean code."
+  },
+  {
+    emoji: "🌐",
+    title: "Offline Support",
+    desc: "Works even without internet — auto-syncs when back online."
+  },
+  {
+    emoji: "🔔",
+    title: "Smart Reminders",
+    desc: "Get gentle nudges so important tasks never slip by."
+  },
+  {
+    emoji: "🔖",
+    title: "Labels & Priorities",
+    desc: "Organize tasks with color-coded labels and priority levels."
+  },
+  {
+    emoji: "🎨",
+    title: "Custom Themes",
+    desc: "Switch between Focus, Minimal, and Fun UI modes."
+  },
+  {
+    emoji: "⏱️",
+    title: "Floating Pomodoro Timer",
+    desc: "Stay in flow with a lightweight, task-linked timer."
+  },
+  {
+    emoji: "💾",
+    title: "Auto Save",
+    desc: "Your data is saved locally in real time — no login needed."
+  },
+  {
+    emoji: "🧘",
+    title: "Zero Clutter",
+    desc: "No distractions, no bloat — just clean, focused design."
+  },
+  {
+    emoji: "✨",
+    title: "And More",
+    desc: "New features and refinements are always on the way."
+  }
+];
+
+
+    // --- MARQUEE RENDERING / DUPLICATION FOR SEAMLESS ---
+    function renderFeatureMarqueeRow(trackId, offset) {
+      const track = document.getElementById(trackId);
+      // To ensure seamless movement, fill twice
+      let html = "";
+      for (let rep = 0; rep < 2; ++rep) {
+        for (let i = 0; i < featurePillData.length; ++i) {
+          const idx = (i + offset) % featurePillData.length;
+          const d = featurePillData[idx];
+          html += `<div class="feature-pill"><div class="pill-title-row"><span class="pill-emoji">${d.emoji}</span><span class="pill-title">${d.title}</span></div><div class="pill-desc">${d.desc}</div></div>`;
+        }
+      }
+      track.innerHTML = html;
+    }
+    renderFeatureMarqueeRow('feature-marquee-track-1', 0);
+    renderFeatureMarqueeRow('feature-marquee-track-2', 2);
+    renderFeatureMarqueeRow('feature-marquee-track-3', 4);
+
+    // --- Make Marquee Seamless on Resize ---
+    function updateMarqueeDuplication() {
+      renderFeatureMarqueeRow('feature-marquee-track-1', 0);
+      renderFeatureMarqueeRow('feature-marquee-track-2', 2);
+      renderFeatureMarqueeRow('feature-marquee-track-3', 4);
+      setupFeaturePillHover(); // Reapply events
+    }
+    window.addEventListener('resize', updateMarqueeDuplication);
+
+    // Marquee pause/resume on hover
+    function marqueePauseOnHover(trackId) {
+      const track = document.getElementById(trackId);
+      track.addEventListener('mouseenter', () => { track.style.animationPlayState = 'paused'; });
+      track.addEventListener('mouseleave', () => { track.style.animationPlayState = 'running'; });
+    }
+    marqueePauseOnHover('feature-marquee-track-1');
+    marqueePauseOnHover('feature-marquee-track-2');
+    marqueePauseOnHover('feature-marquee-track-3');
+
+    // Interactive hover for all pills
+    function setupFeaturePillHover() {
+      document.querySelectorAll('.feature-pill').forEach(el => {
+        el.addEventListener('mouseenter', function() {
+          this.classList.add('hovered');
+        });
+        el.addEventListener('mouseleave', function() {
+          this.classList.remove('hovered');
+        });
+      });
+    }
+    setupFeaturePillHover();
 
     // Mega Review Carousel (sliding full width, smooth)
     const reviewSliderTrack = document.getElementById('review-slider-track');
