@@ -338,6 +338,7 @@
       position: relative;
       overflow: hidden;
       font-size: 1.14em;
+      word-break: break-word;
     }
     .stat-card:hover, .stat-card:focus-visible {
       transform: scale(1.08) rotateZ(-0.7deg);
@@ -352,6 +353,8 @@
       margin-bottom: 0.5em;
       letter-spacing: 0.02em;
       text-shadow: 0 0px 7px #00ffd955;
+      text-align: center;
+      word-break: break-word;
     }
     .stat-card .stat-value {
       font-size: 2.25em;
@@ -361,6 +364,8 @@
       text-shadow: 0 0px 18px #00ffd944;
       letter-spacing: 0.01em;
       transition: color 0.16s;
+      text-align: center;
+      word-break: break-word;
     }
     .stat-card .stat-note {
       font-size: 1.01em;
@@ -368,6 +373,8 @@
       color: #b6eaff;
       font-weight: 500;
       margin-top: 0.2em;
+      text-align: center;
+      word-break: break-word;
     }
     /* FOUNDER SECTION */
     .about-founder {
@@ -423,22 +430,33 @@
       margin-top: 0.6em;
     }
     /* CTA BANNER */
-    .cta-banner {
-      margin-top: 0.9em;
-      padding: 1.1em 0 0 0;
-      width: 100%;
+    .cta-banner-card {
+      background: linear-gradient(120deg,#181c2a 60%, #183bc8 100%);
+      border-radius: 1.8em;
+      box-shadow: 0 8px 32px #0008;
+      max-width: 900px;
+      margin: 38px auto 0 auto;
+      text-align: center;
+      padding: 2.2em 2em 1.7em 2em;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    .cta-banner h2 {
-      font-size: 1.22em;
-      margin-bottom: 0.9em;
+    .cta-banner-card h2 {
+      font-size: 1.5em;
+      margin-bottom: 1.1em;
       color: #00ffb3;
       text-shadow: 0 1px 22px #00ffb355;
       font-weight: 800;
     }
-    .btn-lg { font-size: 1.22em; padding: 1.1em 2.7em; }
-    .cta-banner p {
-      margin-top: 0.7em;
+    .btn-lg { font-size: 1.42em; padding: 1.2em 3.2em; }
+    .cta-banner-card p {
+      margin-top: 0.95em;
       color: #b6eaff;
+      font-size: 1.12em;
     }
     /* REVIEW CAROUSEL */
     .review-carousel-outer {
@@ -642,7 +660,7 @@
       .stats-cards-row { gap: 12px; }
     }
     @media (max-width: 700px) {
-      html, body { font-size: 15px; }
+      html, body { font-size: 17px; }
       .navbar {
         flex-direction: column;
         align-items: stretch;
@@ -650,9 +668,8 @@
         min-height: 52px;
         gap: 0.05em;
       }
-      
       .navbar-logo {
-        font-size: 1.25em;
+        font-size: 1.45em;
         text-align: center;
         margin-bottom: 0.13em;
       }
@@ -666,21 +683,21 @@
       }
       .navbar-menu a,
       .navbar-signin {
-        font-size: 0.87em;
-        padding: 0.35em 0.35em;
+        font-size: 1.11em;
+        padding: 0.55em 0.55em;
         margin: 0 0.06em;
         border-radius: 13px;
         min-width: 0;
         text-align: center;
         flex: 1 0 auto;
         box-sizing: border-box;
-        max-width: 98px;
+        max-width: 110px;
       }
       .navbar-signin {
         min-width: 0;
-        padding: 0.33em 0.7em;
-        font-size: 0.89em;
-        margin-left: 0.17em;
+        padding: 0.48em 0.9em;
+        font-size: 1.09em;
+        margin-left: 0.27em;
       }
       .hero {
         padding-top: 80px;
@@ -688,9 +705,9 @@
         padding-left: 3vw;
         padding-right: 3vw;
       }
-      /* ---- FIX: Prevent .hero-title and .hero-gradient-word from wrapping poorly and being cut ---- */
+      /* --- HERO TITLE: Make much larger and super prominent ONLY ON PHONE (max-width: 700px) --- */
       .hero-title {
-        font-size: 2.1rem !important;
+        font-size: 2.7rem !important;
         flex-direction: row !important;
         flex-wrap: wrap !important;
         align-items: center !important;
@@ -700,7 +717,7 @@
         text-align: center;
       }
       .hero-gradient-word {
-        font-size: 1.18em;
+        font-size: 2.7em !important;
         width: auto !important;
         min-width: 0 !important;
         max-width: 100vw;
@@ -711,24 +728,24 @@
         white-space: normal !important;
         word-break: keep-all !important;
       }
-      /* ---- END FIX ---- */
-      .hero-gradient { font-size: 1.1rem !important;}
+      .hero-gradient { font-size: 1.7rem !important;}
       .hero-sub {
-        font-size: 1.05rem;
+        font-size: 1.18rem;
         margin: 0.4em 0 1.07em 0;
         max-width: 100vw;
       }
       .hero-buttons {
         flex-direction: column;
-        gap: 13px;
+        gap: 14px; /* reduced for smaller gap between buttons */
         align-items: stretch;
         width: 100%;
+        margin-top: 1.0em;
       }
       .btn, .btn-primary, .btn-outline, .btn-lg {
-        font-size: 0.99rem;
+        font-size: 1.12rem !important; /* much smaller */
         width: 100%;
-        padding: 0.75em 0.6em;
-        border-radius: 14px;
+        padding: 0.52em 0.6em !important; /* much less vertical and horizontal padding */
+        border-radius: 17px;
         box-sizing: border-box;
       }
       .feature-marquees-inner {
@@ -741,20 +758,20 @@
       .feature-pill {
         min-width: 94vw;
         max-width: 99vw;
-        font-size: 1.01em;
-        padding: 0.55em 1em 0.7em 1em;
-        min-height: 65px;
+        font-size: 0.89em; /* reduced font for feature pills */
+        padding: 0.38em 0.65em 0.53em 0.65em; /* less vertical/horizontal padding */
+        min-height: 46px;
       }
       .feature-pill .pill-title {
-        font-size: 1.02em;
+        font-size: 0.97em;
         max-width: 62vw;
       }
       .feature-pill .pill-desc {
-        font-size: 0.96em;
+        font-size: 0.89em;
         max-width: 94vw;
       }
       .stats-cards-row {
-        gap: 11px;
+        gap: 7px;
         flex-direction: column;
         align-items: stretch;
         max-width: 96vw;
@@ -762,23 +779,38 @@
       }
       .stat-card {
         min-width: 0;
-        padding: 0.7em 0.6em;
-        font-size: 1.09em;
+        padding: 0.65em 0.5em;
+        font-size: 0.98em; /* smaller font for stat cards */
         border-radius: 12px;
         flex: 1 1 80px;
       }
-      .about-founder {
+      .stat-card .stat-label {
+        font-size: 0.92em;
+        margin-bottom: 0.3em;
+        word-break: break-word;
+      }
+      .stat-card .stat-value {
+        font-size: 1.38em;
+        word-break: break-word;
+      }
+      .stat-card .stat-note {
+        font-size: 0.86em;
+        margin-top: 0.13em;
+        word-break: break-word;
+      }
+      /* --- FOUNDER AND CTA: Make both cards separated and proper on mobile --- */
+      .about-founder, .cta-banner-card {
         flex-direction: column;
         align-items: center;
         padding: 1em 0.6em 0.7em 0.6em;
         gap: 0.5em;
         margin-top: 14px;
-        border-radius: 0.8em;
+        border-radius: 1.1em;
         max-width: 99vw;
       }
       .founder-photo {
-        width: 46px;
-        height: 46px;
+        width: 56px;
+        height: 56px;
         margin-bottom: 0.1em;
       }
       .about-founder-content {
@@ -786,27 +818,27 @@
         text-align: center;
       }
       .about-founder-content h2 {
-        font-size: 1.01em;
-        margin-bottom: 0.08em;
+        font-size: 1.21em;
+        margin-bottom: 0.18em;
       }
       .about-founder-content p {
-        font-size: 0.97em;
+        font-size: 1.08em;
       }
       .about-founder-content .founder-name {
-        font-size: 0.95em;
+        font-size: 1.09em;
       }
-      .cta-banner {
-        margin-top: 0.2em;
-        padding: 0.3em 0 0 0;
-      }
-      .cta-banner h2 {
-        font-size: 1.01em;
-        margin-bottom: 0.42em;
+      .cta-banner-card h2 {
+        font-size: 1.19em;
+        margin-bottom: 0.65em;
       }
       .btn-lg {
-        font-size: 0.99em;
-        padding: 0.66em 0.1em;
-        border-radius: 13px;
+        font-size: 1.13em !important;
+        padding: 0.62em 0.1em !important;
+        border-radius: 14px;
+      }
+      .cta-banner-card p {
+        font-size: 1.03em;
+        margin-top: 0.34em;
       }
       .review-carousel-outer {
         margin: 17px 0 0 0;
@@ -880,22 +912,25 @@
     }
     @media (max-width: 420px) {
       html { font-size: 13px; }
-      .hero-title { font-size: 1.11rem !important;}
+      .hero-title { font-size: 2.1rem !important;}
       .hero-gradient { font-size: 0.74rem !important;}
-      .hero-gradient-word { font-size: 0.55em; width: 78px;}
-      .navbar-menu a, .navbar-signin { font-size: 0.67em; }
-      .about-founder { padding: 0.19em 0.03em 0.28em 0.03em; }
+      .hero-gradient-word { font-size: 2.1em !important; width: 78px;}
+      .navbar-menu a, .navbar-signin { font-size: 0.87em; }
+      .about-founder, .cta-banner-card { padding: 0.19em 0.03em 0.28em 0.03em; }
       .hero { padding-left: 0; padding-right: 0; }
-      .btn, .btn-primary, .btn-outline, .btn-lg { font-size: 0.71em; }
+      .btn, .btn-primary, .btn-outline, .btn-lg { font-size: 0.97em !important; }
       .feature-pill {
         min-width: 99vw;
         max-width: 100vw;
-        font-size: 0.94em;
-        padding: 0.2em 0.5em 0.2em 0.5em;
-        min-height: 38px;
+        font-size: 0.82em;
+        padding: 0.13em 0.23em 0.13em 0.23em;
+        min-height: 28px;
       }
-      .feature-pill .pill-title { font-size: 0.91em;}
-      .feature-pill .pill-desc { font-size: 0.88em;}
+      .feature-pill .pill-title { font-size: 0.83em;}
+      .feature-pill .pill-desc { font-size: 0.75em;}
+      .stat-card .stat-label { font-size: 0.77em; }
+      .stat-card .stat-value { font-size: 1.12em; }
+      .stat-card .stat-note { font-size: 0.72em; }
     }
     /* END MOBILE */
   </style>
@@ -965,8 +1000,8 @@
     </div>
   </section>
   <section class="about-founder" id="founder">
-   <img class="founder-photo" src="suit.png" alt="Founder Photo"
-     onerror="this.onerror=null;this.src='fallback.png'">
+    <img class="founder-photo" src="suit.png" alt="Founder Photo"
+      onerror="this.onerror=null;this.src='fallback.png'">
     <div class="about-founder-content">
       <h2>Meet the Founder</h2>
       <p>
@@ -975,11 +1010,11 @@
         Together, let’s reinvent how we get things done.
       </p>
     </div>
-     <section class="cta-banner">
+  </section>
+  <section class="cta-banner-card">
     <h2>Ready to supercharge your team's productivity?</h2>
     <a href="dashboard.html" class="btn btn-lg btn-primary">Sign Up Now</a>
     <p>Completely Free. No strings attached.</p>
-  </section>
   </section>
   <section class="review-carousel-outer" id="reviews">
     <div class="review-carousel" id="review-carousel">
