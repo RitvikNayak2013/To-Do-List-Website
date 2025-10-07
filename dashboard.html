@@ -145,6 +145,10 @@
     .icon-btn:hover{background:var(--muted-2)}
     .select-box{position:absolute;left:12px;top:12px}
 
+    /* Drag handle */
+    .drag-handle{cursor:grab;user-select:none;padding:4px 6px;border:1px dashed var(--border);border-radius:8px;font-size:.9rem;opacity:.8}
+    .drag-handle:active{cursor:grabbing}
+
     /* Modals / Overlays */
     .overlay{position:fixed;inset:0;background:rgba(10,14,20,.35);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
     .overlay.show{display:flex}
@@ -225,9 +229,9 @@
           <span class="icon">🔍</span>
         </div>
         <div class="top-actions">
-          <button class="btn" id="darkToggle" title="Toggle theme (D)">🌙 Theme</button>
+          <button class="btn" id="darkToggle" title="Toggle theme (disabled)">🌙 Theme</button>
           <button class="btn" id="bulkModeBtn" title="Bulk actions">🧰 Bulk</button>
-          <button class="btn primary" id="newProjectBtn" title="New (N)">＋ New Project</button>
+          <button class="btn primary" id="newProjectBtn" title="New">＋ New Project</button>
           <div class="pbox" id="pbox">
             <img id="topAvatar" class="avatar" alt="Profile" />
             <div class="pdrop" id="pdrop" role="menu" aria-hidden="true">
@@ -270,12 +274,12 @@
         </select>
 
         <input class="small-input tag-input" id="tagQuery" placeholder="Filter by tags (comma-sep)" />
-        <span class="tag-hint">Tip: press <span class="kbd">/</span> to search, <span class="kbd">N</span> to add</span>
+        <span class="tag-hint">Tip: press <span class="kbd">/</span> to focus search</span>
 
         <span style="flex:1"></span>
 
-        <button class="btn" id="exportBtn" title="Export (E)">⬇︎ Export</button>
-        <label class="btn" for="importFile" title="Import (I)">⬆︎ Import</label>
+        <button class="btn" id="exportBtn" title="Export">⬇︎ Export</button>
+        <label class="btn" for="importFile" title="Import">⬆︎ Import</label>
         <input id="importFile" type="file" accept="application/json" style="display:none" />
       </section>
 
@@ -290,7 +294,7 @@
       <!-- Grid -->
       <section id="gridWrap">
         <div class="grid" id="grid"></div>
-        <div class="empty" id="empty" style="display:none">No projects. Click <span class="kbd">＋ New Project</span> or press <span class="kbd">N</span>.</div>
+        <div class="empty" id="empty" style="display:none">No projects. Click <span class="kbd">＋ New Project</span>.</div>
       </section>
     </main>
   </div>
@@ -384,7 +388,13 @@
   <div class="toasts" id="toasts"></div>
 
   <script>
-  /* ========= Keys & Utilities ========= */
+  /* ========= Flags & Utilities ========= */
+  // Landing-page skip flag: have your landing page check this and skip redirect if "1"
+  const KEY_SKIP_LANDING = 'taskflows-skip-landing';
+  localStorage.setItem(KEY_SKIP_LANDING, '1');
+
+  const ENABLE_SHORTCUTS = false; // << turn true to re-enable keyboard shortcuts
+
   const KEY_PROFILE='taskflows-profile', KEY_PROJECTS='taskflows-projects', KEY_ORDER='taskflows-order', KEY_THEME='taskflows-theme';
 
   const $ = sel => document.querySelector(sel);
@@ -428,6 +438,10 @@
     setProjects(seed); setOrder(seed.map(p=>p.id));
   } else if(getOrder().length===0){
     setOrder(getProjects().map(p=>p.id));
+  } else {
+    // ensure order only contains existing ids
+    const ids = new Set(getProjects().map(p=>p.id));
+    setOrder(getOrder().filter(id=>ids.has(id)));
   }
 
   /* ========= Profile UI ========= */
@@ -468,6 +482,7 @@
   function saveProjectFromModal(){
     const title=$('#pTitle').value.trim();
     if(!title){ toast('Title required','bad'); return; }
+    const existing = editingId ? getProjects().find(x=>x.id===editingId) : null;
     const proj={
       id: editingId || uid(),
       title,
@@ -482,14 +497,14 @@
       members: parseInt($('#pMembers').value,10)||1,
       tags: $('#pTags').value.split(',').map(t=>t.trim()).filter(Boolean),
       progress: (()=>{
-        const s=$('#pStatus').value; return s==='completed'?100:(editingId? getProjects().find(x=>x.id===editingId)?.progress||0 : 0);
+        const s=$('#pStatus').value; return s==='completed'?100:(existing ? existing.progress||0 : 0);
       })(),
-      created: editingId? (getProjects().find(x=>x.id===editingId).created) : Date.now()
+      created: existing ? existing.created : Date.now()
     };
     const arr=getProjects();
     if(editingId){
       const idx=arr.findIndex(x=>x.id===editingId);
-      arr[idx]=proj;
+      if(idx>=0) arr[idx]=proj;
     } else {
       arr.push(proj);
       const ord=getOrder(); ord.unshift(proj.id); setOrder(ord);
@@ -514,8 +529,7 @@
     let out=[...arr];
     if(filterStatus!=='all') out=out.filter(p=>p.status===filterStatus);
     if(filterPriority!=='any') out=out.filter(p=>p.priority===filterPriority);
-    const tagQ=tagFilter;
-    if(tagQ.length) out=out.filter(p=>tagQ.every(t=> (p.tags||[]).map(x=>x.toLowerCase()).includes(t)));
+    if(tagFilter.length) out=out.filter(p=>tagFilter.every(t=> (p.tags||[]).map(x=>x.toLowerCase()).includes(t)));
     const q=$('#searchInput').value.trim().toLowerCase();
     if(q) out=out.filter(p=> (p.title+p.desc+(p.tags||[]).join(' ')).toLowerCase().includes(q));
     switch(sortBy){
@@ -525,7 +539,7 @@
       case 'progress_desc': out.sort((a,b)=>b.progress-a.progress); break;
       case 'end_asc': out.sort((a,b)=>(a.endDate||'9999').localeCompare(b.endDate||'9999')); break;
     }
-    // Respect manual order if not sorting by created
+    // If custom sort is chosen, keep manual order stable
     if(sortBy!=='created_desc' && sortBy!=='created_asc'){
       const ord=getOrder();
       out.sort((a,b)=>ord.indexOf(a.id)-ord.indexOf(b.id));
@@ -538,11 +552,12 @@
     $('#kTotal').textContent = list.length;
     $('#kProg').textContent = list.filter(p=>p.status==='in progress').length;
     $('#kDone').textContent = list.filter(p=>p.status==='completed').length;
-    const avg = list.length? Math.round(list.reduce((s,p)=>s+(p.progress||0),0)/list.length) : 0;
+    const all=getProjects();
+    const avg = all.length? Math.round(all.reduce((s,p)=>s+(p.progress||0),0)/all.length) : 0;
     $('#kAvg').textContent = avg+'%';
   }
 
-  /* ========= Render Grid ========= */
+  /* ========= Render Grid (with drag handle & event delegation) ========= */
   function render(){
     const arr=getProjects();
     const list = applyFilters(arr);
@@ -550,13 +565,14 @@
     $('#empty').style.display = list.length? 'none':'block';
 
     list.forEach(p=>{
-      const card=document.createElement('div');
-      card.className='card'; card.setAttribute('draggable','true');
-      card.dataset.id=p.id; card.dataset.status=p.status;
-
+      const handle = `<button class="drag-handle" data-handle title="Drag">⋮⋮</button>`;
       const statusClass = p.status==='completed'?'completed':(p.status==='in progress'?'inprogress':(p.status==='planning'?'planning':'review'));
       const dotClass = p.statusColor||'blue';
       const tagsHtml=(p.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
+
+      const card=document.createElement('div');
+      card.className='card';
+      card.dataset.id=p.id; card.dataset.status=p.status;
 
       card.innerHTML=`
         <input type="checkbox" class="select-box" style="display:${bulkMode?'block':'none'}" />
@@ -564,6 +580,7 @@
           <span class="dot ${dotClass}"></span>
           <div class="title">${p.title}</div>
           <span class="badge ${statusClass}">${p.status}</span>
+          ${handle}
         </div>
         <div class="desc">${p.desc||''}</div>
         <div class="progress">
@@ -584,70 +601,42 @@
           <button class="icon-btn" data-act="del" title="Delete">🗑️</button>
         </div>
       `;
-
-      // DnD
-      card.addEventListener('dragstart',e=>{ card.classList.add('dragging'); e.dataTransfer.setData('text/plain',p.id); });
-      card.addEventListener('dragend',()=>card.classList.remove('dragging'));
-
       grid.appendChild(card);
     });
 
-    // Grid Drag handling
-    grid.addEventListener('dragover', e=>{
-      e.preventDefault();
-      const dragging=$('.card.dragging'); if(!dragging) return;
-      const afterEl=getDragAfterElement(grid, e.clientY);
-      if(afterEl==null){ grid.appendChild(dragging); }
-      else { grid.insertBefore(dragging, afterEl); }
-    });
-    grid.addEventListener('drop', ()=>{
-      const ids=$$('#grid .card').map(c=>c.dataset.id);
-      setOrder(ids);
-    });
-
-    // Actions & Range updates
-    $$('#grid .card').forEach(card=>{
-      const id=card.dataset.id;
-      card.querySelector('.range').addEventListener('input', e=>{
-        const val=parseInt(e.target.value,10);
-        const arr=getProjects(); const i=arr.findIndex(x=>x.id===id); arr[i].progress=val;
-        if(val===100){arr[i].status='completed'; arr[i].statusColor='orange';}
-        setProjects(arr);
-        card.querySelector('.perc').textContent = val+'%';
-        card.querySelector('.bar>span').style.width = val+'%';
-        card.dataset.status=arr[i].status;
-        render(); // refresh badges/stats
-      });
-
-      card.querySelectorAll('[data-act]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const arr=getProjects(); const i=arr.findIndex(x=>x.id===id); if(i<0) return;
-          const act=btn.dataset.act;
-          if(act==='edit'){ openProjectModal(arr[i]); }
-          if(act==='complete'){
-            if(arr[i].status!=='completed'){ arr[i].status='completed'; arr[i].progress=100; arr[i].statusColor='orange'; }
-            else { arr[i].status='in progress'; arr[i].progress=0; arr[i].statusColor='blue'; }
-            setProjects(arr); render();
-          }
-          if(act==='dup'){
-            const copy={...arr[i], id:uid(), title:arr[i].title+' (Copy)', status:arr[i].status==='completed'?'planning':arr[i].status, progress:arr[i].status==='completed'?0:arr[i].progress, statusColor:arr[i].status==='completed'?'purple':arr[i].statusColor, created:Date.now()};
-            arr.push(copy); setProjects(arr);
-            const ord=getOrder(); ord.unshift(copy.id); setOrder(ord);
-            render(); toast('Duplicated');
-          }
-          if(act==='del'){
-            if(confirm('Delete this project?')){ deleteProject(id); }
-          }
-        });
-      });
-
-      if(bulkMode){
-        card.querySelector('.select-box').addEventListener('change', syncBulkBar);
-      }
-    });
+    // Drag & drop via handle (prevents card clicks from failing)
+    enableDragWithHandle();
 
     updateStats(getProjects());
     renderBulkBar();
+  }
+
+  function enableDragWithHandle(){
+    const grid = $('#grid');
+    let draggingEl=null;
+
+    grid.querySelectorAll('[data-handle]').forEach(h=>{
+      h.setAttribute('draggable','true');
+      h.addEventListener('dragstart', (e)=>{
+        const card = e.target.closest('.card');
+        draggingEl = card;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      h.addEventListener('dragend', ()=>{
+        if(draggingEl){ draggingEl.classList.remove('dragging'); draggingEl=null; }
+        const ids=$$('#grid .card').map(c=>c.dataset.id);
+        setOrder(ids);
+      });
+    });
+
+    grid.addEventListener('dragover', e=>{
+      e.preventDefault();
+      if(!draggingEl) return;
+      const afterEl=getDragAfterElement(grid, e.clientY);
+      if(afterEl==null){ grid.appendChild(draggingEl); }
+      else { grid.insertBefore(draggingEl, afterEl); }
+    });
   }
 
   function getDragAfterElement(container, y){
@@ -725,7 +714,7 @@
     e.target.value='';
   });
 
-  /* ========= Theme ========= */
+  /* ========= Theme (button now just toggles class, no shortcuts) ========= */
   $('#darkToggle').addEventListener('click', ()=>{
     const next = getTheme()==='dark'?'light':'dark';
     setTheme(next);
@@ -801,17 +790,70 @@
   /* ========= Bulk ========= */
   $('#bulkModeBtn').addEventListener('click', toggleBulkMode);
 
-  /* ========= Keyboard Shortcuts ========= */
-  document.addEventListener('keydown', e=>{
-    if(e.key==='/' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
-      e.preventDefault(); $('#searchInput').focus();
+  /* ========= Event Delegation for Card Actions & Inputs ========= */
+  // Ensures seeded/default cards and all future cards respond
+  $('#grid').addEventListener('click', (e)=>{
+    const card = e.target.closest('.card'); if(!card) return;
+    const id = card.dataset.id;
+
+    // Action buttons
+    const actBtn = e.target.closest('[data-act]');
+    if(actBtn){
+      const arr=getProjects(); const i=arr.findIndex(x=>x.id===id); if(i<0) return;
+      const act=actBtn.dataset.act;
+      if(act==='edit'){ openProjectModal(arr[i]); }
+      if(act==='complete'){
+        if(arr[i].status!=='completed'){ arr[i].status='completed'; arr[i].progress=100; arr[i].statusColor='orange'; }
+        else { arr[i].status='in progress'; arr[i].progress=0; arr[i].statusColor='blue'; }
+        setProjects(arr); render();
+      }
+      if(act==='dup'){
+        const copy={...arr[i], id:uid(), title:arr[i].title+' (Copy)', status:arr[i].status==='completed'?'planning':arr[i].status, progress:arr[i].status==='completed'?0:arr[i].progress, statusColor:arr[i].status==='completed'?'purple':arr[i].statusColor, created:Date.now()};
+        arr.push(copy); setProjects(arr);
+        const ord=getOrder(); ord.unshift(copy.id); setOrder(ord);
+        render(); toast('Duplicated');
+      }
+      if(act==='del'){
+        if(confirm('Delete this project?')){ deleteProject(id); }
+      }
     }
-    if(e.key.toLowerCase()==='n' && !$('#projectOverlay').classList.contains('show')){ openProjectModal(); }
-    if(e.key.toLowerCase()==='d'){ setTheme(getTheme()==='dark'?'light':'dark'); }
-    if(e.key.toLowerCase()==='e' && !$('#projectOverlay').classList.contains('show')){ $('#exportBtn').click(); }
-    if(e.key.toLowerCase()==='i' && !$('#projectOverlay').classList.contains('show')){ $('#importFile').click(); }
-    if(e.key==='Escape'){ $$('.overlay.show').forEach(o=>toggleOverlay('#'+o.id,false)); }
   });
+
+  // Range input: update progress live via delegation
+  $('#grid').addEventListener('input', (e)=>{
+    if(e.target.classList.contains('range')){
+      const card=e.target.closest('.card'); if(!card) return;
+      const id=card.dataset.id;
+      const val=parseInt(e.target.value,10);
+      const arr=getProjects(); const i=arr.findIndex(x=>x.id===id); if(i<0) return;
+      arr[i].progress=clamp(val,0,100);
+      if(arr[i].progress===100){arr[i].status='completed'; arr[i].statusColor='orange';}
+      setProjects(arr);
+      // update visuals without full re-render
+      card.querySelector('.perc').textContent = arr[i].progress+'%';
+      card.querySelector('.bar>span').style.width = arr[i].progress+'%';
+      card.dataset.status=arr[i].status;
+      updateStats(getProjects());
+    }
+  });
+
+  if(ENABLE_SHORTCUTS){
+    document.addEventListener('keydown', e=>{
+      if(e.key==='/' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){
+        e.preventDefault(); $('#searchInput').focus();
+      }
+      if(e.key.toLowerCase()==='n' && !$('#projectOverlay').classList.contains('show')){ openProjectModal(); }
+      if(e.key.toLowerCase()==='d'){ setTheme(getTheme()==='dark'?'light':'dark'); }
+      if(e.key.toLowerCase()==='e' && !$('#projectOverlay').classList.contains('show')){ $('#exportBtn').click(); }
+      if(e.key.toLowerCase()==='i' && !$('#projectOverlay').classList.contains('show')){ $('#importFile').click(); }
+      if(e.key==='Escape'){ $$('.overlay.show').forEach(o=>toggleOverlay('#'+o.id,false)); }
+    });
+  } else {
+    // Minimal Esc handling only (close modals), no theme toggle/keybinds
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){ $$('.overlay.show').forEach(o=>toggleOverlay('#'+o.id,false)); }
+    });
+  }
 
   /* ========= Initial Render ========= */
   (function init(){
