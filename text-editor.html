@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -10,836 +11,1472 @@
 
   gtag('config', 'G-RQR9BDLJ26');
 </script>
-  <meta charset="UTF-8">
-  <title>TaskFlows Text Editor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="Untitled.png">
-  <!-- Google Fonts: Add more for variety -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Fira+Mono:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Playfair+Display:wght@400;700&family=Quicksand:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>TaskFlows · Text Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="Untitled.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
   <style>
     :root {
-      --primary: #7c3aed;
-      --primary2: #ff6ccc;
-      --primary-light: #f5f2fe;
-      --editor-bg: #fafbfc;
-      --toolbar-bg: #fff;
-      --border: #ececec;
-      --shadow: 0 8px 40px #7c3aed1a, 0 2px 10px #7c3aed13;
-      --radius: 18px;
-      --editor-radius: 15px;
-      --editor-padding: 26px;
-      --toolbar-radius: 15px;
-      --transition: 0.17s;
-      --btn-gradient: linear-gradient(90deg, var(--primary2), var(--primary));
-      --font-ui: 'Inter', 'Roboto', 'Montserrat', 'Lato', 'Open Sans', Arial, sans-serif;
-      --font-docs: 'Inter', 'Roboto', 'Montserrat', 'Lato', 'Open Sans', Arial, sans-serif;
+      --primary: #6366f1;
+      --primary-soft: #eef2ff;
+      --primary-soft-2: #e0e7ff;
+      --ink: #0f172a;
+      --ink-2: #111827;
+      --ink-3: #6b7280;
+      --ink-4: #9ca3af;
+
+      --bg: #f5f5f7;
+      --bg-soft: #eef0f4;
+      --card: #ffffff;
+      --glass: rgba(255, 255, 255, 0.9);
+
+      --border: #e5e7eb;
+      --muted: #f3f4f6;
+      --muted-2: #e5e7eb;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      --radius: 14px;
+      --r-sm: 10px;
+      --speed: .18s;
     }
-    html, body {
+
+    .dark {
+      --bg: #020617;
+      --bg-soft: #020617;
+      --card: #020617;
+      --glass: rgba(15, 23, 42, 0.96);
+
+      --ink: #e5e7eb;
+      --ink-2: #e5e7eb;
+      --ink-3: #9ca3af;
+      --ink-4: #6b7280;
+
+      --border: #1f2937;
+      --muted: #020617;
+      --muted-2: #020617;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      background: linear-gradient(-45deg, #f7b267, #70a1d7, #ff6ccc, #b5faff, #fff8e1, #f5f2fe);
-      background-size: 400% 400%;
-      animation: animatedGradient 18s ease-in-out infinite;
-      color: #23213a;
-      font-family: var(--font-ui);
-      overflow-x: hidden;
+      width: 100%;
+      min-height: 100%;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink-2);
+      -webkit-font-smoothing: antialiased;
     }
-    @keyframes animatedGradient {
-      0% {background-position: 0% 50%;}
-      25% {background-position: 100% 60%;}
-      50% {background-position: 100% 100%;}
-      75% {background-position: 50% 0%;}
-      100% {background-position: 0% 50%;}
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
+
     body {
       display: flex;
-      flex-direction: column;
-      align-items: center;
       min-height: 100vh;
     }
-    .container {
-      max-width: 920px;
-      margin: 44px auto 0 auto;
-      min-height: 92vh;
-      background: var(--editor-bg);
-      border-radius: var(--editor-radius);
-      box-shadow: var(--shadow);
+
+    .wrap {
+      display: flex;
+      flex: 1;
+      min-height: 100vh;
+    }
+
+    /* Sidebar (Docs + Nav) */
+    .sidebar {
+      width: 270px;
+      flex: 0 0 270px;
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--border);
+      padding: 16px 16px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      box-shadow: 10px 0 40px rgba(15, 23, 42, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform .2s ease;
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 30% 20%, #a855f7, #4f46e5);
+      box-shadow: 0 10px 25px rgba(88, 80, 236, 0.35);
+    }
+
+    .logo-badge svg {
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.3));
+    }
+
+    .app-title {
+      font-weight: 800;
+      letter-spacing: -.03em;
+      font-size: 1.2rem;
+      color: var(--ink-2);
+    }
+
+    .app-sub {
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--ink-4);
+    }
+
+    .side-label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--ink-4);
+      margin: 8px 2px 4px;
+    }
+
+    .side-nav {
+      list-style: none;
+      margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: stretch;
-      position: relative;
+      gap: 4px;
     }
-    .tab-bar {
-      display: flex;
-      align-items: stretch;
-      border-bottom: 1.8px solid var(--primary-light);
-      background: var(--toolbar-bg);
-      border-radius: var(--toolbar-radius) var(--toolbar-radius) 0 0;
-      box-shadow: 0 2px 14px #7c3aed18;
-      position: sticky;
-      z-index: 11;
-      top: 0;
-      padding-left: 14px;
-      overflow-x: auto;
-      scrollbar-width: thin;
-      gap: 7px;
-    }
-    .tab {
-      font-weight: 600;
-      font-size: 1.05rem;
-      border: none;
-      background: none;
-      color: #555;
-      border-radius: 13px 13px 0 0;
-      margin-right: 8px;
-      padding: 13px 30px 11px 30px;
-      cursor: pointer;
-      transition: background 0.13s, color 0.13s;
-      position: relative;
-      outline: none;
-    }
-    .tab.selected, .tab:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-      box-shadow: 0 2px 12px #7c3aed11;
-      z-index: 2;
-    }
-    .tab .close-tab {
-      margin-left: 10px;
-      color: #999;
-      font-size: 1.1em;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0 2px 0 3px;
-      border-radius: 50%;
-      transition: background 0.12s, color 0.12s;
-    }
-    .tab .close-tab:hover {
-      color: #ff6ccc;
-      background: #fbe1f6;
-    }
-    .tab-bar .add-tab-btn,
-    .drafts-btn,
-    .dashboard-btn {
-      background: var(--btn-gradient);
-      color: #fff;
-      border: none;
-      font-size: 1.23rem;
-      font-weight: 700;
-      margin: 7px 0 7px 0;
-      border-radius: 12px;
-      padding: 7px 24px 7px 24px;
-      cursor: pointer;
-      box-shadow: 0 2px 10px #ff6ccc22;
-      transition: background 0.15s, transform 0.13s;
-      outline: none;
-      display: flex; align-items: center; gap: 7px;
-      text-decoration: none;
-      line-height: 1.2;
-    }
-    .tab-bar .add-tab-btn:hover,
-    .drafts-btn:hover,
-    .dashboard-btn:hover {
-      background: linear-gradient(90deg, var(--primary), var(--primary2));
-      transform: scale(1.05);
-      color: #fff;
-      text-decoration: none;
-    }
-    .drafts-btn {
-      font-size: 1.05rem;
-      padding: 7px 25px;
-      border-radius: 11px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      margin-left: auto;
-      margin-right: 0;
-    }
-    .dashboard-btn {
-      font-size: 1.05rem;
-      padding: 7px 25px;
-      border-radius: 11px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      margin-left: 7px;
-      margin-right: 0;
-    }
-    .editor-toolbar {
-      background: var(--toolbar-bg);
-      border-radius: 0 0 0 0;
-      box-shadow: 0 1.5px 10px #7c3aed11;
-      padding: 0 18px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 11px;
-      border-bottom: 1.5px solid var(--border);
-      z-index: 10;
-      min-height: 68px;
-      position: sticky;
-      top: 48px;
-    }
-    .toolbar-group {
+
+    .side-nav a {
+      font: 500 .9rem/1.2 'Inter', sans-serif;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-right: 7px;
+      padding: 8px 9px;
+      border-radius: var(--r-sm);
+      color: var(--ink-3);
+      background: transparent;
+      transition: background var(--speed), color var(--speed);
     }
-    .toolbar-btn, .toolbar-select, .toolbar-input {
-      background: #fff;
-      color: #29294d;
-      border: 1.3px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 11px;
-      font-size: 1.06rem;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.13s, border 0.13s;
-      outline: none;
-      min-width: 0;
-      margin-right: 0;
-      margin-bottom: 0;
-      vertical-align: middle;
+
+    .side-nav a:hover {
+      background: var(--muted);
+      color: var(--ink-2);
     }
-    .toolbar-btn[aria-pressed="true"], .toolbar-btn.active {
-      background: var(--primary-light);
+
+    .side-nav .active {
+      background: var(--primary-soft);
       color: var(--primary);
-      border: 1.3px solid var(--primary2);
+      font-weight: 600;
     }
-    .toolbar-btn:focus, .toolbar-select:focus, .toolbar-input:focus {
-      border: 1.3px solid var(--primary2);
+
+    .nav-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--muted);
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--ink-3);
     }
-    .toolbar-select {
-      min-width: 38px;
-      font-size: 1.01rem;
-      padding: 7px 8px;
+
+    .nav-dot-docs {
+      background: linear-gradient(135deg, #eef2ff, #e0f2fe);
     }
-    .toolbar-input[type="number"], .toolbar-input[type="text"] {
-      width: 110px;
-      padding: 7px 5px;
-      font-size: 1.01rem;
-      margin-right: 0;
+
+    .nav-dot-dash {
+      background: linear-gradient(135deg, #e0e7ff, #f5f3ff);
     }
-    .toolbar-divider {
-      width: 2px;
-      height: 30px;
-      background: var(--border);
-      margin: 0 13px;
-      border-radius: 2px;
+
+    .nav-dot-lists {
+      background: linear-gradient(135deg, #dcfce7, #fee2e2);
     }
-    .editor-wrap {
-      flex: 1;
-      background: #fff;
-      border-radius: 0 0 var(--editor-radius) var(--editor-radius);
+
+    /* Docs list */
+    .docs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+
+    .docs-title {
+      font-size: .86rem;
+      font-weight: 600;
+      color: var(--ink-3);
+    }
+
+    .btn-small {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: .75rem;
+      background: var(--card);
+      cursor: pointer;
+      color: var(--ink-3);
+    }
+
+    .btn-small:hover {
+      background: var(--muted);
+    }
+
+    .doc-list {
+      list-style: none;
+      margin: 6px 0 0;
       padding: 0;
       display: flex;
       flex-direction: column;
-      min-height: 400px;
-      position: relative;
+      gap: 4px;
+      max-height: 280px;
       overflow: auto;
     }
-    .editor-area {
-      min-height: 480px;
-      padding: var(--editor-padding);
-      font-size: 1.15rem;
-      font-family: var(--font-docs);
-      outline: none;
-      border: none;
+
+    .doc-item {
+      border-radius: var(--r-sm);
+      border: 1px solid transparent;
+      padding: 6px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .doc-item:hover {
+      background: var(--muted);
+    }
+
+    .doc-item.active {
+      background: var(--primary-soft);
+      border-color: var(--primary-soft-2);
+    }
+
+    .doc-name {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--ink-2);
+    }
+
+    .doc-meta {
+      font-size: .72rem;
+      color: var(--ink-4);
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .doc-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .doc-actions button {
+      border-radius: 999px;
+      border: 1px solid var(--border);
       background: transparent;
-      color: #23213a;
-      line-height: 1.7;
-      letter-spacing: 0.01em;
-      overflow-x: auto;
-      border-radius: 0 0 var(--editor-radius) var(--editor-radius);
-      box-sizing: border-box;
-      width: 100%;
-      max-width: 100%;
-      transition: font-size 0.17s;
+      font-size: .7rem;
+      padding: 2px 6px;
+      cursor: pointer;
+      color: var(--ink-4);
     }
-    .editor-area img {
-      max-width: 92%;
-      display: block;
-      margin: 18px auto;
-      border-radius: 10px;
-      box-shadow: 0 1px 12px #7c3aed18;
-      border: 1.1px solid #ececec;
+
+    .doc-actions button:hover {
+      background: var(--muted);
+      color: var(--ink-3);
     }
-    .editor-area:empty:before {
-      content: "Start typing or paste content here...";
-      color: #bbb;
-      font-size: 1.1rem;
+
+    .side-footer {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: .78rem;
+      color: var(--ink-4);
     }
-    .image-resizer {
-      position: absolute;
-      border: 2px dashed #7c3aed;
-      pointer-events: none;
-      z-index: 999;
-      display: none;
+
+    .side-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .editor-area .checklist {list-style-type: none; padding-left: 1.5em; margin: 1em 0;}
-    .editor-area .checklist li {
-      position: relative;
-      margin-bottom: 0.4em;
+
+    .btn-outline {
+      background: transparent;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      font-size: .8rem;
+      padding: 7px 10px;
+      color: var(--ink-3);
+      cursor: pointer;
+    }
+
+    .btn-outline:hover {
+      background: var(--muted);
+    }
+
+    /* Main area */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.08), transparent 55%), var(--bg);
+    }
+
+    .topbar {
       display: flex;
       align-items: center;
-      min-height: 1.6em;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 18px;
+      background: rgba(245, 245, 247, 0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
-    .editor-area .checklist input[type="checkbox"] {
-      margin-right: 0.65em;
-      width: 1.3em;
-      height: 1.3em;
-      accent-color: var(--primary);
-      vertical-align: middle;
+
+    .dark .topbar {
+      background: rgba(2, 6, 23, 0.96);
     }
-    @media (max-width: 1000px) {
-      .container {max-width: 99vw; margin: 16px 0 0 0; border-radius: 0;}
+
+    .topbar-inner {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    @media (max-width: 700px) {
-      .container { margin: 0; border-radius: 0; box-shadow: none; min-height: 100vh;}
-      .tab-bar {padding-left: 2vw;}
-      .tab {font-size: 1em; padding: 10px 13px;}
-      .tab-bar .add-tab-btn, .drafts-btn, .dashboard-btn {font-size: 1em; padding: 7px 14px;}
-      .editor-toolbar { padding: 0 4px; gap: 5px; min-height: 54px;}
-      .editor-wrap {border-radius: 0;}
-      .editor-area { font-size: 1.02rem; padding: 11vw 2vw 14vw 2vw; min-height: 62vh;}
+
+    .doc-title-input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      font-size: .95rem;
+      font-weight: 600;
+      background: var(--card);
+      color: var(--ink-2);
+      outline: none;
     }
-    @media (max-width: 480px) {
-      .editor-area { padding: 9vw 2vw 19vw 2vw;}
+
+    .doc-title-input::placeholder {
+      color: var(--ink-4);
+      font-weight: 500;
     }
-    ::-webkit-scrollbar { width: 8px; background: #efeefd;}
-    ::-webkit-scrollbar-thumb { background: #ede9fe; border-radius: 16px;}
-    ::-webkit-scrollbar-thumb:hover { background: #d1c4e9; }
-    ::selection { background: #ede9fe;}
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow);
+      transition: background var(--speed), border-color var(--speed), color var(--speed), transform .08s;
+    }
+
+    .btn.primary {
+      background: #111827;
+      border-color: #111827;
+      color: #f9fafb;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-pill {
+      border-radius: 999px;
+    }
+
+    .btn-icon-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at 30% 20%, #4f46e5, #0f172a);
+    }
+
+    .btn-icon-focus {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      position: relative;
+    }
+
+    .btn-icon-focus::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 2px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    /* Toolbar */
+    .toolbar-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 8px 16px 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .tool-group {
+      display: inline-flex;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .tool-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 9px;
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--ink-3);
+      cursor: pointer;
+      border-right: 1px solid var(--border);
+      min-width: 30px;
+    }
+
+    .tool-btn:last-child {
+      border-right: none;
+    }
+
+    .tool-btn:hover {
+      background: var(--muted);
+      color: var(--ink-2);
+    }
+
+    .tool-btn.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .tool-label {
+      padding: 0 8px;
+      font-size: .78rem;
+      color: var(--ink-4);
+    }
+
+    .tool-select {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      font-size: .78rem;
+      font-weight: 500;
+      background: var(--card);
+      color: var(--ink-3);
+      cursor: pointer;
+    }
+
+    /* Editor area */
+    .editor-shell {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 16px 16px 18px;
+      overflow: auto;
+    }
+
+    .editor-wrap {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .editor-page {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+      padding: 32px 46px 40px;
+      border: 1px solid var(--border);
+      width: 100%;
+      min-height: calc(100vh - 200px);
+      max-width: 800px;
+    }
+
+    #editor {
+      outline: none;
+      min-height: 500px;
+      font-size: .98rem;
+      line-height: 1.6;
+      color: var(--ink-2);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    #editor h1,
+    #editor h2,
+    #editor h3 {
+      margin: 1.2em 0 .4em;
+      font-weight: 700;
+    }
+
+    #editor h1 {
+      font-size: 1.7rem;
+    }
+
+    #editor h2 {
+      font-size: 1.45rem;
+    }
+
+    #editor h3 {
+      font-size: 1.25rem;
+    }
+
+    #editor p {
+      margin: .3em 0;
+    }
+
+    #editor ul,
+    #editor ol {
+      padding-left: 1.3em;
+      margin: .3em 0;
+    }
+
+    #editor blockquote {
+      border-left: 3px solid var(--primary-soft-2);
+      padding-left: 10px;
+      color: var(--ink-3);
+      margin: .6em 0;
+      font-style: italic;
+    }
+
+    #editor hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.2em 0;
+    }
+
+    .todo-list {
+      list-style: none;
+      padding-left: 0;
+      margin: .3em 0;
+    }
+
+    .todo-list li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: .2em 0;
+    }
+
+    .todo-list input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .code-inline {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .86rem;
+      background: var(--muted);
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+
+    .highlight {
+      background: #fef3c7;
+    }
+
+    /* Status bar */
+    .statusbar {
+      border-top: 1px solid var(--border);
+      padding: 6px 16px 8px;
+      display: flex;
+      justify-content: center;
+      font-size: .78rem;
+      color: var(--ink-4);
+      background: rgba(248, 250, 252, 0.9);
+      backdrop-filter: blur(10px);
+    }
+
+    .dark .statusbar {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .status-inner {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-left,
+    .status-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #16a34a;
+      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.18);
+    }
+
+    .dot.unsaved {
+      background: #f97316;
+      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.16);
+    }
+
+    .kbd {
+      font-weight: 600;
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: var(--card);
+      font-size: .75rem;
+    }
+
+    /* Toasts */
+    .toasts {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      display: grid;
+      gap: 6px;
+      z-index: 40;
+    }
+
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 7px 9px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: .8rem;
+      color: var(--ink-2);
+    }
+
+    .toast.ok {
+      border-color: #bbf7d0;
+    }
+
+    .toast.bad {
+      border-color: #fecaca;
+    }
+
+    /* Profile dropdown (simple) */
+    .pbox {
+      position: relative;
+    }
+
+    .pdrop {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      min-width: 220px;
+      box-shadow: var(--shadow);
+      display: none;
+      padding: 8px 10px 10px;
+      z-index: 20;
+      font-size: .8rem;
+    }
+
+    .pdrop.show {
+      display: block;
+    }
+
+    .pdrop .name {
+      font-weight: 700;
+      font-size: .9rem;
+    }
+
+    .pdrop .email {
+      color: var(--ink-3);
+      font-weight: 500;
+      font-size: .78rem;
+    }
+
+    .pdrop .bio {
+      margin: 5px 0;
+      color: var(--ink-3);
+      font-weight: 400;
+      font-size: .78rem;
+    }
+
+    .pdrop .line {
+      border-top: 1px solid var(--border);
+      margin: 6px 0;
+    }
+
+    .pdrop .btn {
+      width: 100%;
+      justify-content: center;
+      box-shadow: none;
+      border-radius: var(--r-sm);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 30;
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        flex: 1;
+      }
+
+      .topbar-inner {
+        flex-wrap: wrap;
+      }
+
+      .editor-page {
+        padding: 22px 18px 26px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .toolbar {
+        justify-content: center;
+      }
+    }
+
+    .focus-mode .sidebar {
+      transform: translateX(-100%);
+    }
+
+    .focus-mode .topbar,
+    .focus-mode .toolbar-wrap,
+    .focus-mode .statusbar {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .focus-mode .editor-page {
+      box-shadow: none;
+    }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <!-- Tab Bar -->
-    <div class="tab-bar" id="tabBar">
-      <!-- Tabs will be injected here -->
-      <button class="add-tab-btn" id="newDocBtn" title="Create New Document">＋ New Document</button>
-      <button class="drafts-btn" id="draftsBtn" onclick="window.location.href='drafts.html'">📄 Drafts</button>
-      <a href="dashboard.html" class="dashboard-btn" id="dashboardBtn" title="Back to Dashboard">🏠 Back to Dashboard</a>
-    </div>
-    <!-- Toolbar -->
-    <div class="editor-toolbar" id="toolbar">
-      <div class="toolbar-group">
-        <input class="toolbar-input" id="docTitleInput" type="text" maxlength="70" placeholder="Document Title..." />
-        <select class="toolbar-select" id="fontFamily">
-          <option value="'Inter', Arial, sans-serif" selected>Inter</option>
-          <option value="'Roboto', Arial, sans-serif">Roboto</option>
-          <option value="'Montserrat', Arial, sans-serif">Montserrat</option>
-          <option value="'Source Sans Pro', Arial, sans-serif">Source Sans Pro</option>
-          <option value="'Lato', Arial, sans-serif">Lato</option>
-          <option value="'Open Sans', Arial, sans-serif">Open Sans</option>
-          <option value="'PT Serif', serif">PT Serif</option>
-          <option value="'Fira Mono', monospace">Fira Mono</option>
-          <option value="'Oswald', Arial, sans-serif">Oswald</option>
-          <option value="'Raleway', Arial, sans-serif">Raleway</option>
-          <option value="'Playfair Display', serif">Playfair Display</option>
-          <option value="'Quicksand', Arial, sans-serif">Quicksand</option>
-          <option value="'Space Mono', monospace">Space Mono</option>
-          <option value="serif">Serif</option>
-          <option value="monospace">Monospace</option>
-        </select>
-        <select class="toolbar-select" id="fontSize">
-          <option value="10px">10</option>
-          <option value="12px">12</option>
-          <option value="14px">14</option>
-          <option value="16px" selected>16</option>
-          <option value="18px">18</option>
-          <option value="20px">20</option>
-          <option value="24px">24</option>
-          <option value="30px">30</option>
-          <option value="36px">36</option>
-          <option value="48px">48</option>
-          <option value="60px">60</option>
-          <option value="72px">72</option>
-          <option value="custom">Custom</option>
-        </select>
-        <input class="toolbar-input" id="customFontSize" type="number" min="8" max="200" placeholder="px" style="display:none;width:60px;">
+  <div class="wrap">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo">
+        <span class="logo-badge" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
+            <rect x="3" y="3" width="18" height="18" rx="6" opacity=".15"></rect>
+            <rect x="7" y="7" width="10" height="10" rx="3"></rect>
+          </svg>
+        </span>
+        <div>
+          <div class="app-title">TaskFlows</div>
+          <div class="app-sub">Text Editor</div>
+        </div>
       </div>
-      <div class="toolbar-group">
-        <button class="toolbar-btn" type="button" data-command="bold" title="Bold (Ctrl+B)"><b>B</b></button>
-        <button class="toolbar-btn" type="button" data-command="italic" title="Italic (Ctrl+I)"><i>I</i></button>
-        <button class="toolbar-btn" type="button" data-command="underline" title="Underline (Ctrl+U)"><u>U</u></button>
-        <button class="toolbar-btn" type="button" data-command="strikeThrough" title="Strikethrough"><s>S</s></button>
-        <button class="toolbar-btn" type="button" id="textColorBtn" title="Text Color"><span style="font-weight:700;color:#d26c39;">A</span></button>
-        <input type="color" id="textColorPicker" style="display:none;">
-        <button class="toolbar-btn" type="button" id="highlightBtn" title="Highlight"><span style="background:#ffd966;padding:2px 6px;border-radius:2px;">A</span></button>
-        <input type="color" id="highlightColorPicker" value="#ffd966" style="display:none;">
-      </div>
-      <div class="toolbar-group">
-        <button class="toolbar-btn" type="button" data-command="justifyLeft" title="Align Left"><span style="font-size:1.12em;">&#8676;</span></button>
-        <button class="toolbar-btn" type="button" data-command="justifyCenter" title="Align Center"><span style="font-size:1.12em;">&#8596;</span></button>
-        <button class="toolbar-btn" type="button" data-command="justifyRight" title="Align Right"><span style="font-size:1.12em;">&#8677;</span></button>
-        <button class="toolbar-btn" type="button" data-command="justifyFull" title="Justify"><span style="font-size:1.12em;">&#8597;</span></button>
-      </div>
-      <div class="toolbar-group">
-        <button class="toolbar-btn" type="button" data-command="insertUnorderedList" title="Bullet List">&#8226;•&#8226;</button>
-        <button class="toolbar-btn" type="button" data-command="insertOrderedList" title="Numbered List">1.2.3.</button>
-        <button class="toolbar-btn" type="button" data-command="outdent" title="Outdent">&#8672;</button>
-        <button class="toolbar-btn" type="button" data-command="indent" title="Indent">&#8674;</button>
-        <button class="toolbar-btn" type="button" id="checklistBtn" title="Checklist">&#9745;</button>
-      </div>
-      <div class="toolbar-divider"></div>
-      <div class="toolbar-group">
-        <button class="toolbar-btn" type="button" id="insertLinkBtn" title="Insert Link">🔗</button>
-        <button class="toolbar-btn" type="button" id="insertImageBtn" title="Insert Image">🖼️</button>
-        <input type="file" id="imageInput" accept="image/*" style="display:none;">
-      </div>
-      <div class="toolbar-group">
-        <button class="toolbar-btn" type="button" data-command="undo" title="Undo (Ctrl+Z)">⎌</button>
-        <button class="toolbar-btn" type="button" data-command="redo" title="Redo (Ctrl+Y)">⎌⎌</button>
-        <button class="toolbar-btn" type="button" data-command="removeFormat" title="Clear Formatting">✕</button>
-        <button class="toolbar-btn" type="button" id="saveDocBtn" title="Save">💾 Save</button>
-      </div>
-    </div>
-    <!-- Editor -->
-    <div class="editor-wrap"></div>
+
+      <div>
+        <div class="side-label">Workspace</div>
+        <ul class="side-nav">
+          <li>
+            <ul class="side-nav">
+              <li>
+                <a href="dashboard.html">
+                  <span class="nav-dot nav-dot-dash">P</span>
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="text-editor.html" class="active">
+                  <span class="nav-dot nav-dot-docs">E</span>
+                  Text Editor
+                </a>
+              </li>
+              <li>
+                <a href="to-do-list.html">
+                  <span class="nav-dot nav-dot-lists">L</span>
+                  To-Do Lists
+                </a>
+              </li>
+            </ul>
+
+
+            <div>
+              <div class="side-label">Documents</div>
+              <div class="docs-header">
+                <div class="docs-title">Your docs</div>
+                <button class="btn-small" id="newDocBtn">New</button>
+              </div>
+              <ul class="doc-list" id="docList"></ul>
+            </div>
+
+            <div class="side-footer">
+              <div class="side-footer-row">
+                <span>Theme</span>
+                <button class="btn-outline" id="themeToggleSide">Toggle</button>
+              </div>
+              <div class="side-footer-row">
+                <span>Sidebar</span>
+                <button class="btn-outline" id="hideSidebarBtn">Hide</button>
+              </div>
+            </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <input id="docTitle" class="doc-title-input" placeholder="Untitled document" />
+          <div class="top-actions">
+            <button class="btn btn-pill" id="focusModeBtn" title="Toggle focus mode">
+              <span class="btn-icon-focus"></span>Focus
+            </button>
+            <button class="btn btn-pill" id="themeToggleTop">
+              <span class="btn-icon-dot"></span>Theme
+            </button>
+            <button class="btn" id="saveBtn">Save</button>
+            <button class="btn" id="exportTxtBtn">Export .txt</button>
+            <button class="btn" id="exportHtmlBtn">Export .html</button>
+            <div class="pbox">
+              <img id="topAvatar" class="avatar" alt="Profile" />
+              <div class="pdrop" id="pdrop">
+                <div class="name" id="pdName">Guest</div>
+                <div class="email" id="pdEmail">—</div>
+                <div class="bio" id="pdBio">No bio yet.</div>
+                <div class="line"></div>
+                <button class="btn" id="dummyProfileBtn">Open profile in dashboard</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Toolbar -->
+      <section class="toolbar-wrap">
+        <div class="toolbar">
+          <select id="blockFormat" class="tool-select" title="Block style">
+            <option value="p">Normal text</option>
+            <option value="h1">Heading 1</option>
+            <option value="h2">Heading 2</option>
+            <option value="h3">Heading 3</option>
+          </select>
+
+          <div class="tool-group">
+            <button class="tool-btn" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
+            <button class="tool-btn" data-cmd="italic" title="Italic (Ctrl+I)" style="font-style:italic;">I</button>
+            <button class="tool-btn" data-cmd="underline" title="Underline (Ctrl+U)"
+              style="text-decoration:underline;">U</button>
+            <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough"
+              style="text-decoration:line-through;">S</button>
+          </div>
+
+          <div class="tool-group">
+            <button class="tool-btn" data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
+            <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+            <button class="tool-btn" id="todoBtn" title="Checklist">☑︎ Tasks</button>
+          </div>
+
+          <div class="tool-group">
+            <button class="tool-btn" data-cmd="justifyLeft" title="Align left">≡</button>
+            <button class="tool-btn" data-cmd="justifyCenter" title="Align center">≣</button>
+            <button class="tool-btn" data-cmd="justifyRight" title="Align right">≡</button>
+          </div>
+
+          <div class="tool-group">
+            <button class="tool-btn" data-cmd="outdent" title="Decrease indent">←</button>
+            <button class="tool-btn" data-cmd="indent" title="Increase indent">→</button>
+          </div>
+
+          <div class="tool-group">
+            <button class="tool-btn" id="quoteBtn" title="Quote">“”</button>
+            <button class="tool-btn" id="inlineCodeBtn" title="Inline code">{ }</button>
+            <button class="tool-btn" id="highlightBtn" title="Highlight">HL</button>
+            <button class="tool-btn" id="dividerBtn" title="Insert divider">—</button>
+          </div>
+
+          <div class="tool-group">
+            <button class="tool-btn" data-cmd="undo" title="Undo">↺</button>
+            <button class="tool-btn" data-cmd="redo" title="Redo">↻</button>
+            <button class="tool-btn" data-cmd="removeFormat" title="Clear formatting">CLR</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Editor -->
+      <section class="editor-shell">
+        <div class="editor-wrap">
+          <div class="editor-page">
+            <div id="editor" contenteditable="true"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status -->
+      <footer class="statusbar">
+        <div class="status-inner">
+          <div class="status-left">
+            <span id="saveDot" class="dot unsaved"></span>
+            <span id="saveStatus">Unsaved changes</span>
+          </div>
+          <div class="status-right">
+            <span id="wordCount">0 words</span>
+            <span id="charCount">0 characters</span>
+            <span id="readTime">~0 min read</span>
+            <span>Press <span class="kbd">Ctrl + S</span> to save</span>
+          </div>
+        </div>
+      </footer>
+    </main>
   </div>
+
+  <div class="toasts" id="toasts"></div>
+
   <script>
-    const tabBar = document.getElementById('tabBar');
-    const editorWrap = document.querySelector('.editor-wrap');
-    const draftsKey = "taskflows_drafts";
-    let docs = JSON.parse(localStorage.getItem(draftsKey) || "[]");
+    /* ===== Keys & Helpers ===== */
+    const KEY_THEME = 'taskflows-theme';
+    const KEY_DOCS = 'taskflows-docs';
+    const KEY_ACTIVE_DOC = 'taskflows-active-doc';
+    const KEY_PROFILE = 'taskflows-profile';
+
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const uid = () => 'd_' + Math.random().toString(36).slice(2, 9);
+
+    const toast = (msg, type = 'ok') => {
+      const t = document.createElement('div');
+      t.className = 'toast ' + (type === 'ok' ? 'ok' : 'bad');
+      t.textContent = msg;
+      $('#toasts').appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = 0;
+        setTimeout(() => t.remove(), 250);
+      }, 1800);
+    };
+
+    const getTheme = () => localStorage.getItem(KEY_THEME) || 'dark';
+    const setTheme = (t) => {
+      localStorage.setItem(KEY_THEME, t);
+      document.documentElement.classList.toggle('dark', t === 'dark');
+    };
+
+    const getDocs = () => JSON.parse(localStorage.getItem(KEY_DOCS) || '[]');
+    const setDocs = (arr) => localStorage.setItem(KEY_DOCS, JSON.stringify(arr));
+    const getActiveId = () => localStorage.getItem(KEY_ACTIVE_DOC) || null;
+    const setActiveId = (id) => localStorage.setItem(KEY_ACTIVE_DOC, id);
+
+    const defaultProfile = () => ({
+      name: 'Guest',
+      email: '',
+      bio: '',
+      avatar: 'https://api.dicebear.com/8.x/identicon/svg?seed=guest'
+    });
+
+    const getProfile = () => {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_PROFILE) || 'null') || defaultProfile();
+      } catch {
+        return defaultProfile();
+      }
+    };
+
+    function fmtDateShort(ts) {
+      if (!ts) return '—';
+      const d = new Date(ts);
+      if (isNaN(d)) return '—';
+      const month = d.getMonth() + 1;
+      const day = d.getDate();
+      return `${month}/${day}`;
+    }
+
+    function countStats(text) {
+      const trimmed = text.trim();
+      const words = trimmed ? trimmed.split(/\s+/).length : 0;
+      const chars = text.replace(/\s/g, '').length;
+      const minutes = words ? Math.max(1, Math.round(words / 200)) : 0;
+      return { words, chars, minutes };
+    }
+
+    /* ===== State ===== */
     let activeDoc = null;
-    const defaultFonts = [
-      "'Inter', Arial, sans-serif",
-      "'Roboto', Arial, sans-serif",
-      "'Montserrat', Arial, sans-serif",
-      "'Source Sans Pro', Arial, sans-serif",
-      "'Lato', Arial, sans-serif",
-      "'Open Sans', Arial, sans-serif",
-      "'PT Serif', serif",
-      "'Fira Mono', monospace",
-      "'Oswald', Arial, sans-serif",
-      "'Raleway', Arial, sans-serif",
-      "'Playfair Display', serif",
-      "'Quicksand', Arial, sans-serif",
-      "'Space Mono', monospace",
-      "serif",
-      "monospace"
-    ];
-    function createDoc(name, content = "", font = defaultFonts[0], size = "16px") {
-      return {
-        id: "doc-" + Date.now() + "-" + Math.floor(Math.random() * 10000),
-        title: name || "Untitled Document",
-        content: content || "",
-        font: font,
-        size: size,
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
+    let autosaveTimer = null;
+    let dirty = false;
+
+    /* ===== Theme & Profile UI ===== */
+    setTheme(getTheme());
+
+    function renderProfile() {
+      const u = getProfile();
+      $('#topAvatar').src = u.avatar || defaultProfile().avatar;
+      $('#pdName').textContent = u.name || 'Guest';
+      $('#pdEmail').textContent = u.email || '—';
+      $('#pdBio').textContent = u.bio || 'No bio yet.';
     }
-    function saveDrafts() {
-      localStorage.setItem(draftsKey, JSON.stringify(docs));
-    }
-    function openTab(id) {
-      activeDoc = docs.find(d => d.id === id);
-      renderTabs();
-      renderEditor();
-    }
-    function closeTab(id) {
-      let idx = docs.findIndex(d => d.id === id);
-      if (idx === -1) return;
-      docs.splice(idx, 1);
-      saveDrafts();
-      if (!docs.length) {
-        docs.push(createDoc("Untitled Document"));
+
+    /* ===== Docs CRUD ===== */
+    function ensureDocsSeed() {
+      const docs = getDocs();
+      if (docs.length === 0) {
+        const id = uid();
+        const now = Date.now();
+        const initial = {
+          id,
+          title: 'Welcome to TaskFlows Editor',
+          content: '<h1>Welcome to TaskFlows Editor</h1><p>Start typing here, or create a new document from the sidebar.</p><p>You can format text, create lists, checklists, quotes, and more.\nTry pressing <span class="code-inline">Ctrl + S</span> to save.</p>',
+          created: now,
+          updated: now
+        };
+        setDocs([initial]);
+        setActiveId(id);
       }
-      activeDoc = docs[docs.length - 1];
-      renderTabs();
-      renderEditor();
     }
-    function addNewTab() {
-      const newDoc = createDoc("Untitled Document");
-      docs.push(newDoc);
-      saveDrafts();
-      openTab(newDoc.id);
-    }
-    function renderTabs() {
-      [...tabBar.querySelectorAll('.tab')].forEach(e => e.remove());
+
+    function renderDocList() {
+      const list = $('#docList');
+      list.innerHTML = '';
+      const docs = getDocs().sort((a, b) => b.updated - a.updated);
+      const activeId = activeDoc?.id || getActiveId();
+
       docs.forEach(doc => {
-        const btn = document.createElement('button');
-        btn.className = "tab" + (activeDoc && doc.id === activeDoc.id ? " selected" : "");
-        btn.innerHTML = `<span>${doc.title || "Untitled"}</span> <button class="close-tab" title="Close tab">&times;</button>`;
-        btn.onclick = (e) => {
-          if (e.target.classList.contains("close-tab")) {
-            closeTab(doc.id);
-          } else {
-            openTab(doc.id);
-          }
-        };
-        tabBar.insertBefore(btn, document.getElementById('newDocBtn'));
+        const li = document.createElement('li');
+        li.className = 'doc-item' + (doc.id === activeId ? ' active' : '');
+        li.dataset.id = doc.id;
+        li.innerHTML = `
+          <div class="doc-name">${doc.title || 'Untitled document'}</div>
+          <div class="doc-meta">
+            <span>${fmtDateShort(doc.updated)}</span>
+            <span>${Math.max(1, Math.round((doc.content || '').length / 80))} lines</span>
+          </div>
+          <div class="doc-actions">
+            <button data-act="rename">Rename</button>
+            <button data-act="duplicate">Duplicate</button>
+            <button data-act="delete">Delete</button>
+          </div>
+        `;
+        list.appendChild(li);
       });
     }
-    function renderEditor() {
-      editorWrap.innerHTML = "";
+
+    function loadDoc(id) {
+      const docs = getDocs();
+      const doc = docs.find(d => d.id === id) || docs[0];
+      if (!doc) return;
+      activeDoc = { ...doc };
+      setActiveId(doc.id);
+      $('#docTitle').value = doc.title || '';
+      $('#editor').innerHTML = doc.content || '';
+      dirty = false;
+      updateDirtyUI();
+      updateStatsUI();
+      renderDocList();
+    }
+
+    function saveActiveDoc(showToast = true) {
       if (!activeDoc) return;
-      const editor = document.createElement('div');
-      editor.className = "editor-area";
-      editor.id = "editor";
-      editor.contentEditable = true;
-      editor.spellcheck = true;
-      editor.setAttribute('aria-label', "Document");
-      editor.innerHTML = activeDoc.content || "";
-      editor.style.fontFamily = activeDoc.font;
-      editor.style.fontSize = activeDoc.size;
-      editorWrap.appendChild(editor);
+      const docs = getDocs();
+      const index = docs.findIndex(d => d.id === activeDoc.id);
+      const now = Date.now();
+      const title = $('#docTitle').value.trim() || 'Untitled document';
+      const content = $('#editor').innerHTML;
 
-      // Image resizer overlay
-      const resizer = document.createElement('div');
-      resizer.className = "image-resizer";
-      resizer.id = "imageResizer";
-      editorWrap.appendChild(resizer);
+      const updatedDoc = {
+        ...(index >= 0 ? docs[index] : activeDoc),
+        id: activeDoc.id,
+        title,
+        content,
+        updated: now
+      };
 
-      // Selection change: update toolbar
-      editor.addEventListener('keyup', updateToolbarState);
-      editor.addEventListener('mouseup', updateToolbarState);
+      if (index >= 0) docs[index] = updatedDoc;
+      else docs.push(updatedDoc);
 
-      // Save on edit
-      editor.addEventListener('input', () => {
-        activeDoc.content = editor.innerHTML;
-        activeDoc.updated = new Date().toISOString();
-        saveDrafts();
-      });
-
-      // Paste, drag & drop, and image resizing
-      setupEditorFeatures(editor, resizer);
-
-      editor.addEventListener('focus', updateToolbarState);
-      document.getElementById('fontFamily').value = activeDoc.font;
-      document.getElementById('fontSize').value = parseInt(activeDoc.size) + "px";
-      document.getElementById('docTitleInput').value = activeDoc.title || "";
-    }
-    document.getElementById('docTitleInput').addEventListener('input', function() {
-      if (activeDoc) {
-        activeDoc.title = this.value.replace(/^\s+|\s+$/g, "") || "Untitled Document";
-        saveDrafts();
-        renderTabs();
-      }
-    });
-    function openDraftFromQuery() {
-      const params = new URLSearchParams(window.location.search);
-      const draftId = params.get("draft");
-      if (draftId) {
-        const idx = docs.findIndex(d => d.id === draftId);
-        if (idx !== -1) {
-          activeDoc = docs[idx];
-          renderTabs();
-          renderEditor();
-        }
-      }
-    }
-    openDraftFromQuery();
-
-    // ---------- Toolbar Actions ----------
-    const toolbarBtns = document.querySelectorAll('.toolbar-btn[data-command]');
-    const fontFamilySelect = document.getElementById('fontFamily');
-    const fontSizeSelect = document.getElementById('fontSize');
-    const customFontSizeInput = document.getElementById('customFontSize');
-    const textColorBtn = document.getElementById('textColorBtn');
-    const textColorPicker = document.getElementById('textColorPicker');
-    const highlightBtn = document.getElementById('highlightBtn');
-    const highlightColorPicker = document.getElementById('highlightColorPicker');
-    const checklistBtn = document.getElementById('checklistBtn');
-    const insertLinkBtn = document.getElementById('insertLinkBtn');
-    const insertImageBtn = document.getElementById('insertImageBtn');
-    const imageInput = document.getElementById('imageInput');
-    const saveDocBtn = document.getElementById('saveDocBtn');
-
-    function getEditor() {
-      return document.getElementById('editor');
+      setDocs(docs);
+      activeDoc = { ...updatedDoc };
+      dirty = false;
+      updateDirtyUI();
+      renderDocList();
+      if (showToast) toast('Document saved');
     }
 
-    toolbarBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const command = btn.getAttribute('data-command');
-        exec(command);
-        updateToolbarState();
-      });
-    });
+    function newDoc() {
+      const id = uid();
+      const now = Date.now();
+      const docs = getDocs();
+      const doc = {
+        id,
+        title: 'Untitled document',
+        content: '',
+        created: now,
+        updated: now
+      };
+      docs.push(doc);
+      setDocs(docs);
+      setActiveId(id);
+      loadDoc(id);
+      toast('New document created');
+    }
 
-    fontFamilySelect.addEventListener('change', function() {
-      exec('fontName', this.value);
-      if (activeDoc) {
-        activeDoc.font = this.value;
-        saveDrafts();
+    function renameDoc(id) {
+      const docs = getDocs();
+      const idx = docs.findIndex(d => d.id === id);
+      if (idx < 0) return;
+      const current = docs[idx].title || 'Untitled document';
+      const name = prompt('Rename document:', current);
+      if (name === null) return;
+      docs[idx].title = name.trim() || current;
+      docs[idx].updated = Date.now();
+      setDocs(docs);
+      if (activeDoc && activeDoc.id === id) {
+        $('#docTitle').value = docs[idx].title;
+        activeDoc.title = docs[idx].title;
       }
-      getEditor().style.fontFamily = this.value;
-      getEditor().focus();
-    });
+      renderDocList();
+    }
 
-    fontSizeSelect.addEventListener('change', function() {
-      if(this.value === "custom") {
-        customFontSizeInput.style.display = "";
-        customFontSizeInput.focus();
-      } else {
-        customFontSizeInput.style.display = "none";
-        exec('fontSize', "7");
-        setTimeout(() => {
-          document.queryCommandValue('fontSize');
-          const fontElements = getEditor().querySelectorAll('font[size="7"]');
-          fontElements.forEach(f => {
-            f.removeAttribute('size');
-            f.style.fontSize = this.value;
-            f.style.lineHeight = "1.7";
-          });
-        }, 0);
-        if (activeDoc) {
-          activeDoc.size = this.value;
-          saveDrafts();
-        }
-        getEditor().style.fontSize = this.value;
-        getEditor().focus();
-      }
-    });
+    function duplicateDoc(id) {
+      const docs = getDocs();
+      const src = docs.find(d => d.id === id);
+      if (!src) return;
+      const now = Date.now();
+      const copy = {
+        ...src,
+        id: uid(),
+        title: src.title + ' (Copy)',
+        created: now,
+        updated: now
+      };
+      docs.push(copy);
+      setDocs(docs);
+      setActiveId(copy.id);
+      loadDoc(copy.id);
+      toast('Document duplicated');
+    }
 
-    customFontSizeInput.addEventListener('change', function() {
-      let px = this.value;
-      if (!px || isNaN(px) || px < 8 || px > 200) {
-        this.value = '';
+    function deleteDoc(id) {
+      const docs = getDocs();
+      const doc = docs.find(d => d.id === id);
+      if (!doc) return;
+      if (!confirm(`Delete "${doc.title || 'Untitled document'}"?`)) return;
+      const nextDocs = docs.filter(d => d.id !== id);
+      setDocs(nextDocs);
+      if (nextDocs.length === 0) {
+        setActiveId('');
+        activeDoc = null;
+        $('#docTitle').value = '';
+        $('#editor').innerHTML = '';
+        renderDocList();
+        toast('Document deleted');
         return;
       }
-      exec('fontSize', "7");
-      setTimeout(() => {
-        const fontElements = getEditor().querySelectorAll('font[size="7"]');
-        fontElements.forEach(f => {
-          f.removeAttribute('size');
-          f.style.fontSize = px + 'px';
-          f.style.lineHeight = "1.7";
-        });
-      }, 0);
-      if (activeDoc) {
-        activeDoc.size = px + "px";
-        saveDrafts();
-      }
-      getEditor().style.fontSize = px + "px";
-      fontSizeSelect.value = "custom";
-      getEditor().focus();
-    });
+      const newActive = nextDocs[0];
+      setActiveId(newActive.id);
+      loadDoc(newActive.id);
+      toast('Document deleted');
+    }
 
-    textColorBtn.onclick = () => textColorPicker.click();
-    textColorPicker.oninput = function() {
-      exec('foreColor', this.value);
-    };
-    highlightBtn.onclick = () => highlightColorPicker.click();
-    highlightColorPicker.oninput = function() {
-      exec('hiliteColor', this.value);
-    };
-    checklistBtn.onclick = function() {
-      const editor = getEditor();
-      document.execCommand('insertUnorderedList', false, null);
-      let sel = window.getSelection();
+    /* ===== Editor Commands ===== */
+    function execCmd(cmd, value = null) {
+      document.execCommand(cmd, false, value);
+      $('#editor').focus();
+      markDirty();
+    }
+
+    function applyBlockFormat(tag) {
+      const blockMap = {
+        h1: 'H1',
+        h2: 'H2',
+        h3: 'H3',
+        p: 'P'
+      };
+      const block = blockMap[tag] || 'P';
+      document.execCommand('formatBlock', false, block);
+      $('#editor').focus();
+      markDirty();
+    }
+
+    function insertChecklist() {
+      const html = '<ul class="todo-list"><li><input type="checkbox" /> Task 1</li><li><input type="checkbox" /> Task 2</li></ul>';
+      document.execCommand('insertHTML', false, html);
+      $('#editor').focus();
+      markDirty();
+    }
+
+    function wrapSelection(tagClass) {
+      const sel = window.getSelection();
       if (!sel.rangeCount) return;
-      let node = sel.anchorNode;
-      while (node && node.tagName !== 'UL') node = node.parentNode;
-      if (node) node.classList.add('checklist');
-      setTimeout(() => {
-        node && node.querySelectorAll('li').forEach(li => {
-          if (!li.querySelector('input[type="checkbox"]')) {
-            const cb = document.createElement('input');
-            cb.type = "checkbox";
-            cb.onclick = function(e) {
-              e.stopPropagation();
-              if (this.checked) li.style.textDecoration = "line-through";
-              else li.style.textDecoration = "none";
-            };
-            li.insertBefore(cb, li.firstChild);
-          }
-        });
-      }, 0);
-    };
-    insertLinkBtn.onclick = function() {
-      let url = prompt("Enter the link URL:");
-      if (!url) return;
-      if (!/^https?:\/\//i.test(url)) {
-        url = "https://" + url;
+      const range = sel.getRangeAt(0);
+      if (range.collapsed) {
+        // insert inline wrapper at cursor
+        const span = document.createElement('span');
+        span.className = tagClass;
+        span.textContent = 'text';
+        range.insertNode(span);
+        sel.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNodeContents(span);
+        sel.addRange(newRange);
+      } else {
+        const span = document.createElement('span');
+        span.className = tagClass;
+        span.appendChild(range.extractContents());
+        range.insertNode(span);
       }
-      exec('createLink', url);
-    };
-    insertImageBtn.onclick = () => imageInput.click();
-    imageInput.addEventListener('change', function() {
-      if (this.files && this.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          insertImage(e.target.result);
-        };
-        reader.readAsDataURL(this.files[0]);
-      }
-      this.value = '';
-    });
-    saveDocBtn.onclick = function() {
-      if (activeDoc && getEditor()) {
-        activeDoc.content = getEditor().innerHTML;
-        activeDoc.updated = new Date().toISOString();
-        saveDrafts();
-        alert("Document saved to Drafts!");
-      }
-    };
-    document.getElementById('newDocBtn').onclick = addNewTab;
-    document.getElementById('draftsBtn').onclick = function() {
-      window.location.href = "drafts.html";
-    };
-    // No JS for dashboardBtn needed: it's a link
+      markDirty();
+    }
 
-    function setupEditorFeatures(editor, resizer) {
-      editor.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        editor.style.background = "#f5f2fe";
-      });
-      editor.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        editor.style.background = "";
-      });
-      editor.addEventListener('drop', function(e) {
-        e.preventDefault();
-        editor.style.background = "";
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0 && files[0].type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            insertImage(event.target.result);
-          };
-          reader.readAsDataURL(files[0]);
-        }
-      });
-      editor.addEventListener('paste', function(e) {
-        if (e.clipboardData) {
-          const items = e.clipboardData.items;
-          for (let i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf("image") !== -1) {
-              const file = items[i].getAsFile();
-              const reader = new FileReader();
-              reader.onload = function(event) {
-                insertImage(event.target.result);
-              };
-              reader.readAsDataURL(file);
-              e.preventDefault();
-              break;
-            }
-          }
-        }
-      });
-      let resizingImg = null;
-      let startX = 0, startWidth = 0;
-      editor.addEventListener('mousedown', function(e) {
-        if (e.target.tagName === 'IMG') {
-          e.preventDefault();
-          resizingImg = e.target;
-          showImageResizer(resizingImg, resizer);
-        } else {
-          hideImageResizer(resizer);
-        }
-      });
-      resizer.addEventListener('mousedown', function(e) {
-        if (resizingImg) {
-          e.preventDefault();
-          startX = e.pageX;
-          startWidth = resizingImg.offsetWidth;
-          document.addEventListener('mousemove', doResizeImage);
-          document.addEventListener('mouseup', endResizeImage);
-        }
-      });
-      function doResizeImage(e) {
-        if (!resizingImg) return;
-        let newWidth = Math.max(50, startWidth + (e.pageX - startX));
-        resizingImg.style.width = newWidth + "px";
-        showImageResizer(resizingImg, resizer);
-      }
-      function endResizeImage() {
-        document.removeEventListener('mousemove', doResizeImage);
-        document.removeEventListener('mouseup', endResizeImage);
-        hideImageResizer(resizer);
+    function insertDivider() {
+      document.execCommand('insertHorizontalRule', false, null);
+      $('#editor').focus();
+      markDirty();
+    }
+
+    function insertQuote() {
+      document.execCommand('formatBlock', false, 'BLOCKQUOTE');
+      $('#editor').focus();
+      markDirty();
+    }
+
+    /* ===== Stats & Dirty State ===== */
+    function markDirty() {
+      dirty = true;
+      updateDirtyUI();
+      updateStatsUI();
+      scheduleAutosave();
+    }
+
+    function updateDirtyUI() {
+      const dot = $('#saveDot');
+      const txt = $('#saveStatus');
+      if (!dirty) {
+        dot.classList.remove('unsaved');
+        txt.textContent = 'All changes saved';
+      } else {
+        dot.classList.add('unsaved');
+        txt.textContent = 'Unsaved changes';
       }
     }
-    function showImageResizer(img, resizer) {
-      resizer.style.display = 'block';
-      resizer.style.left = img.offsetLeft + 'px';
-      resizer.style.top = img.offsetTop + 'px';
-      resizer.style.width = img.offsetWidth + 'px';
-      resizer.style.height = img.offsetHeight + 'px';
-      resizer.style.position = "absolute";
+
+    function updateStatsUI() {
+      const text = $('#editor').innerText || '';
+      const { words, chars, minutes } = countStats(text);
+      $('#wordCount').textContent = `${words} word${words === 1 ? '' : 's'}`;
+      $('#charCount').textContent = `${chars} character${chars === 1 ? '' : 's'}`;
+      $('#readTime').textContent = minutes ? `~${minutes} min read` : '~0 min read';
     }
-    function hideImageResizer(resizer) {
-      resizer.style.display = 'none';
+
+    function scheduleAutosave() {
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(() => {
+        if (dirty) saveActiveDoc(false);
+      }, 1000);
     }
-    function insertImage(src) {
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = "Pasted Image";
-      img.style.maxWidth = "92%";
-      img.style.display = "block";
-      img.style.margin = "18px auto";
-      img.style.borderRadius = "10px";
-      img.style.boxShadow = "0 1px 12px #7c3aed18";
-      img.style.border = "1.1px solid #ececec";
-      insertNodeAtCaret(img);
+
+    /* ===== Export ===== */
+    function downloadFile(filename, text, type = 'text/plain') {
+      const blob = new Blob([text], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
-    function insertNodeAtCaret(node) {
-      let sel = window.getSelection();
-      if (!sel || !sel.rangeCount) {
-        getEditor().appendChild(node);
+
+    function exportTxt() {
+      const title = $('#docTitle').value.trim() || 'document';
+      const text = $('#editor').innerText || '';
+      downloadFile(title.replace(/[^\w\-]+/g, '_') + '.txt', text, 'text/plain');
+      toast('Exported as .txt');
+    }
+
+    function exportHtml() {
+      const title = $('#docTitle').value.trim() || 'document';
+      const html = $('#editor').innerHTML || '';
+      const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title></head><body>${html}</body></html>`;
+      downloadFile(title.replace(/[^\w\-]+/g, '_') + '.html', fullHtml, 'text/html');
+      toast('Exported as .html');
+    }
+
+    /* ===== Focus & Sidebar ===== */
+    function toggleFocusMode() {
+      document.body.classList.toggle('focus-mode');
+    }
+
+    function toggleSidebarMobile() {
+      $('#sidebar').classList.toggle('open');
+    }
+
+    /* ===== Events ===== */
+    document.addEventListener('DOMContentLoaded', () => {
+      ensureDocsSeed();
+      renderDocList();
+      const activeId = getActiveId();
+      const docs = getDocs();
+      const firstId = activeId || (docs[0] && docs[0].id);
+      if (firstId) loadDoc(firstId);
+
+      renderProfile();
+      updateStatsUI();
+    });
+
+    // Toolbar buttons
+    $$('.tool-btn[data-cmd]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cmd = btn.dataset.cmd;
+        execCmd(cmd);
+      });
+    });
+
+    $('#blockFormat').addEventListener('change', (e) => {
+      applyBlockFormat(e.target.value);
+    });
+
+    $('#todoBtn').addEventListener('click', insertChecklist);
+    $('#dividerBtn').addEventListener('click', insertDivider);
+    $('#quoteBtn').addEventListener('click', insertQuote);
+    $('#inlineCodeBtn').addEventListener('click', () => wrapSelection('code-inline'));
+    $('#highlightBtn').addEventListener('click', () => wrapSelection('highlight'));
+
+    // Editor input
+    $('#editor').addEventListener('input', markDirty);
+    $('#docTitle').addEventListener('input', markDirty);
+
+    // Save & Export
+    $('#saveBtn').addEventListener('click', () => saveActiveDoc(true));
+    $('#exportTxtBtn').addEventListener('click', exportTxt);
+    $('#exportHtmlBtn').addEventListener('click', exportHtml);
+
+    // Theme toggles
+    $('#themeToggleTop').addEventListener('click', () => {
+      const next = getTheme() === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+    $('#themeToggleSide').addEventListener('click', () => {
+      const next = getTheme() === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+
+    // Focus mode
+    $('#focusModeBtn').addEventListener('click', toggleFocusMode);
+
+    // Sidebar show/hide
+    $('#hideSidebarBtn').addEventListener('click', () => {
+      $('#sidebar').classList.toggle('hidden');
+    });
+
+    // Doc list click
+    $('#docList').addEventListener('click', (e) => {
+      const item = e.target.closest('.doc-item');
+      if (!item) return;
+      const id = item.dataset.id;
+      const actBtn = e.target.closest('button[data-act]');
+      if (actBtn) {
+        const act = actBtn.dataset.act;
+        if (act === 'rename') renameDoc(id);
+        if (act === 'duplicate') duplicateDoc(id);
+        if (act === 'delete') deleteDoc(id);
         return;
       }
-      let range = sel.getRangeAt(0);
-      range.deleteContents();
-      range.insertNode(node);
-      sel.collapseToEnd();
-    }
-    function exec(command, value = null) {
-      document.execCommand(command, false, value);
-      getEditor().focus();
-    }
-    function updateToolbarState() {
-      toolbarBtns.forEach(btn => {
-        const cmd = btn.getAttribute('data-command');
-        let active = false;
-        try {
-          if (cmd === 'bold') active = document.queryCommandState('bold');
-          if (cmd === 'italic') active = document.queryCommandState('italic');
-          if (cmd === 'underline') active = document.queryCommandState('underline');
-          if (cmd === 'strikeThrough') active = document.queryCommandState('strikeThrough');
-        } catch {}
-        btn.setAttribute('aria-pressed', active);
-        if (active) btn.classList.add('active'); else btn.classList.remove('active');
-      });
-    }
-    document.body.addEventListener('keydown', function(e) {
-      if (!getEditor() || document.activeElement !== getEditor()) return;
-      if (e.ctrlKey && e.key.toLowerCase() === "b") { exec('bold'); e.preventDefault(); }
-      if (e.ctrlKey && e.key.toLowerCase() === "i") { exec('italic'); e.preventDefault(); }
-      if (e.ctrlKey && e.key.toLowerCase() === "u") { exec('underline'); e.preventDefault(); }
-      if (e.ctrlKey && e.key.toLowerCase() === "z") { exec('undo'); e.preventDefault(); }
-      if (e.ctrlKey && e.key.toLowerCase() === "y") { exec('redo'); e.preventDefault(); }
-      if (e.ctrlKey && e.key === "Tab") {
-        let idx = docs.findIndex(d=>d.id===activeDoc.id);
-        let newIdx = e.shiftKey ? (idx-1+docs.length)%docs.length : (idx+1)%docs.length;
-        openTab(docs[newIdx].id);
-        e.preventDefault();
-      }
+      if (activeDoc && activeDoc.id === id) return;
+      loadDoc(id);
     });
 
-    if (!docs.length) {
-      docs.push(createDoc("Untitled Document"));
-      saveDrafts();
-    }
-    activeDoc = docs[docs.length-1];
-    renderTabs();
-    renderEditor();
+    // New doc
+    $('#newDocBtn').addEventListener('click', newDoc);
 
-    window.addEventListener('resize', function() {
-      if (getEditor()) {
-        if (window.innerWidth < 600) {
-          getEditor().style.fontSize = "1.03rem";
-        } else {
-          getEditor().style.fontSize = activeDoc.size;
-        }
+    // Profile dropdown (simple)
+    $('#topAvatar').addEventListener('click', () => {
+      $('#pdrop').classList.toggle('show');
+    });
+    document.addEventListener('click', (e) => {
+      if (!$('.pbox').contains(e.target)) {
+        $('#pdrop').classList.remove('show');
+      }
+    });
+    $('#dummyProfileBtn').addEventListener('click', () => {
+      toast('Open your profile from the Dashboard page.');
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        saveActiveDoc(true);
       }
     });
   </script>
 </body>
+
 </html>
