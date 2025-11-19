@@ -1,1309 +1,1240 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RQR9BDLJ26');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-RQR9BDLJ26');
+  </script>
   <meta charset="UTF-8" />
+  <title>TaskFlows · To-Do</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title> To-Do List</title>
-  <link rel="icon" type="image/x-icon" href="Untitled.png">
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
   <style>
-    body {
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f9fafb;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #ef4444;
+      --accent-soft: #fef2f2;
+      --accent-border: #fecaca;
+      --p1-bg: #fee2e2;
+      --p1-text: #b91c1c;
+      --p2-bg: #ffedd5;
+      --p2-text: #9a3412;
+      --p3-bg: #dcfce7;
+      --p3-text: #166534;
+      --project-1: #3b82f6;
+      --project-2: #22c55e;
+      --project-3: #a855f7;
+      --project-4: #f97316;
+    }
+
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Baloo 2', cursive;
-      min-height: 100vh;
-      overflow-y: auto;
-      background: linear-gradient(135deg, #0f3dc8 , #04edce);
-      transition: background 0.5s linear;
+      box-sizing: border-box;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-      opacity: 0.2;
-      z-index: 0;
-    }
-    .top-bar {
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      position: absolute;
-      top: 18px;
-      left: 70px;
-      z-index: 20;
-      background: none;
-      width: calc(100vw - 90px);
-      max-width: 850px;
     }
-    @media (max-width: 850px) {
-      .top-bar { flex-direction: column; align-items: flex-start; left: 8px; width: 98vw; }
+
+    .app {
+      display: flex;
+      width: 100%;
+      height: 100vh;
     }
-    .calendar-btn, .analytics-btn, .share-btn, .dashboard-btn {
-      border: none;
-      border-radius: 20px;
-      font-size: 1.08em;
-      font-weight: 700;
-      cursor: pointer;
-      z-index: 15;
-      transition: background 0.16s;
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 25px;
-      color: #fff;
-      box-shadow: 0 2px 12px #185a9d22;
-    }
-    .calendar-btn { background: linear-gradient(90deg,#43cea2,#185a9d);}
-    .calendar-btn:hover { background: linear-gradient(90deg, #185a9d, #43cea2); }
-    .analytics-btn { background: linear-gradient(90deg,#ff9966,#ff5e62);}
-    .analytics-btn:hover { background: linear-gradient(90deg,#ff5e62,#ff9966);}
-    .share-btn { background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);}
-    .share-btn:hover { background: linear-gradient(90deg,#2575fc,#6a11cb);}
-    .dashboard-btn { background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);}
-    .dashboard-btn:hover { background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%);}
-    .hamburger {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      width: 30px;
-      height: 25px;
-      cursor: pointer;
-      z-index: 100;
-    }
-    .hamburger div {
-      background-color: white;
-      height: 4px;
-      margin: 5px 0;
-      border-radius: 2px;
-    }
+
+    /* SIDEBAR */
     .sidebar {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
-      background: rgba(7, 116, 218, 0.22);
-      box-shadow: 2px 0 10px rgba(0,0,0,0.07);
-      padding: 20px 20px 18px 20px;
-      z-index: 99;
-      transition: 0.3s;
+      width: 260px;
+      border-right: 1px solid var(--border);
+      background: #fcfcfd;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      backdrop-filter: blur(17px) saturate(140%);
-      border-right: 1.5px solid rgba(64,137,255,0.17);
+      padding: 16px 14px;
     }
-    .sidebar.open { left: 0; }
-    .project-search-bar {
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: 1.5px solid #ff9a8b;
-      outline: none;
-      font-size: 1em;
-      margin-bottom: 10px;
-      width: 100%;
-      box-sizing: border-box;
-      background: rgba(255,255,255,0.7);
-    }
-    .project-item {
-      padding: 10px 10px 10px 0;
-      background: #f0f0f0b8;
-      border-radius: 10px;
+
+    .sidebar-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      position: relative;
-      box-shadow: 0 1px 5px #0001;
-      transition: background 0.22s;
-      z-index: 101;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 0 4px;
     }
-    .project-item input {
+
+    .logo-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: #111827;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .logo-text-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .logo-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 14px 4px 6px;
+    }
+
+    .nav-list,
+    .project-list {
+      list-style: none;
+      margin-top: 4px;
+    }
+
+    .nav-item,
+    .project-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .nav-item span,
+    .project-main span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-item.active {
+      background: #111827;
+      color: white;
+    }
+
+    .nav-item i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .nav-item.active .nav-count {
+      color: #e5e7eb;
+    }
+
+    .nav-item:hover:not(.active),
+    .project-item:hover {
+      background: #f3f4f6;
+    }
+
+    .project-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .project-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--project-1);
+      flex-shrink: 0;
+    }
+
+    .project-delete {
       border: none;
       background: transparent;
-      font-family: 'Baloo 2';
-      font-size: 1em;
-      width: 80%;
-      outline: none;
+      color: var(--muted);
+      padding: 0;
       cursor: pointer;
-      color: #185a9d;
     }
-    .delete-btn-project {
-      background: #ff4d4d;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2em;
+
+    .project-delete i {
+      font-size: 15px;
     }
-    .project-menu-container { position: relative; margin-left: 5px; }
-    .project-menu-trigger {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.3em;
-      color: #333;
-      padding: 0 7px;
-    }
-    .project-menu {
-      display: none;
-      position: absolute;
-      top: 25px;
-      right: 0;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      border-radius: 8px;
-      z-index: 300;
-      min-width: 130px;
-      flex-direction: column;
-      animation: fadeIn 0.2s;
-    }
-    .project-menu.show { display: flex; }
-    .project-menu button {
-      background: none;
-      border: none;
-      color: #333;
-      padding: 12px 18px;
-      text-align: left;
-      cursor: pointer;
-      font-size: 1em;
-      width: 100%;
-      border-radius: 8px;
-      transition: background 0.15s;
-    }
-    .project-menu button:hover { background: #ececec; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px);} to { opacity: 1; transform: translateY(0);} }
+
     .add-project-btn {
-      background: linear-gradient(90deg, #43cea2 0%, #185a9d 90%);
-      color: white;
-      padding: 14px 0;
-      border: none;
-      border-radius: 24px;
-      font-size: 1.15em;
-      font-weight: 800;
-      box-shadow: 0 2px 16px #185a9d33;
-      margin-bottom: 16px;
-      width: 100%;
-      letter-spacing: 1.1px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      outline: none;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.22s, transform 0.13s, box-shadow 0.15s;
-    }
-    .add-project-btn::before {
-      content: "";
-      background: linear-gradient(90deg,#ff9966,#ff5e62);
-      position: absolute;
-      left: -50%;
-      top: 0;
-      width: 200%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 0;
-    }
-    .add-project-btn:active { transform: scale(0.97);}
-    .add-project-btn:hover::before { opacity: 0.18;}
-    .add-project-btn:hover {
-      background: linear-gradient(90deg, #185a9d 0%, #43cea2 90%);
-      box-shadow: 0 4px 24px #43cea255;
-      color: #fff;
-    }
-    .add-project-btn i { font-size: 1.25em; margin-right: 2px; }
-    .collab-modal-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(30,47,70,0.17);
-      z-index: 201;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.21s;
-    }
-    .collab-modal-bg.show { display: flex; }
-    .collab-modal {
-      background: #fff;
-      border-radius: 17px;
-      box-shadow: 0 9px 29px #0003;
-      padding: 36px 32px 29px 32px;
-      max-width: 99vw;
-      width: 380px;
-      text-align: center;
-      position: relative;
-      z-index: 202;
-      animation: fadeIn 0.2s;
-    }
-    @media (max-width: 600px) {
-      .collab-modal { width: 97vw; padding: 17px 8vw;}
-    }
-    .collab-modal h2 { margin: 0 0 15px 0; color: #185a9d; font-size: 1.45em; letter-spacing: 0.5px;}
-    .collab-modal label { font-weight: 600; color: #444; margin-bottom: 3px; display: block; font-size: 1em;}
-    .collab-modal input[type="email"] {
-      width: 90%;
-      padding: 8px 12px;
-      border-radius: 9px;
-      border: 1.5px solid #43cea2;
-      font-size: 1.07em;
-      margin-bottom: 12px;
-      background: #f8fdff;
-    }
-    .collab-modal textarea {
-      width: 98%;
-      min-height: 70px;
-      border-radius: 9px;
-      border: 1.5px solid #43cea2;
-      font-size: 1.07em;
-      padding: 7px 10px;
-      margin-bottom: 11px;
-      background: #f8fdff;
-      resize: vertical;
-    }
-    .collab-modal .modal-close {
-      position: absolute;
-      top: 8px; right: 14px;
-      background: none;
-      border: none;
-      font-size: 1.4em;
-      color: #185a9d;
-      cursor: pointer;
-      transition: color 0.14s;
-    }
-    .collab-modal .modal-close:hover { color: #ff6f61; }
-    .collab-modal .modal-action-btn {
-      background: linear-gradient(90deg, #43cea2, #185a9d);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 9px 30px;
-      font-size: 1.09em;
-      font-weight: bold;
       margin-top: 6px;
-      cursor: pointer;
-      transition: background 0.17s;
-    }
-    .collab-modal .modal-action-btn:hover {
-      background: linear-gradient(90deg, #ff9966 0%, #ff5e62 100%);
-    }
-    .collab-modal .collab-link-box {
-      border: 1.5px solid #43cea2;
-      background: #f8fdff;
-      border-radius: 8px;
-      padding: 7px 12px;
-      font-size: 1em;
-      margin: 10px 0;
-      word-break: break-all;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 7px;
-    }
-    .collab-modal .copy-link-btn {
-      background: none;
       border: none;
-      color: #185a9d;
-      font-size: 1.2em;
-      cursor: pointer;
-      transition: color 0.13s;
-    }
-    .collab-modal .copy-link-btn:hover { color: #ff6f61; }
-    .collab-modal .mini-info { font-size: 0.97em; color: #555; margin: 4px 0 0 0; opacity: 0.88;}
-    .container {
-      margin: 60px auto;
-      background: rgba(255,255,255,0.5);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      padding: 40px;
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-      backdrop-filter: blur(9px) saturate(150%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      transition: background 0.4s;
-    }
-    .container:hover { background: rgba(255,255,255,0.65);}
-    h1 {
-      margin-bottom: 10px;
-      color: #ff6f61;
-      font-size: 2.5em;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 10px #fff8;
-      display: flex;
+      background: transparent;
+      color: var(--accent);
+      font-size: 12px;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 15px;
-    }
-    .emoji-fire { font-size: 1.2em; animation: firePulse 1.2s infinite alternate;}
-    @keyframes firePulse { 0% { filter: drop-shadow(0 0 6px #ff6f61); } 100% { filter: drop-shadow(0 0 17px #ffb100); } }
-    .quote {
-      font-size: 1.1em;
-      color: #555;
-      margin-bottom: 20px;
-      font-style: italic;
-      min-height: 32px;
-      transition: color 0.3s;
-    }
-    .quote:hover { color: #0f3dc8; cursor: pointer; }
-    .input-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-      background: rgba(240, 248, 255, 0.35);
-      padding: 16px;
-      border-radius: 18px;
-      box-shadow: 0 2px 8px #0001;
-      transition: background 0.4s;
-    }
-    .input-row input[type="text"], .input-row input[type="date"], .input-row select {
-      padding: 10px 15px;
-      border-radius: 30px;
-      border: 2px solid #ff9a8b;
-      outline: none;
-      font-size: 1em;
-      background: #fff9;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-    .input-row input[type="text"]:focus, .input-row input[type="date"]:focus, .input-row select:focus {
-      box-shadow: 0 0 7px #ff6f61a8;
-      border-color: #0f3dc8;
-    }
-    .input-row button {
-      background: linear-gradient(90deg, #ff6f61, #ff9a8b);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 1em;
+      gap: 4px;
       cursor: pointer;
-      transition: 0.3s;
-      font-weight: bold;
-      letter-spacing: 1px;
-      box-shadow: 0 1px 5px #ff9a8b80;
+      padding: 4px 4px;
     }
-    .input-row button:hover {
-      background: linear-gradient(90deg, #e94e3e, #ffb88c);
-      transform: scale(1.05);
+
+    .add-project-btn i {
+      font-size: 16px;
     }
-    ul { list-style: none; padding: 0; margin-top: 20px;}
-    li {
-      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-      color: #333;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 15px;
-      font-size: 1.1em;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: 0.3s;
-      flex-wrap: wrap;
-      gap: 10px;
-      position: relative;
-      cursor: pointer;
-      animation: fadeInList 0.4s;
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 8px 4px 4px;
+      border-top: 1px solid var(--border);
     }
-    li.completed {
-      text-decoration: line-through;
-      opacity: 0.6;
-      background: linear-gradient(135deg,#d9e7ff 0%,#b5b0ff 100%);
-    }
-    @keyframes fadeInList { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
-    .delete-btn {
-      background: #ff4d4d;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2em;
-      margin-left: 8px;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .delete-btn:hover { background: #c0392b; transform: scale(1.12);}
-    .priority-label { font-weight: bold; padding: 5px 10px; border-radius: 20px; color: white;}
-    .priority-1 { background-color: #e74c3c; }
-    .priority-2 { background-color: #e67e22; }
-    .priority-3 { background-color: #3498db; }
-    .priority-4 { background-color: #2ecc71; }
-    .task-details {
+
+    /* MAIN */
+    .main {
       flex: 1;
       display: flex;
       flex-direction: column;
+      padding: 16px 18px;
+      min-width: 0;
+    }
+
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .view-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .view-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .view-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .today-text {
+      font-weight: 500;
+    }
+
+    .quick-add {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      margin-bottom: 14px;
+    }
+
+    .quick-add input[type="text"] {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .quick-add input[type="date"],
+    .quick-add select {
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      padding: 4px 6px;
+      font-size: 11px;
+      background: white;
+      color: var(--muted);
+      outline: none;
+    }
+
+    .quick-add button {
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-size: 12px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .quick-add button i {
+      font-size: 15px;
+    }
+
+    .task-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .task-item {
+      display: flex;
       align-items: flex-start;
-      gap: 5px;
-      min-width: 160px;
+      gap: 10px;
+      padding: 8px 4px;
+      border-bottom: 1px solid #f3f4f6;
     }
-    .checkbox {
-      margin-right: 10px;
-      accent-color: #ff9a8b;
-      transform: scale(1.25);
+
+    .task-item:last-child {
+      border-bottom: none;
     }
-    .tag-chip {
+
+    .task-check {
+      margin-top: 3px;
+    }
+
+    .task-check input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .task-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-title {
+      font-size: 13px;
+      cursor: text;
+      outline: none;
+      min-height: 18px;
+    }
+
+    .task-title.completed {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .task-details-toggle {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .task-details-toggle i {
+      font-size: 18px;
+      transition: transform 0.15s ease;
+    }
+
+    .task-item.open .task-details-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .task-meta {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .task-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #f3f4f6;
+    }
+
+    .task-date.overdue {
+      background: var(--accent-soft);
+      color: #b91c1c;
+      border: 1px solid var(--accent-border);
+    }
+
+    .task-date i {
+      font-size: 14px;
+    }
+
+    .task-date-input {
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      font-size: 11px;
+      background: white;
+      color: var(--muted);
+      outline: none;
+      display: none;
+    }
+
+    .task-item.show-date-editor .task-date-input {
       display: inline-block;
-      background: #fff3ba;
-      color: #8c6d1f;
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-size: 0.95em;
-      margin-right: 8px;
     }
-    .theme-toggle {
-      position: absolute;
-      top: 24px;
-      right: 28px;
-      background: #fff4;
-      border: none;
-      border-radius: 50%;
-      width: 37px;
-      height: 37px;
-      display: flex;
+
+    .task-project-pill {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.45em;
-      cursor: pointer;
-      z-index: 12;
-      transition: background 0.2s, box-shadow 0.2s;
-      box-shadow: 0 1px 6px #0002;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #f3f4f6;
     }
-    .theme-toggle:hover { background: #ff9a8b; color: #fff;}
-    .progress-bar-container {
-      margin: 15px 0 0 0;
+
+    .task-project-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--project-1);
+    }
+
+    .task-priority {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .task-priority i {
+      font-size: 14px;
+    }
+
+    .task-priority.p1 {
+      background: var(--p1-bg);
+      color: var(--p1-text);
+      border-color: #fecaca;
+    }
+
+    .task-priority.p2 {
+      background: var(--p2-bg);
+      color: var(--p2-text);
+      border-color: #fed7aa;
+    }
+
+    .task-priority.p3 {
+      background: var(--p3-bg);
+      color: var(--p3-text);
+      border-color: #bbf7d0;
+    }
+
+    .task-priority span {
+      font-weight: 500;
+    }
+
+    .task-details {
+      display: none;
+      margin-top: 6px;
+    }
+
+    .task-item.open .task-details {
+      display: block;
+    }
+
+    .task-notes {
       width: 100%;
-      background: #ececec;
-      border-radius: 12px;
-      height: 18px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px #0001;
-      position: relative;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      transition: width 0.6s;
-      background: linear-gradient(90deg,#43cea2,#185a9d);
-      border-radius: 12px 0 0 12px;
-      font-size: 0.9em;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      font-weight: bold;
-      letter-spacing: 1px;
-      padding-left: 12px;
-      position: absolute;
-      left: 0; top: 0;
-      min-width: 80px;
-      z-index: 1;
-    }
-    .progress-bar-label {
-      position: absolute;
-      left: 12px;
-      top: 0;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      color: #333;
-      font-weight: bold;
-      font-size: 0.97em;
-      letter-spacing: 0.5px;
-      z-index: 2;
-      pointer-events: none;
-      user-select: none;
-      mix-blend-mode: difference;
-    }
-    .progress-bar-fill:empty + .progress-bar-label { color: #333; }
-    .reminder-icon {
-      color: #e74c3c;
-      margin-left: 8px;
-      font-size: 1.2em;
-      animation: pulseRemind 1s infinite alternate;
-    }
-    @keyframes pulseRemind { 0% { filter: drop-shadow(0 0 0px #e74c3c);} 100% { filter: drop-shadow(0 0 6px #e74c3c);} }
-    .notes-popup {
-      display: none;
-      position: absolute;
-      left: 60%;
-      top: 45px;
-      background: #fffbe8;
-      color: #333;
-      border-radius: 12px;
-      padding: 14px 16px;
-      box-shadow: 0 3px 12px #0002;
-      min-width: 190px;
-      z-index: 50;
-      font-size: 1em;
-    }
-    .notes-popup.show { display: block; animation: fadeIn 0.17s;}
-    .notes-btn {
-      background: #ffe066;
-      border: none;
-      border-radius: 14px;
-      color: #856404;
-      font-size: 1.1em;
-      margin-left: 10px;
-      padding: 5px 12px;
-      cursor: pointer;
-      transition: background 0.18s;
-    }
-    .notes-btn:hover { background: #ffef9f; }
-    .undo-bar {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fff5b8;
-      color: #333;
-      border-radius: 12px;
-      padding: 13px 28px;
-      box-shadow: 0 3px 12px #0002;
-      font-size: 1.1em;
-      display: none;
-      align-items: center;
-      gap: 15px;
-      z-index: 120;
-      animation: fadeIn 0.3s;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      font-size: 12px;
       font-family: inherit;
+      resize: vertical;
+      min-height: 50px;
+      max-height: 140px;
+      outline: none;
+      background: #fff;
     }
-    .undo-bar.show { display: flex; }
-    .undo-btn {
-      background: #ff9a8b;
-      color: #fff;
+
+    .task-notes::placeholder {
+      color: var(--muted);
+    }
+
+    .task-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-actions button {
       border: none;
-      border-radius: 8px;
-      padding: 6px 18px;
-      font-size: 1em;
+      background: transparent;
       cursor: pointer;
-      font-weight: bold;
-      margin-left: 8px;
-      transition: background 0.2s;
+      color: var(--muted);
+      padding: 2px;
     }
-    .undo-btn:hover { background: #0f3dc8;}
-    ::-webkit-scrollbar { width: 7px; background: #f1f1f1;}
-    ::-webkit-scrollbar-thumb { background: #ff9a8b; border-radius: 5px;}
-    ::selection { background: #ffbeaa;}
-    @media (max-width: 700px) {
-      .top-bar {
+
+    .task-actions i {
+      font-size: 16px;
+    }
+
+    .task-empty {
+      margin-top: 32px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .clear-completed-btn {
+      margin-top: 8px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .clear-completed-btn i {
+      font-size: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .app {
         flex-direction: column;
-        align-items: stretch;
-        position: static;
-        width: 100vw;
-        max-width: 100vw;
-        gap: 8px;
-        padding: 7px 0 0 0;
       }
-      .calendar-btn, .analytics-btn, .share-btn, .dashboard-btn {
-        width: 100%;
-        padding: 9px 0;
-        font-size: 1em;
-        border-radius: 17px;
-      }
-      .container {
-        margin: 18vw auto 0 auto;
-        padding: 3vw 2vw 7vw 2vw;
-        width: 99vw;
-        max-width: 100vw;
-        border-radius: 13px;
-        min-width: 0;
-      }
-      h1 {
-        font-size: 1.21em;
-        gap: 8px;
-        margin-bottom: 7px;
-        flex-wrap: wrap;
-      }
-      .input-row {
-        flex-direction: column;
-        gap: 8px;
-        padding: 8px;
-        border-radius: 10px;
-      }
-      .input-row input[type="text"], .input-row input[type="date"], .input-row select {
-        width: 100%;
-        font-size: 0.99em;
-        padding: 8px 13px;
-        border-radius: 17px;
-      }
-      .input-row button {
-        width: 100%;
-        font-size: 1em;
-        border-radius: 17px;
-      }
-      .progress-bar-container {
-        margin: 7px 0 0 0;
-        height: 13px;
-        border-radius: 7px;
-      }
-      .progress-bar-label { font-size: 0.93em; left: 7px;}
-      .progress-bar-fill { font-size: 0.91em; min-width: 50px; border-radius: 7px 0 0 7px;}
-      ul { margin-top: 9px;}
-      li { font-size: 0.99em; border-radius: 8px; flex-direction: column; gap: 2px; padding: 10px 5px;}
-      .delete-btn { width: 26px; height: 26px; font-size: 1em;}
-      .priority-label { font-size: 0.97em; padding: 3px 8px;}
-      .task-details { min-width: 0; }
-      .tag-chip { font-size: 0.92em; padding: 1px 6px;}
-      .theme-toggle {
-        position: fixed;
-        top: 9px;
-        right: 14px;
-        width: 32px;
-        height: 32px;
-        font-size: 1.1em;
-        border-radius: 8px;
-        z-index: 250;
-      }
-      .hamburger { top: 13px; left: 9px; width: 26px; height: 19px;}
+
       .sidebar {
-        width: 82vw;
-        max-width: 320px;
-        left: -84vw;
-        padding: 18px 8px 13px 8px;
-        font-size: 1em;
-        z-index: 109;
-        border-radius: 0 13px 13px 0;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
       }
-      .sidebar.open { left: 0; }
-      .project-search-bar { font-size: 0.98em; border-radius: 13px;}
-      .project-item { border-radius: 7px; padding: 7px 6px 7px 0;}
-      .add-project-btn { border-radius: 13px; font-size: 1em; padding: 10px 0;}
-      .collab-modal { width: 98vw; padding: 8vw 2vw; border-radius: 10px;}
-      .undo-bar { font-size: 0.98em; padding: 8px 10px; border-radius: 8px;}
-      .undo-btn { font-size: 0.97em; border-radius: 7px;}
-      .notes-popup { font-size: 0.98em; min-width: 120px; border-radius: 8px; padding: 7px 8px;}
+
+      .main {
+        padding: 12px 12px;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="top-bar">
-    <button class="calendar-btn" onclick="window.location.href='calendar.html'">
-      <i class="fa fa-calendar"></i> Calendar
-    </button>
-    <button class="analytics-btn" onclick="window.location.href='analytics.html'">
-      <i class="fa fa-chart-line"></i> Analytics
-    </button>
-    <button class="dashboard-btn" onclick="window.location.href='dashboard.html'">
-      <i class="fa fa-chart-line"></i> Back to Dashboard
-    </button>
-  </div>
-  <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode"><i class="fas fa-moon"></i></button>
-  <div class="hamburger" onclick="toggleSidebar()">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-  <div class="sidebar" id="sidebar">
-    <input type="text" id="projectSearchBar" class="project-search-bar" placeholder="Search projects...">
-    <button class="add-project-btn" onclick="addProject()">
-      <i class="fa fa-plus-circle"></i>
-      Add Project
-    </button>
-    <div id="projectList"></div>
-  </div>
-  <div class="container">
-    <h1>
-      To-Do List
-      <span id="projectTitle" style="font-size:0.65em; margin-left:12px; color:#0f3dc8; background:#fff3; padding:4px 14px; border-radius:10px;"></span>
-    </h1>
-    <div class="quote" id="quoteBox" title="Click for another quote!">"Loading inspiration..."</div>
-    <div class="input-row">
-      <input type="text" id="todoInput" placeholder="What do you need to do?">
-      <input type="text" id="descInput" placeholder="Description">
-      <input type="text" id="tagsInput" placeholder="Tags">
-      <select id="categoryInput">
-        <option value="General">General</option>
-        <option value="Work">Work</option>
-        <option value="School">School</option>
-        <option value="Personal">Personal</option>
-      </select>
-      <select id="priorityInput">
-        <option value="1">Priority 1 ⚠️</option>
-        <option value="2">Priority 2 ❗</option>
-        <option value="3">Priority 3 ❄️</option>
-        <option value="4">Priority 4 💤</option>
-      </select>
-      <input type="date" id="dateInput">
-      <button onclick="addTodo()">Add</button>
-    </div>
-    <div class="progress-bar-container" style="position: relative;">
-      <div class="progress-bar-fill" id="progressBarFill"></div>
-      <span class="progress-bar-label" id="progressBarLabel">0% Complete</span>
-    </div>
-    <ul id="todoList"></ul>
-    <ul id="completedList"></ul>
-  </div>
-  <div class="undo-bar" id="undoBar">
-    <span id="undoMsg"></span>
-    <button class="undo-btn" onclick="undoDelete()">Undo</button>
-  </div>
-  <!-- Share Link Modal -->
-  <div class="collab-modal-bg" id="shareModalBg">
-    <div class="collab-modal">
-      <button class="modal-close" onclick="closeShareModal()">&times;</button>
-      <h2>Share Your To-Do List</h2>
-      <div>
-        <label>Copy this link to share your current project:</label>
-        <div class="collab-link-box">
-          <span id="shareLinkText"></span>
-          <button class="copy-link-btn" onclick="copyShareLink()" title="Copy link"><i class="fa fa-copy"></i></button>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">TF</div>
+        <div>
+          <div class="logo-text-title">TaskFlows</div>
+          <div class="logo-text-sub">Clean to-do, no clutter</div>
         </div>
-        <div class="mini-info">Anyone with the link can view (not edit) this project.</div>
       </div>
-    </div>
+
+      <div>
+        <div class="sidebar-section-title">Views</div>
+        <ul class="nav-list">
+          <li class="nav-item active" data-view="inbox">
+            <div class="nav-left">
+              <i class="ri-inbox-line"></i>
+              <span>Inbox</span>
+            </div>
+            <span class="nav-count" data-count="inbox">0</span>
+          </li>
+          <li class="nav-item" data-view="today">
+            <div class="nav-left">
+              <i class="ri-sun-line"></i>
+              <span>Today</span>
+            </div>
+            <span class="nav-count" data-count="today">0</span>
+          </li>
+          <li class="nav-item" data-view="upcoming">
+            <div class="nav-left">
+              <i class="ri-calendar-line"></i>
+              <span>Upcoming</span>
+            </div>
+            <span class="nav-count" data-count="upcoming">0</span>
+          </li>
+          <li class="nav-item" data-view="completed">
+            <div class="nav-left">
+              <i class="ri-check-double-line"></i>
+              <span>Completed</span>
+            </div>
+            <span class="nav-count" data-count="completed">0</span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Projects</div>
+        <ul class="project-list" id="projectList">
+          <!-- projects injected -->
+        </ul>
+        <button class="add-project-btn" id="addProjectBtn">
+          <i class="ri-add-line"></i>
+          <span>Add project</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        Tasks are saved on this browser using localStorage.
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <header class="main-header">
+        <div>
+          <div class="view-title" id="viewTitle">Inbox</div>
+          <div class="view-subtitle" id="viewSubtitle">Capture everything here first.</div>
+        </div>
+        <div class="view-meta">
+          <span class="today-text" id="todayText"></span>
+        </div>
+      </header>
+
+      <section class="quick-add">
+        <input type="text" id="quickInput" placeholder="Add a task (press Enter to save)" />
+        <input type="date" id="quickDate" />
+        <select id="quickPriority">
+          <option value="2">P2 · Medium</option>
+          <option value="1">P1 · High</option>
+          <option value="3">P3 · Low</option>
+        </select>
+        <button id="quickAddBtn">
+          <i class="ri-add-line"></i>
+          <span>Add</span>
+        </button>
+      </section>
+
+      <section class="task-list" id="taskList">
+        <!-- tasks -->
+      </section>
+
+      <button class="clear-completed-btn" id="clearCompletedBtn">
+        <i class="ri-delete-bin-7-line"></i>
+        <span>Clear completed</span>
+      </button>
+    </main>
   </div>
+
   <script>
-    // --- Animated Gradient Background START ---
-    const gradientSets = [
-      ['#0f3dc8', '#04edce'],
-      ['#f857a6', '#ff5858'],
-      ['#43cea2', '#185a9d'],
-      ['#ff9966', '#ff5e62'],
-      ['#36d1c4', '#b06ab3'],
-      ['#e65c00', '#F9D423'],
-      ['#fc5c7d', '#6a82fb'],
-      ['#ff512f', '#dd2476'],
-      ['#1d976c', '#93f9b9'],
-      ['#a1c4fd', '#c2e9fb'],
-      ['#ee9ca7', '#ffdde1'],
-      ['#f6d365', '#fda085'],
-      ['#f7971e', '#ffd200']
-    ];
-    let gradIdx = 0, gradNext = 1, gradStep = 0, gradSpeed = 0.008;
-    function lerpColor(a, b, t) {
-      const ah = a.replace('#', ''), bh = b.replace('#', '');
-      const ar = parseInt(ah.substring(0,2),16), ag = parseInt(ah.substring(2,4),16), ab = parseInt(ah.substring(4,6),16);
-      const br = parseInt(bh.substring(0,2),16), bg = parseInt(bh.substring(2,4),16), bb = parseInt(bh.substring(4,6),16);
-      const rr = Math.round(ar + (br-ar)*t), rg = Math.round(ag + (bg-ag)*t), rb = Math.round(ab + (bb-ab)*t);
-      return `rgb(${rr},${rg},${rb})`;
-    }
-    function animateGradient() {
-      gradStep += gradSpeed;
-      if (gradStep >= 1) {
-        gradStep = 0;
-        gradIdx = gradNext;
-        gradNext = (gradNext + 1) % gradientSets.length;
-      }
-      const [a1, a2] = gradientSets[gradIdx], [b1, b2] = gradientSets[gradNext];
-      const color1 = lerpColor(a1, b1, gradStep), color2 = lerpColor(a2, b2, gradStep);
-      document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-      requestAnimationFrame(animateGradient);
-    }
-    animateGradient();
-    // --- Animated Gradient Background END ---
+    (function () {
+      const STORAGE_KEY = "taskflows_todo_interactive_v1";
 
-    let currentProject = "Default";
-    const savedProjects = JSON.parse(localStorage.getItem("projects") || "{}");
-    const projects = savedProjects;
-    if (!projects[currentProject]) projects[currentProject] = { todos: [], completed: [] };
-    const todoList = document.getElementById('todoList'),
-          completedList = document.getElementById('completedList'),
-          projectList = document.getElementById('projectList'),
-          quoteBox = document.getElementById('quoteBox'),
-          projectSearchBar = document.getElementById('projectSearchBar'),
-          projectTitle = document.getElementById('projectTitle'),
-          progressBarFill = document.getElementById('progressBarFill'),
-          progressBarLabel = document.getElementById('progressBarLabel'),
-          undoBar = document.getElementById('undoBar'),
-          undoMsg = document.getElementById('undoMsg');
-    let lastDeleted = null, lastDeletedFrom = null;
-
-    const quotes = [
-      "“The secret of getting ahead is getting started.” – Mark Twain",
-      "“It always seems impossible until it’s done.” – Nelson Mandela",
-      "“Don’t watch the clock; do what it does. Keep going.” – Sam Levenson",
-      "“Start where you are. Use what you have. Do what you can.” – Arthur Ashe",
-      "“You don’t have to be great to start, but you have to start to be great.” – Zig Ziglar",
-      "“Believe you can and you're halfway there.” - Theodore Roosevelt",
-      "”The only person you are destined to become is the person you decide to be.” — Ralph Waldo Emerson",
-      "”The question isn't who is going to let me; it's who is going to stop me.” — Ayn Rand",
-      "”Winning is not a sometime thing; it's an all the time thing.” — Vince Lombardi",
-      "”Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.” — Christian D. Larson",
-      "“You are never too old to set another goal or to dream a new dream.” – C.S. Lewis",
-      "“Success is not final, failure is not fatal: it is the courage to continue that counts.” – Winston Churchill",
-      "“Act as if what you do makes a difference. It does.” – William James"
-    ];
-    function showRandomQuote() {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      quoteBox.textContent = quotes[randomIndex];
-    }
-    quoteBox.onclick = showRandomQuote;
-
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-    }
-    document.addEventListener('click', function(e) {
-      document.querySelectorAll('.project-menu').forEach(menu => menu.classList.remove('show'));
-    });
-
-    function addProject() {
-      const name = prompt("Enter new project name:");
-      if (!name) return;
-      if (!projects[name]) projects[name] = { todos: [], completed: [] };
-      currentProject = name;
-      saveProjects();
-      renderProjectList();
-      renderTodos();
-    }
-    function duplicateProject(name) {
-      let newName = name + " Copy";
-      let idx = 1;
-      while (projects[newName]) { idx++; newName = name + " Copy " + idx; }
-      projects[newName] = JSON.parse(JSON.stringify(projects[name]));
-      saveProjects();
-      renderProjectList();
-    }
-    function deleteProject(name) {
-      if (confirm(`Are you sure you want to delete the project "${name}"?`)) {
-        delete projects[name];
-        if (currentProject === name) currentProject = "Default";
-        saveProjects();
-        renderProjectList();
-        renderTodos();
-      }
-    }
-    function switchProject(name) {
-      currentProject = name;
-      renderTodos();
-      renderProjectList();
-    }
-    function renderProjectList(filter = "") {
-      projectList.innerHTML = "";
-      let projectNames = Object.keys(projects);
-      if (filter) {
-        const filterLower = filter.toLowerCase();
-        projectNames = projectNames.filter(name => name.toLowerCase().includes(filterLower));
-      }
-      projectNames.forEach(name => {
-        const div = document.createElement('div');
-        div.className = 'project-item';
-        if (name === currentProject) div.style.background = "#cce3ffcc";
-        const input = document.createElement('input');
-        input.value = name;
-        input.spellcheck = false;
-        input.style.cursor = 'pointer';
-        input.readOnly = true;
-        input.addEventListener('click', () => switchProject(name));
-
-        const countBadge = document.createElement('span');
-        const count = (projects[name].todos?.length || 0) + (projects[name].completed?.length || 0);
-        countBadge.textContent = count;
-        countBadge.style.cssText = `
-          background: #185a9dcc;
-          color: #fff;
-          border-radius: 11px;
-          font-size: 0.93em;
-          padding: 2px 10px;
-          margin-left: 5px;
-          font-weight: 700;
-          letter-spacing: 0.3px;
-        `;
-
-        const menuCont = document.createElement('div');
-        menuCont.className = 'project-menu-container';
-        const menuTrigger = document.createElement('button');
-        menuTrigger.className = 'project-menu-trigger';
-        menuTrigger.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
-        menuTrigger.onclick = function(e) {
-          e.stopPropagation();
-          const menu = this.nextSibling;
-          document.querySelectorAll('.project-menu').forEach(m => m.classList.remove('show'));
-          menu.classList.toggle('show');
-        };
-        const menu = document.createElement('div');
-        menu.className = 'project-menu';
-        const duplicateBtn = document.createElement('button');
-        duplicateBtn.innerHTML = '<i class="fa fa-clone"></i> Duplicate Project';
-        duplicateBtn.onclick = (e) => { e.stopPropagation(); duplicateProject(name); menu.classList.remove('show');};
-        const deleteBtn = document.createElement('button');
-        deleteBtn.innerHTML = '<i class="fa fa-trash"></i> Delete Project';
-        deleteBtn.onclick = (e) => { e.stopPropagation(); deleteProject(name); menu.classList.remove('show');};
-        menu.appendChild(duplicateBtn);
-        if(name !== "Default") menu.appendChild(deleteBtn);
-        menuCont.appendChild(menuTrigger);
-        menuCont.appendChild(menu);
-        div.appendChild(input);
-        div.appendChild(countBadge);
-        div.appendChild(menuCont);
-        projectList.appendChild(div);
-      });
-      projectTitle.textContent = currentProject;
-    }
-    projectSearchBar.addEventListener('input', function () {
-      renderProjectList(this.value);
-    });
-
-    function saveProjects() {
-      localStorage.setItem("projects", JSON.stringify(projects));
-    }
-    function renderTodos() {
-      todoList.innerHTML = ""; completedList.innerHTML = "";
-      const { todos, completed } = projects[currentProject];
-      [...todos, ...completed].forEach(data => {
-        const li = createTodoElement(data);
-        (data.done ? completedList : todoList).appendChild(li);
-      });
-      updateProgressBar();
-    }
-    function createTodoElement({ text, description, category, priority, date, tags, done, notes }) {
-      const li = document.createElement('li');
-      if (done) li.classList.add('completed');
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = done;
-      checkbox.className = 'checkbox';
-      checkbox.onchange = () => toggleComplete(text);
-
-      const taskDetails = document.createElement('div');
-      taskDetails.className = 'task-details';
-
-      if (tags && Array.isArray(tags)) {
-        tags.forEach(t => {
-          const chip = document.createElement('span');
-          chip.className = 'tag-chip';
-          chip.textContent = t;
-          taskDetails.appendChild(chip);
-        });
-      }
-      const mainText = document.createElement('div');
-      mainText.contentEditable = true;
-      mainText.textContent = `${text}`;
-      mainText.oninput = () => updateText(text, mainText.textContent);
-      mainText.spellcheck = true;
-      mainText.title = "Click and edit";
-
-      const desc = document.createElement('div');
-      desc.textContent = description;
-      desc.style.fontSize = '0.9em';
-      desc.style.color = '#333';
-
-      const cat = document.createElement('div');
-      cat.textContent = category || "";
-      cat.style.fontSize = "0.92em";
-      cat.style.color = "#185a9d";
-      cat.style.fontWeight = "bold";
-
-      const priorityText = document.createElement('div');
-      priorityText.className = `priority-label priority-${priority}`;
-      priorityText.textContent = `Priority ${priority}`;
-
-      const dateText = document.createElement('div');
-      dateText.textContent = getCountdownText(date);
-      if(dateText.textContent.includes("today") || dateText.textContent.includes("Overdue")) {
-        const remindIcon = document.createElement('span');
-        remindIcon.className = 'reminder-icon';
-        remindIcon.title = 'Due soon!';
-        remindIcon.innerHTML = '<i class="fa-solid fa-bell"></i>';
-        dateText.appendChild(remindIcon);
-      }
-
-      const notesBtn = document.createElement('button');
-      notesBtn.className = 'notes-btn';
-      notesBtn.innerHTML = '<i class="fa fa-sticky-note"></i> Notes';
-      notesBtn.onclick = function(e) {
-        e.stopPropagation();
-        showNotesPopup(li, text, notes || "");
+      const state = {
+        projects: [],
+        tasks: [],
+        view: { type: "inbox", id: null }
       };
 
-      taskDetails.append(mainText, desc, cat, priorityText, dateText, notesBtn);
+      const els = {
+        navItems: document.querySelectorAll(".nav-item"),
+        viewTitle: document.getElementById("viewTitle"),
+        viewSubtitle: document.getElementById("viewSubtitle"),
+        todayText: document.getElementById("todayText"),
+        quickInput: document.getElementById("quickInput"),
+        quickDate: document.getElementById("quickDate"),
+        quickPriority: document.getElementById("quickPriority"),
+        quickAddBtn: document.getElementById("quickAddBtn"),
+        taskList: document.getElementById("taskList"),
+        clearCompletedBtn: document.getElementById("clearCompletedBtn"),
+        projectList: document.getElementById("projectList"),
+        addProjectBtn: document.getElementById("addProjectBtn"),
+        countInbox: document.querySelector('[data-count="inbox"]'),
+        countToday: document.querySelector('[data-count="today"]'),
+        countUpcoming: document.querySelector('[data-count="upcoming"]'),
+        countCompleted: document.querySelector('[data-count="completed"]')
+      };
 
-      const btn = document.createElement('button');
-      btn.className = 'delete-btn';
-      btn.innerHTML = '<i class="fa fa-trash"></i>';
-      btn.title = "Delete Task";
-      btn.onclick = () => deleteTodo(text);
+      const projectColors = [
+        "var(--project-1)",
+        "var(--project-2)",
+        "var(--project-3)",
+        "var(--project-4)"
+      ];
 
-      li.append(checkbox, taskDetails, btn);
-      return li;
-    }
-    function getCountdownText(dateStr) {
-      if (!dateStr) return '';
-      const today = new Date(); today.setHours(0,0,0,0);
-      const due = new Date(dateStr); due.setHours(0,0,0,0);
-      const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-      if (diff < 0) return '⚠️ Overdue';
-      if (diff === 0) return 'Due today!';
-      if (diff === 1) return 'Due tomorrow';
-      return `Due in ${diff} days`;
-    }
-    function addTodo() {
-      const text = document.getElementById('todoInput').value.trim();
-      const description = document.getElementById('descInput').value.trim();
-      const tagsStr = document.getElementById('tagsInput').value.trim();
-      const category = document.getElementById('categoryInput').value;
-      const priority = document.getElementById('priorityInput').value;
-      const date = document.getElementById('dateInput').value;
-      if (!text) return;
-      const tags = tagsStr ? tagsStr.split(",").map(s=>s.trim()).filter(Boolean) : [];
-      const todo = { text, description, category, priority, date, tags, done: false, notes: "" };
-      projects[currentProject].todos.push(todo);
-      saveProjects();
-      renderTodos();
-      document.getElementById('todoInput').value = '';
-      document.getElementById('descInput').value = '';
-      document.getElementById('tagsInput').value = '';
-    }
-    function deleteTodo(text) {
-      const data = projects[currentProject];
-      let idx = data.todos.findIndex(t => t.text === text);
-      if (idx > -1) {
-        lastDeleted = data.todos[idx];
-        lastDeletedFrom = "todos";
-        data.todos.splice(idx, 1);
-      } else {
-        idx = data.completed.findIndex(t => t.text === text);
-        if (idx > -1) {
-          lastDeleted = data.completed[idx];
-          lastDeletedFrom = "completed";
-          data.completed.splice(idx, 1);
-        }
+      function init() {
+        loadState();
+        ensureInboxProject();
+        attachEvents();
+        updateTodayText();
+        renderAll();
       }
-      launchConfetti();
-      saveProjects();
-      renderTodos();
-      showUndoBar("Task deleted!");
-    }
-    function showUndoBar(msg) {
-      undoMsg.textContent = msg;
-      undoBar.classList.add("show");
-      setTimeout(()=>{ undoBar.classList.remove("show"); }, 6000);
-    }
-    function undoDelete() {
-      if(!lastDeleted) return;
-      if (lastDeletedFrom === "todos") {
-        projects[currentProject].todos.push(lastDeleted);
-      } else if (lastDeletedFrom === "completed") {
-        projects[currentProject].completed.push(lastDeleted);
-      }
-      saveProjects(); renderTodos();
-      undoBar.classList.remove("show");
-      lastDeleted = null; lastDeletedFrom = null;
-    }
-    function toggleComplete(text) {
-      const data = projects[currentProject];
-      const index = data.todos.findIndex(t => t.text === text);
-      if (index > -1) {
-        const todo = data.todos.splice(index, 1)[0];
-        todo.done = true;
-        data.completed.push(todo);
-      } else {
-        const idx = data.completed.findIndex(t => t.text === text);
-        if (idx > -1) {
-          const todo = data.completed.splice(idx, 1)[0];
-          todo.done = false;
-          data.todos.push(todo);
-        }
-      }
-      saveProjects();
-      renderTodos();
-    }
-    function updateText(oldText, newText) {
-      const data = projects[currentProject];
-      for (let list of [data.todos, data.completed]) {
-        const item = list.find(t => t.text === oldText);
-        if (item) item.text = newText;
-      }
-      saveProjects();
-    }
-    function launchConfetti() {
-      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
-    }
-    function updateProgressBar() {
-      const { todos, completed } = projects[currentProject] || {todos:[],completed:[]};
-      const total = todos.length + completed.length;
-      let percent = 0;
-      if (total > 0) percent = Math.round((completed.length / total) * 100);
-      progressBarFill.textContent = "";
-      progressBarFill.style.width = percent + "%";
-      if(percent === 100 && total > 0) {
-        progressBarLabel.textContent = "🎉 All tasks done!";
-        progressBarFill.style.background = "linear-gradient(90deg,#36d1c4 0%,#b06ab3 100%)";
-      }
-      else {
-        progressBarLabel.textContent = percent + "% Complete";
-        progressBarFill.style.background = "linear-gradient(90deg,#43cea2,#185a9d)";
-      }
-    }
-    function showNotesPopup(parentLi, taskText, currNotes) {
-      let popup = parentLi.querySelector('.notes-popup');
-      if(!popup) {
-        popup = document.createElement('div');
-        popup.className = "notes-popup";
-        popup.innerHTML = `
-          <b>Task Notes</b><br>
-          <textarea style="width:98%;min-height:60px;font-family:inherit;font-size:1em;border-radius:7px;border:1px solid #ccc;padding:4px 7px;resize:vertical;">${currNotes||""}</textarea>
-          <br>
-          <button style="margin-top:7px;background:#43cea2;color:#fff;padding:6px 13px;border-radius:7px;border:none;font-weight:bold;cursor:pointer;">Save</button>
-        `;
-        parentLi.appendChild(popup);
-        popup.querySelector('button').onclick = function(){
-          updateNotes(taskText, popup.querySelector('textarea').value);
-          popup.classList.remove('show');
-        };
-        document.addEventListener('mousedown', function handler(e){
-          if(!popup.contains(e.target)) { popup.classList.remove('show'); document.removeEventListener('mousedown', handler);}
-        });
-      }
-      popup.classList.add('show');
-      popup.querySelector('textarea').focus();
-    }
-    function updateNotes(text, value) {
-      const data = projects[currentProject];
-      for (let list of [data.todos, data.completed]) {
-        const item = list.find(t => t.text === text);
-        if (item) item.notes = value;
-      }
-      saveProjects();
-    }
-    const themeToggleBtn = document.getElementById('themeToggle');
-    let isDark = localStorage.getItem("theme") === "dark";
-    function applyTheme() {
-      if(isDark) {
-        document.body.style.color = "#e1e7f0";
-        document.body.style.background = "linear-gradient(135deg,#283e51,#485563)";
-        document.querySelector('.container').style.background = "rgba(21,34,56,0.63)";
-        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-      } else {
-        document.body.style.color = "#222";
-        document.body.style.background = "";
-        document.querySelector('.container').style.background = "rgba(255,255,255,0.5)";
-        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-      }
-    }
-    themeToggleBtn.onclick = function() {
-      isDark = !isDark;
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      applyTheme();
-    };
-    if(isDark) applyTheme();
 
-    window.addEventListener('keydown', e => {
-      if(document.activeElement.tagName==="INPUT"||document.activeElement.tagName==="TEXTAREA") return;
-      if(e.key.toLowerCase()==="n") document.getElementById('todoInput').focus();
-      if(e.key.toLowerCase()==="s") projectSearchBar.focus();
-      if(e.key.toLowerCase()==="p") addProject();
-      if(e.key.toLowerCase()==="q") showRandomQuote();
-      if(e.key.toLowerCase()==="t") themeToggleBtn.click();
-    });
-
-    function notifyDueSoonTasks() {
-      if (!("Notification" in window)) return;
-      if (Notification.permission !== "granted") return;
-      const { todos } = projects[currentProject];
-      const today = new Date(); today.setHours(0,0,0,0);
-      todos.forEach(task => {
-        if (task.date) {
-          const due = new Date(task.date); due.setHours(0,0,0,0);
-          if (due - today === 0) {
-            new Notification("Task Due Today", { body: task.text, icon:"https://cdn-icons-png.flaticon.com/512/2921/2921222.png" });
-          }
-        }
-      });
-    }
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-    setTimeout(notifyDueSoonTasks, 1200);
-
-    // --- Collab Buttons Functionality ---
-    document.getElementById('downloadBtn').onclick = function() {
-      const data = projects[currentProject];
-      const content = JSON.stringify(data, null, 2);
-      const blob = new Blob([content], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${currentProject.replace(/\s+/g,'_')}_todo_list.json`;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-    };
-
-    document.getElementById('shareLinkBtn').onclick = function() {
-      const data = projects[currentProject];
-      const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
-      const shareURL = `${window.location.origin}${window.location.pathname}?share=${encoded}&project=${encodeURIComponent(currentProject)}`;
-      document.getElementById('shareLinkText').textContent = shareURL;
-      document.getElementById('shareModalBg').classList.add('show');
-    };
-    function closeShareModal() { document.getElementById('shareModalBg').classList.remove('show'); }
-    function copyShareLink() {
-      const link = document.getElementById('shareLinkText').textContent;
-      if (navigator.clipboard) { navigator.clipboard.writeText(link); }
-      else {
-        let tmp = document.createElement("textarea");
-        tmp.value = link;
-        document.body.appendChild(tmp);
-        tmp.select();
-        document.execCommand("copy");
-        document.body.removeChild(tmp);
-      }
-    }
-    window.closeShareModal = closeShareModal;
-    window.copyShareLink = copyShareLink;
-
-    // Email button logic removed
-
-    function tryImportSharedList() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const shared = urlParams.get('share');
-      const projectName = urlParams.get('project') || 'Shared Project';
-      if (shared) {
-        let data;
+      function loadState() {
         try {
-          data = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(shared)))));
-        } catch (e) {
-          alert('Failed to import shared to-do list.');
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            state.projects = parsed.projects || [];
+            state.tasks = (parsed.tasks || []).map(t => ({
+              ...t,
+              priority: t.priority || 2,
+              notes: t.notes || ""
+            }));
+            state.view = parsed.view || state.view;
+          } else {
+            seed();
+          }
+        } catch {
+          seed();
+        }
+      }
+
+      function seed() {
+        state.projects = [
+          { id: "inbox", name: "Inbox", color: "var(--project-4)", isInbox: true },
+          { id: "school", name: "School", color: "var(--project-1)", isInbox: false },
+          { id: "personal", name: "Personal", color: "var(--project-2)", isInbox: false }
+        ];
+        state.tasks = [];
+        state.view = { type: "inbox", id: null };
+      }
+
+      function saveState() {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            projects: state.projects,
+            tasks: state.tasks,
+            view: state.view
+          })
+        );
+      }
+
+      function ensureInboxProject() {
+        if (!state.projects.some(p => p.id === "inbox")) {
+          state.projects.unshift({
+            id: "inbox",
+            name: "Inbox",
+            color: "var(--project-4)",
+            isInbox: true
+          });
+        }
+      }
+
+      function attachEvents() {
+        els.navItems.forEach(item => {
+          item.addEventListener("click", () => {
+            const view = item.getAttribute("data-view");
+            setView(view);
+          });
+        });
+
+        els.quickAddBtn.addEventListener("click", addTaskFromQuick);
+        els.quickInput.addEventListener("keydown", e => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addTaskFromQuick();
+          }
+        });
+
+        els.taskList.addEventListener("click", handleTaskListClick);
+        els.taskList.addEventListener("keydown", handleTaskKeydown);
+        els.taskList.addEventListener("focusout", handleTaskFocusOut);
+        els.taskList.addEventListener("input", handleTaskInput);
+        els.taskList.addEventListener("change", handleTaskChange);
+
+        els.clearCompletedBtn.addEventListener("click", clearCompleted);
+
+        els.addProjectBtn.addEventListener("click", addProject);
+      }
+
+      function updateTodayText() {
+        const today = new Date();
+        const options = { weekday: "short", month: "short", day: "numeric" };
+        els.todayText.textContent = today.toLocaleDateString(undefined, options);
+      }
+
+      function setView(type, id = null) {
+        state.view = { type, id };
+        els.navItems.forEach(item => item.classList.remove("active"));
+        const nav = document.querySelector(`.nav-item[data-view="${type}"]`);
+        if (nav) nav.classList.add("active");
+        renderHeader();
+        renderTasks();
+        saveState();
+      }
+
+      function addTaskFromQuick() {
+        const title = els.quickInput.value.trim();
+        if (!title) return;
+        let projectId = "inbox";
+        if (state.view.type === "project" && state.view.id) {
+          projectId = state.view.id;
+        }
+        const dueDate = els.quickDate.value || null;
+        const priority = parseInt(els.quickPriority.value, 10) || 2;
+
+        const task = {
+          id: "task_" + Date.now().toString(36),
+          title,
+          projectId,
+          dueDate,
+          priority,
+          completed: false,
+          createdAt: Date.now(),
+          notes: ""
+        };
+
+        state.tasks.push(task);
+        els.quickInput.value = "";
+        els.quickDate.value = "";
+        els.quickPriority.value = "2";
+        saveState();
+        renderAll();
+      }
+
+      function handleTaskListClick(e) {
+        const item = e.target.closest(".task-item");
+        if (!item) return;
+        const id = item.getAttribute("data-id");
+        const task = state.tasks.find(t => t.id === id);
+        if (!task) return;
+
+        if (e.target.matches('input[type="checkbox"]')) {
+          task.completed = e.target.checked;
+          saveState();
+          renderAll();
           return;
         }
-        if (!projects[projectName]) {
-          projects[projectName] = data;
-          currentProject = projectName;
-          saveProjects();
-        }
-        renderProjectList();
-        renderTodos();
-        alert(`Imported shared project: ${projectName}`);
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    }
-    setTimeout(tryImportSharedList, 200);
 
-    // --- INIT ---
-    showRandomQuote();
-    renderProjectList();
-    renderTodos();
+        const deleteBtn = e.target.closest(".task-delete-btn");
+        if (deleteBtn) {
+          const ok = confirm(`Delete "${task.title}"?`);
+          if (!ok) return;
+          state.tasks = state.tasks.filter(t => t.id !== id);
+          saveState();
+          renderAll();
+          return;
+        }
+
+        const datePill = e.target.closest('[data-action="date-pill"]');
+        if (datePill) {
+          item.classList.add("show-date-editor");
+          const dateInput = item.querySelector(".task-date-input");
+          if (dateInput) {
+            dateInput.focus();
+          }
+          return;
+        }
+
+        const priorityPill = e.target.closest('[data-action="priority-pill"]');
+        if (priorityPill) {
+          cyclePriority(task);
+          saveState();
+          renderAll();
+          return;
+        }
+
+        const toggleBtn = e.target.closest('[data-action="toggle-details"]');
+        if (toggleBtn) {
+          item.classList.toggle("open");
+          return;
+        }
+      }
+
+      function handleTaskKeydown(e) {
+        const titleEl = e.target.closest('[data-role="title"]');
+        if (titleEl && e.key === "Enter") {
+          e.preventDefault();
+          titleEl.blur();
+        }
+      }
+
+      function handleTaskFocusOut(e) {
+        const titleEl = e.target.closest('[data-role="title"]');
+        if (titleEl) {
+          const item = titleEl.closest(".task-item");
+          if (!item) return;
+          const id = item.getAttribute("data-id");
+          const task = state.tasks.find(t => t.id === id);
+          if (!task) return;
+          const text = titleEl.textContent.trim();
+          task.title = text || "Untitled task";
+          saveState();
+          renderTasks();
+          renderCounts();
+        }
+      }
+
+      function handleTaskInput(e) {
+        const notesEl = e.target.closest('[data-role="notes"]');
+        if (notesEl) {
+          const item = notesEl.closest(".task-item");
+          if (!item) return;
+          const id = item.getAttribute("data-id");
+          const task = state.tasks.find(t => t.id === id);
+          if (!task) return;
+          task.notes = notesEl.value;
+          saveState();
+        }
+      }
+
+      function handleTaskChange(e) {
+        if (e.target.classList.contains("task-date-input")) {
+          const item = e.target.closest(".task-item");
+          if (!item) return;
+          const id = item.getAttribute("data-id");
+          const task = state.tasks.find(t => t.id === id);
+          if (!task) return;
+          const value = e.target.value.trim();
+          task.dueDate = value || null;
+          item.classList.remove("show-date-editor");
+          saveState();
+          renderAll();
+        }
+      }
+
+      function cyclePriority(task) {
+        if (!task.priority) {
+          task.priority = 2;
+        } else if (task.priority === 1) {
+          task.priority = 2;
+        } else if (task.priority === 2) {
+          task.priority = 3;
+        } else {
+          task.priority = 1;
+        }
+      }
+
+      function clearCompleted() {
+        if (!state.tasks.some(t => t.completed)) return;
+        const ok = confirm("Clear all completed tasks?");
+        if (!ok) return;
+        state.tasks = state.tasks.filter(t => !t.completed);
+        saveState();
+        renderAll();
+      }
+
+      function addProject() {
+        const name = prompt("Project name");
+        if (!name) return;
+        const trimmed = name.trim();
+        if (!trimmed) return;
+        const id = "proj_" + Date.now().toString(36);
+        const color = projectColors[state.projects.length % projectColors.length];
+        state.projects.push({ id, name: trimmed, color, isInbox: false });
+        saveState();
+        renderAll();
+      }
+
+      function deleteProject(id) {
+        const project = state.projects.find(p => p.id === id);
+        if (!project || project.isInbox) return;
+        const count = state.tasks.filter(t => t.projectId === id).length;
+        const ok = confirm(
+          `Delete project "${project.name}" and move ${count} task(s) to Inbox?`
+        );
+        if (!ok) return;
+        state.tasks.forEach(t => {
+          if (t.projectId === id) t.projectId = "inbox";
+        });
+        state.projects = state.projects.filter(p => p.id !== id);
+        if (state.view.type === "project" && state.view.id === id) {
+          setView("inbox");
+        } else {
+          saveState();
+          renderAll();
+        }
+      }
+
+      function getProject(id) {
+        return state.projects.find(p => p.id === id);
+      }
+
+      function getFilteredTasks() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        let tasks = state.tasks.slice();
+
+        if (state.view.type === "inbox") {
+          tasks = tasks.filter(t => !t.completed && (t.projectId === "inbox" || !t.projectId));
+        } else if (state.view.type === "today") {
+          tasks = tasks.filter(t => !t.completed && t.dueDate === todayStr);
+        } else if (state.view.type === "upcoming") {
+          tasks = tasks.filter(
+            t => !t.completed && t.dueDate && t.dueDate > todayStr
+          );
+        } else if (state.view.type === "completed") {
+          tasks = tasks.filter(t => t.completed);
+        } else if (state.view.type === "project") {
+          tasks = tasks.filter(t => !t.completed && t.projectId === state.view.id);
+        }
+
+        tasks.sort((a, b) => {
+          const pa = a.priority || 2;
+          const pb = b.priority || 2;
+          if (pa !== pb) return pa - pb;
+          const da = a.dueDate || "9999-12-31";
+          const db = b.dueDate || "9999-12-31";
+          if (da === db) return a.createdAt - b.createdAt;
+          return da.localeCompare(db);
+        });
+
+        return tasks;
+      }
+
+      function renderHeader() {
+        let title = "";
+        let subtitle = "";
+
+        if (state.view.type === "inbox") {
+          title = "Inbox";
+          subtitle = "Capture everything here first.";
+        } else if (state.view.type === "today") {
+          title = "Today";
+          subtitle = "Only what needs your attention today.";
+        } else if (state.view.type === "upcoming") {
+          title = "Upcoming";
+          subtitle = "See what is coming next.";
+        } else if (state.view.type === "completed") {
+          title = "Completed";
+          subtitle = "Things you have already finished.";
+        } else if (state.view.type === "project") {
+          const p = getProject(state.view.id);
+          title = p ? p.name : "Project";
+          subtitle = "Tasks in this project.";
+        }
+
+        els.viewTitle.textContent = title;
+        els.viewSubtitle.textContent = subtitle;
+      }
+
+      function renderProjects() {
+        els.projectList.innerHTML = "";
+        state.projects.forEach((p, index) => {
+          const li = document.createElement("li");
+          li.className = "project-item";
+          li.setAttribute("data-project-id", p.id);
+
+          const main = document.createElement("div");
+          main.className = "project-main";
+
+          const dot = document.createElement("div");
+          dot.className = "project-dot";
+          dot.style.background = p.color || projectColors[index % projectColors.length];
+
+          const name = document.createElement("span");
+          name.textContent = p.name;
+
+          main.appendChild(dot);
+          main.appendChild(name);
+
+          li.appendChild(main);
+
+          if (!p.isInbox) {
+            const btn = document.createElement("button");
+            btn.className = "project-delete";
+            btn.innerHTML = '<i class="ri-close-line"></i>';
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              deleteProject(p.id);
+            });
+            li.appendChild(btn);
+          }
+
+          li.addEventListener("click", () => {
+            state.view = { type: "project", id: p.id };
+            renderHeader();
+            renderTasks();
+            saveState();
+          });
+
+          els.projectList.appendChild(li);
+        });
+      }
+
+      function renderTasks() {
+        const tasks = getFilteredTasks();
+        els.taskList.innerHTML = "";
+
+        if (!tasks.length) {
+          const empty = document.createElement("div");
+          empty.className = "task-empty";
+          empty.textContent = "No tasks here yet.";
+          els.taskList.appendChild(empty);
+          return;
+        }
+
+        const todayStr = new Date().toISOString().slice(0, 10);
+
+        tasks.forEach(task => {
+          const project = getProject(task.projectId);
+
+          const row = document.createElement("div");
+          row.className = "task-item";
+          row.setAttribute("data-id", task.id);
+
+          const checkWrap = document.createElement("div");
+          checkWrap.className = "task-check";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.completed;
+          checkWrap.appendChild(checkbox);
+
+          const main = document.createElement("div");
+          main.className = "task-main";
+
+          const titleRow = document.createElement("div");
+          titleRow.className = "task-title-row";
+
+          const title = document.createElement("div");
+          title.className = "task-title";
+          title.setAttribute("data-role", "title");
+          title.contentEditable = "true";
+          if (task.completed) title.classList.add("completed");
+          title.textContent = task.title || "Untitled task";
+
+          const toggleBtn = document.createElement("button");
+          toggleBtn.className = "task-details-toggle";
+          toggleBtn.setAttribute("data-action", "toggle-details");
+          toggleBtn.innerHTML = '<i class="ri-arrow-down-s-line"></i>';
+
+          titleRow.appendChild(title);
+          titleRow.appendChild(toggleBtn);
+          main.appendChild(titleRow);
+
+          const meta = document.createElement("div");
+          meta.className = "task-meta";
+
+          // Date pill
+          const dateBadge = document.createElement("div");
+          dateBadge.className = "task-date";
+          dateBadge.setAttribute("data-action", "date-pill");
+          if (task.dueDate) {
+            if (!task.completed && task.dueDate < todayStr) {
+              dateBadge.classList.add("overdue");
+            }
+            dateBadge.innerHTML = '<i class="ri-calendar-line"></i><span>' + task.dueDate + '</span>';
+          } else {
+            dateBadge.innerHTML = '<i class="ri-calendar-line"></i><span>Add date</span>';
+          }
+          meta.appendChild(dateBadge);
+
+          const dateInput = document.createElement("input");
+          dateInput.type = "date";
+          dateInput.className = "task-date-input";
+          dateInput.value = task.dueDate || "";
+          meta.appendChild(dateInput);
+
+          // Priority pill
+          const priorityBadge = document.createElement("div");
+          priorityBadge.className = "task-priority";
+          priorityBadge.setAttribute("data-action", "priority-pill");
+          const p = task.priority || 2;
+          if (p === 1) priorityBadge.classList.add("p1");
+          else if (p === 2) priorityBadge.classList.add("p2");
+          else priorityBadge.classList.add("p3");
+          priorityBadge.innerHTML = '<i class="ri-flag-2-line"></i><span>P' + p + '</span>';
+          meta.appendChild(priorityBadge);
+
+          // Project pill
+          if (project && !project.isInbox) {
+            const projBadge = document.createElement("div");
+            projBadge.className = "task-project-pill";
+            const dot = document.createElement("div");
+            dot.className = "task-project-dot";
+            dot.style.background = project.color;
+            const span = document.createElement("span");
+            span.textContent = project.name;
+            projBadge.appendChild(dot);
+            projBadge.appendChild(span);
+            meta.appendChild(projBadge);
+          }
+
+          main.appendChild(meta);
+
+          // Details / notes
+          const details = document.createElement("div");
+          details.className = "task-details";
+          const notes = document.createElement("textarea");
+          notes.className = "task-notes";
+          notes.setAttribute("data-role", "notes");
+          notes.placeholder = "Add notes or details...";
+          notes.value = task.notes || "";
+          details.appendChild(notes);
+          main.appendChild(details);
+
+          const actions = document.createElement("div");
+          actions.className = "task-actions";
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "task-delete-btn";
+          deleteBtn.innerHTML = '<i class="ri-delete-bin-6-line"></i>';
+          actions.appendChild(deleteBtn);
+
+          row.appendChild(checkWrap);
+          row.appendChild(main);
+          row.appendChild(actions);
+
+          els.taskList.appendChild(row);
+        });
+      }
+
+      function renderCounts() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const inboxCount = state.tasks.filter(
+          t => !t.completed && (t.projectId === "inbox" || !t.projectId)
+        ).length;
+        const todayCount = state.tasks.filter(
+          t => !t.completed && t.dueDate === todayStr
+        ).length;
+        const upcomingCount = state.tasks.filter(
+          t => !t.completed && t.dueDate && t.dueDate > todayStr
+        ).length;
+        const completedCount = state.tasks.filter(t => t.completed).length;
+
+        els.countInbox.textContent = inboxCount;
+        els.countToday.textContent = todayCount;
+        els.countUpcoming.textContent = upcomingCount;
+        els.countCompleted.textContent = completedCount;
+      }
+
+      function renderAll() {
+        renderHeader();
+        renderProjects();
+        renderTasks();
+        renderCounts();
+      }
+
+      init();
+    })();
   </script>
 </body>
+
 </html>
