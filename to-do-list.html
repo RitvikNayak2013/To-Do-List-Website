@@ -12,6 +12,7 @@
   </script>
   <meta charset="UTF-8" />
   <title>TaskFlows · To-Do</title>
+  <link rel="icon" type="image/x-icon" href="Untitled-removebg-preview.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
@@ -71,7 +72,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       padding: 0 4px;
     }
 
@@ -160,6 +161,47 @@
       background: #f3f4f6;
     }
 
+    /* WORKSPACE LINKS (new) */
+    .workspace-links {
+      margin-top: 4px;
+      padding: 0 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .workspace-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+    }
+
+    .workspace-link i {
+      font-size: 16px;
+    }
+
+    .workspace-link:hover {
+      background: #f3f4f6;
+      color: var(--text);
+      transform: translateX(1px);
+    }
+
+    .workspace-link.active {
+      background: #111827;
+      color: #f9fafb;
+    }
+
+    .workspace-link.active i {
+      color: #e5e7eb;
+    }
+
     .project-main {
       display: flex;
       align-items: center;
@@ -220,6 +262,7 @@
       flex-direction: column;
       padding: 16px 18px;
       min-width: 0;
+      background: var(--bg-soft);
     }
 
     .main-header {
@@ -256,8 +299,9 @@
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid var(--border);
-      background: var(--bg-soft);
+      background: #ffffff;
       margin-bottom: 14px;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
     }
 
     .quick-add input[type="text"] {
@@ -290,6 +334,19 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.25);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.08s ease;
+    }
+
+    .quick-add button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(239, 68, 68, 0.28);
+    }
+
+    .quick-add button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
+      opacity: 0.95;
     }
 
     .quick-add button i {
@@ -300,6 +357,11 @@
       flex: 1;
       overflow-y: auto;
       padding-right: 4px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 4px 8px 8px;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
     }
 
     .task-item {
@@ -550,6 +612,11 @@
       .sidebar-footer {
         display: none;
       }
+
+      .task-list {
+        padding-left: 6px;
+        padding-right: 6px;
+      }
     }
   </style>
 </head>
@@ -563,6 +630,41 @@
         <div>
           <div class="logo-text-title">TaskFlows</div>
           <div class="logo-text-sub">Clean to-do, no clutter</div>
+        </div>
+      </div>
+
+      <!-- Workspace navigation to other pages -->
+      <div>
+        <div class="sidebar-section-title">Workspace</div>
+        <div class="workspace-links">
+          <a href="to-do-list.html" class="workspace-link" data-page="to-do-list.html">
+            <i class="ri-checkbox-multiple-line"></i>
+            <span>To-do</span>
+          </a>
+          <a href="journal.html" class="workspace-link" data-page="journal.html">
+            <i class="ri-book-open-line"></i>
+            <span>Journal</span>
+          </a>
+          <a href="lists.html" class="workspace-link" data-page="lists.html">
+            <i class="ri-list-check-2"></i>
+            <span>Lists</span>
+          </a>
+          <a href="notes.html" class="workspace-link" data-page="notes.html">
+            <i class="ri-file-text-line"></i>
+            <span>Notes</span>
+          </a>
+          <a href="quicknotes.html" class="workspace-link" data-page="quicknotes.html">
+            <i class="ri-flashlight-line"></i>
+            <span>Quick notes</span>
+          </a>
+          <a href="text-editor.html" class="workspace-link" data-page="text-editor.html">
+            <i class="ri-edit-2-line"></i>
+            <span>Text editor</span>
+          </a>
+          <a href="whiteboard.html" class="workspace-link" data-page="whiteboard.html">
+            <i class="ri-layout-masonry-line"></i>
+            <span>Whiteboard</span>
+          </a>
         </div>
       </div>
 
@@ -695,6 +797,22 @@
         attachEvents();
         updateTodayText();
         renderAll();
+        // UX improvement: focus quick input on load
+        if (els.quickInput) {
+          els.quickInput.focus();
+        }
+        // Highlight active workspace link based on current page
+        highlightWorkspaceLink();
+      }
+
+      function highlightWorkspaceLink() {
+        const currentFile = window.location.pathname.split("/").pop() || "to-do-list.html";
+        const links = document.querySelectorAll(".workspace-link[data-page]");
+        links.forEach(link => {
+          if (link.getAttribute("data-page") === currentFile) {
+            link.classList.add("active");
+          }
+        });
       }
 
       function loadState() {
