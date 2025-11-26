@@ -2,15 +2,15 @@
 <html lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-RQR9BDLJ26');
+  </script>
 
-  gtag('config', 'G-RQR9BDLJ26');
-</script>
   <meta charset="UTF-8" />
   <title>TaskFlows · Text Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -846,51 +846,78 @@
         </div>
       </div>
 
-      <div>
-        <div class="side-label">Workspace</div>
-        <ul class="side-nav">
-          <li>
-            <ul class="side-nav">
-              <li>
-                <a href="dashboard.html">
-                  <span class="nav-dot nav-dot-dash">P</span>
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a href="text-editor.html" class="active">
-                  <span class="nav-dot nav-dot-docs">E</span>
-                  Text Editor
-                </a>
-              </li>
-              <li>
-                <a href="to-do-list.html">
-                  <span class="nav-dot nav-dot-lists">L</span>
-                  To-Do Lists
-                </a>
-              </li>
-            </ul>
+      <!-- Workspace navigation -->
+      <div class="side-label">Workspace</div>
+      <ul class="side-nav">
+        <li>
+          <a href="dashboard.html">
+            <span class="nav-dot nav-dot-dash">D</span>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="journal.html">
+            <span class="nav-dot nav-dot-docs">J</span>
+            Journal
+          </a>
+        </li>
+        <li>
+          <a href="lists.html">
+            <span class="nav-dot nav-dot-lists">Ls</span>
+            Lists
+          </a>
+        </li>
+        <li>
+          <a href="notes.html">
+            <span class="nav-dot nav-dot-docs">N</span>
+            Notes
+          </a>
+        </li>
+        <li>
+          <a href="quicknotes.html">
+            <span class="nav-dot nav-dot-docs">Q</span>
+            Quick Notes
+          </a>
+        </li>
+        <li>
+          <a href="text-editor.html" class="active">
+            <span class="nav-dot nav-dot-docs">E</span>
+            Text Editor
+          </a>
+        </li>
+        <li>
+          <a href="to-do-list.html">
+            <span class="nav-dot nav-dot-lists">T</span>
+            To-Do Lists
+          </a>
+        </li>
+        <li>
+          <a href="whiteboard.html">
+            <span class="nav-dot nav-dot-lists">W</span>
+            Whiteboard
+          </a>
+        </li>
+      </ul>
 
+      <!-- Documents section -->
+      <div class="side-label">Documents</div>
+      <div class="docs-header">
+        <div class="docs-title">Your docs</div>
+        <button class="btn-small" id="newDocBtn">New</button>
+      </div>
+      <ul class="doc-list" id="docList"></ul>
 
-            <div>
-              <div class="side-label">Documents</div>
-              <div class="docs-header">
-                <div class="docs-title">Your docs</div>
-                <button class="btn-small" id="newDocBtn">New</button>
-              </div>
-              <ul class="doc-list" id="docList"></ul>
-            </div>
-
-            <div class="side-footer">
-              <div class="side-footer-row">
-                <span>Theme</span>
-                <button class="btn-outline" id="themeToggleSide">Toggle</button>
-              </div>
-              <div class="side-footer-row">
-                <span>Sidebar</span>
-                <button class="btn-outline" id="hideSidebarBtn">Hide</button>
-              </div>
-            </div>
+      <!-- Footer -->
+      <div class="side-footer">
+        <div class="side-footer-row">
+          <span>Theme</span>
+          <button class="btn-outline" id="themeToggleSide">Toggle</button>
+        </div>
+        <div class="side-footer-row">
+          <span>Sidebar</span>
+          <button class="btn-outline" id="hideSidebarBtn">Hide</button>
+        </div>
+      </div>
     </aside>
 
     <!-- Main -->
@@ -1474,6 +1501,11 @@
       if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         saveActiveDoc(true);
+      }
+      // open/close sidebar on Ctrl/Cmd + \
+      if (e.key === '\\' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        toggleSidebarMobile();
       }
     });
   </script>
