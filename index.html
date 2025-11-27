@@ -3,14 +3,13 @@
 
 <head>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
+  <script async src="https://www.go.com/gtag/js?id=G-RQR9BDLJ26"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-RQR9BDLJ26');
   </script>
-
 
   <meta charset="utf-8" />
   <title>Taskflows – Reimagine Task Automation</title>
@@ -162,7 +161,7 @@
     }
 
     .section-tag-dot {
-      width6px;
+      width: 6px;
       height: 6px;
       border-radius: 50%;
       background: radial-gradient(circle, var(--primary-accent), transparent);
@@ -421,7 +420,6 @@
       align-items: baseline
     }
 
-    /* Typewriter: stable width, no caret */
     .typewrap {
       display: inline-block;
       position: relative;
@@ -450,6 +448,10 @@
       line-height: 1.55;
       font-weight: 500;
       opacity: .96
+    }
+
+    .hero-sub-compact {
+      max-width: 480px;
     }
 
     .hero-badges {
@@ -492,7 +494,8 @@
     .hero-ctas {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px
+      gap: 14px;
+      margin-top: .3em;
     }
 
     .btn {
@@ -555,6 +558,7 @@
       }
     }
 
+    /* HERO RIGHT: Minimal app launcher showing the tools */
     .hero-right {
       position: relative;
       display: flex;
@@ -563,177 +567,127 @@
       perspective: 1600px
     }
 
-    .macbook {
-      width: min(620px, 92vw);
-      aspect-ratio: 16/10;
-      border-radius: 18px 18px 10px 10px;
-      background: linear-gradient(180deg, #0b1116 0%, #0a0f14 100%);
-      border: 1px solid #2a313a;
-      box-shadow: 0 30px 120px #000b, 0 0 0 1px #00ffd911 inset;
-      position: relative;
-      transform: rotateX(3deg) rotateY(-6deg);
-      will-change: transform
-    }
-
-    .macbook:before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 22px;
-      background: linear-gradient(180deg, #0e141a 0%, #0a1015 100%);
-      border-bottom: 1px solid #1d232a;
-      border-radius: 18px 18px 0 0
-    }
-
-    .cam-dot {
-      position: absolute;
-      top: 6px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #0ff, #00a3ff 50%, #001016 60%);
-      box-shadow: 0 0 6px #00f8ff88
-    }
-
-    .screen {
-      position: absolute;
-      inset: 22px 10px 28px 10px;
-      background: radial-gradient(120% 120% at 60% 0%, #0b2c35 0%, #0b1216 55%), linear-gradient(180deg, #0a0f14 0%, #090d11 100%);
-      border-radius: 14px;
+    .launcher-card {
+      width: min(520px, 92vw);
+      border-radius: 24px;
+      padding: 1.2em 1.3em 1.4em;
+      background: radial-gradient(140% 140% at 0 0, #0b2734 0%, #05090d 55%);
+      border: 1px solid #1b3440;
+      box-shadow: 0 26px 80px #000b, 0 0 0 1px #00ffd911 inset;
+      transform: rotateX(3deg) rotateY(-5deg);
+      transform-origin: center;
+      transition: transform .35s var(--t-slow), box-shadow .35s var(--t-slow);
+      will-change: transform;
       overflow: hidden;
-      border: 1px solid #1a2430;
-      box-shadow: inset 0 0 60px #00ffd911, inset 0 -80px 120px #07141a
     }
 
-    .screen-glow {
-      position: absolute;
-      inset: -40% -30% -30% -30%;
-      background: radial-gradient(75% 60% at 50% -10%, #00ffd91c 0%, transparent 60%);
-      pointer-events: none
-    }
-
-    .dock {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
+    .launcher-top {
       display: flex;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(10, 14, 18, .55);
-      border: 1px solid #ffffff14;
-      backdrop-filter: blur(12px) saturate(1.4);
-      box-shadow: 0 8px 30px #0008, inset 0 0 0 1px #000
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: .8em;
+      gap: .8em;
     }
 
-    .dock .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #1f2932;
-      box-shadow: inset 0 0 3px #000
+    .launcher-label {
+      font-size: .8rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #8edcff;
     }
 
-    .screen-inner {
-      position: absolute;
-      inset: 14px 14px 64px 14px;
+    .launcher-pill {
+      font-size: .8rem;
+      padding: .25em .7em;
+      border-radius: 999px;
+      border: 1px solid #ffffff33;
+      background: #050c13;
+      color: #c8f3ff;
+    }
+
+    .launcher-subtitle {
+      font-size: .95rem;
+      color: #d3f6ff;
+      opacity: .92;
+      margin-bottom: .7em;
+    }
+
+    .launcher-grid {
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .7em;
     }
 
-    .panel {
-      background: linear-gradient(180deg, #0b1b23 0%, #09161b 100%);
-      border: 1px solid #17343f;
-      border-radius: 14px;
-      padding: 12px;
-      color: #bfefff;
-      box-shadow: 0 16px 40px #000a, inset 0 0 0 1px #000
-    }
-
-    .panel h4 {
-      margin: .1em 0 .4em;
-      font-size: .98rem;
-      color: #e0feff;
-      letter-spacing: .02em
-    }
-
-    .panel .row {
+    .launcher-item {
+      border-radius: 16px;
+      padding: .7em .75em;
+      background: #0b1920;
+      border: 1px solid #213842;
       display: flex;
       flex-direction: column;
-      gap: 8px
+      gap: .25em;
+      cursor: pointer;
+      transition: border .18s, transform .18s, box-shadow .18s, background .18s;
     }
 
-    .chip {
+    .launcher-item-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #0f2630;
-      border: 1px solid #1e5060;
-      border-radius: 12px;
-      padding: .5em .7em;
+      gap: .4em;
+    }
+
+    .launcher-emoji {
+      font-size: 1.1rem;
+    }
+
+    .launcher-title {
+      font-size: .95rem;
       font-weight: 800;
-      color: #d9ffff;
-      font-size: .95rem
+      letter-spacing: -.02em;
     }
 
-    .chip .pill {
-      background: #143540;
-      border: 1px solid #1e5060;
+    .launcher-chip {
+      font-size: .7rem;
+      padding: .1em .55em;
       border-radius: 999px;
-      padding: .25em .6em;
-      font-size: .82rem;
-      color: #a9f7ff
+      border: 1px solid #ffffff33;
+      color: #9ddfff;
+      background: #02070b;
+      white-space: nowrap;
     }
 
-    .stats-mini {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 8px
+    .launcher-desc {
+      font-size: .8rem;
+      color: #a9e0ff;
+      opacity: .9;
     }
 
-    .statbox {
-      background: #101e26;
-      border: 1px solid #1a4250;
-      border-radius: 10px;
-      padding: .55em .6em;
-      text-align: center
+    .launcher-item-active {
+      background: linear-gradient(130deg, #102835 10%, #0f2232 60%, #0a1922 100%);
+      border-color: var(--primary-accent);
+      box-shadow: 0 10px 26px #00ffd922;
+      transform: translateY(-2px);
     }
 
-    .statbox .lbl {
-      font-size: .75rem;
-      color: #89d7ff;
-      opacity: .8
+    .launcher-footer {
+      margin-top: .9em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .78rem;
+      color: #98d3ff;
+      opacity: .9;
     }
 
-    .statbox .val {
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: #ddfeff
-    }
-
-    .base {
-      position: absolute;
-      left: -5%;
-      right: -5%;
-      bottom: -16px;
-      height: 18px;
-      background: linear-gradient(180deg, #20262e 0%, #11161b 100%);
-      border-radius: 0 0 20px 20px;
-      border: 1px solid #2a313a;
-      box-shadow: 0 10px 40px #000d
+    .launcher-footer span strong {
+      color: #dcfeff;
     }
 
     @media (max-width:980px) {
       .hero {
         grid-template-columns: 1fr;
-        gap: 24px
+        gap: 28px
       }
 
       .hero-left {
@@ -741,22 +695,26 @@
         text-align: center
       }
 
+      .hero-sub-compact {
+        max-width: none;
+      }
+
       .hero-badges,
       .hero-ctas {
         justify-content: center
+      }
+
+      .hero-announce {
+        margin-left: auto;
+        margin-right: auto
       }
 
       .hero-right {
         transform: translateY(6px)
       }
 
-      .macbook {
-        transform: rotateX(2deg) rotateY(0deg)
-      }
-
-      .hero-announce {
-        margin-left: auto;
-        margin-right: auto
+      .launcher-card {
+        transform: none;
       }
     }
 
@@ -793,13 +751,94 @@
         transition: none !important
       }
 
-      .macbook {
+      .launcher-card {
         transform: none !important
       }
 
       .btn,
       .badge {
         transition: none !important
+      }
+    }
+
+    /* =============== WORKSPACE TOOLS GRID (NEW) =============== */
+    .tools-section {
+      position: relative;
+      z-index: 2;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .tool-card {
+      position: relative;
+      border-radius: 18px;
+      padding: .95em 1em 1em;
+      background: linear-gradient(150deg, #0f171f 0%, #0b1017 60%, #04171a 100%);
+      border: 1px solid #ffffff1c;
+      box-shadow: 0 12px 32px #0008;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: .28em;
+      transition: transform .22s, box-shadow .22s, border .22s, background .22s;
+    }
+
+    .tool-emoji {
+      font-size: 1.25rem;
+      margin-bottom: .1em;
+    }
+
+    .tool-title {
+      font-size: 1.03rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .tool-body {
+      margin: 0;
+      font-size: .86rem;
+      color: #c5eaff;
+      opacity: .95;
+      line-height: 1.45;
+    }
+
+    .tool-link {
+      margin-top: .4em;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: var(--primary-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: .25em;
+      opacity: .95;
+    }
+
+    .tool-link::after {
+      content: "↗";
+      font-size: .9rem;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary-accent);
+      box-shadow: 0 18px 40px #000c;
+      background: linear-gradient(150deg, #131d26 0%, #0d1520 60%, #032229 100%);
+    }
+
+    @media (max-width:960px) {
+      .tools-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width:640px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1462,7 +1501,7 @@
       max-height: 0;
       overflow: hidden;
       padding: 0 1em;
-      transition: max-height .28s ease, padding-bottom .25s ease;
+      transition: max-height .28s.ease, padding-bottom .25s ease;
     }
 
     .faq-body p {
@@ -1663,7 +1702,7 @@
       font-size: 1.04em
     }
 
-    /* Decorative blobs (don’t block clicks) */
+    /* Decorative blobs */
     .floaters {
       position: fixed;
       inset: 0;
@@ -1737,6 +1776,7 @@
       <a href="#top" class="navbar-logo">Taskflows</a>
       <button class="navbar-burger" id="navbar-burger" aria-label="Open menu" type="button">&#9776;</button>
       <div class="navbar-menu" id="navbar-menu">
+        <a href="#tools">Workspace</a>
         <a href="#features">Features</a>
         <a href="#comparison">Compare</a>
         <a href="#founder">Founder</a>
@@ -1772,8 +1812,11 @@
         </span>
       </h1>
 
-      <p class="hero-sub">Launch faster. Automate easier. Scale endlessly. All your work — notes, lists, journals,
-        projects, and boards — in one seamless workspace that feels lighter than your current tab chaos.</p>
+      <p class="hero-sub hero-sub-compact">
+        One calm place for everything you do:
+        notes, to-dos, dashboards, journals, and whiteboards —
+        all stitched together so you never juggle tabs again.
+      </p>
 
       <div class="hero-badges" aria-label="Highlights">
         <span class="badge">Offline-first</span>
@@ -1783,59 +1826,91 @@
       </div>
 
       <div class="hero-ctas">
-        <a href="dashboard.html" class="btn btn-primary magnet">Try it live</a>
-        <a href="https://www.linkedin.com/company/taskflowscompany/" target="_blank" rel="noopener"
-          class="btn btn-outline magnet">Join Community</a>
+        <a href="dashboard.html" class="btn btn-primary magnet">Open Workspace</a>
+        <a href="#tools" class="btn btn-outline magnet">Explore all tools</a>
       </div>
     </div>
 
+    <!-- HERO RIGHT: App launcher preview -->
     <div class="hero-right reveal-zoom" aria-hidden="true">
-      <div class="macbook" id="macbook">
-        <div class="cam-dot"></div>
-        <div class="screen">
-          <div class="screen-glow"></div>
-          <div class="screen-inner">
-            <div class="panel">
-              <h4>Sprint Planning</h4>
-              <div class="row">
-                <div class="chip">UX Research <span class="pill">Ongoing</span></div>
-                <div class="chip">Client Handover <span class="pill">Friday</span></div>
-                <div class="chip">Roadmap Q4 <span class="pill">Pinned</span></div>
-                <div class="stats-mini">
-                  <div class="statbox">
-                    <div class="lbl">Velocity</div>
-                    <div class="val">1.7x</div>
-                  </div>
-                  <div class="statbox">
-                    <div class="lbl">Focus</div>
-                    <div class="val">92%</div>
-                  </div>
-                  <div class="statbox">
-                    <div class="lbl">Tasks</div>
-                    <div class="val">128</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="panel">
-              <h4>Quick Actions</h4>
-              <div class="row">
-                <div class="chip">Add “Focus Sprint” <span class="pill">Task</span></div>
-                <div class="chip">Standup 09:00 <span class="pill">Event</span></div>
-                <div class="chip">Write 200 words <span class="pill">Habit</span></div>
-                <div class="chip">Sketch hero layout <span class="pill">Task</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="dock">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-          </div>
+      <div class="launcher-card" id="launcher-card">
+        <div class="launcher-top">
+          <span class="launcher-label">Taskflows · Workspace</span>
+          <span class="launcher-pill">8 tools · 1 brain</span>
         </div>
-        <div class="base"></div>
+        <p class="launcher-subtitle">
+          Jump into any view instantly. Everything stays synced in the background.
+        </p>
+        <div class="launcher-grid" id="launcher-grid">
+          <!-- Filled by JS to sync with tools grid hover -->
+        </div>
+        <div class="launcher-footer">
+          <span><strong>Tip:</strong> Hover cards below or on the Workspace section.</span>
+          <span>Built for students · makers · teams</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKSPACE TOOLS -->
+  <section id="tools" class="section-pad tools-section">
+    <div class="shell">
+      <div class="section-heading reveal">
+        <div class="section-tag"><span class="section-tag-dot"></span>Workspace</div>
+        <h2>Multiple tools, one simple flow</h2>
+        <p>Open any tool in one tap. Text Editor, To-Do, Dashboard, Notes, Whiteboard, Lists, Journal, and Quick Notes
+          all stay in sync under the hood.</p>
+      </div>
+      <div class="tools-grid">
+        <!-- Update hrefs to match your actual file structure -->
+        <a href="text-editor.html" class="tool-card" data-tool="editor">
+          <span class="tool-emoji">📝</span>
+          <div class="tool-title">Text Editor</div>
+          <p class="tool-body">A distraction-free space for essays, docs, and long-form thinking.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="todo.html" class="tool-card" data-tool="todo">
+          <span class="tool-emoji">✅</span>
+          <div class="tool-title">To-Do Lists</div>
+          <p class="tool-body">Smart lists with priorities, labels, and drag-and-drop ordering.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="dashboard.html" class="tool-card" data-tool="dashboard">
+          <span class="tool-emoji">📊</span>
+          <div class="tool-title">Dashboard</div>
+          <p class="tool-body">See your tasks, streaks, and focus stats at a single glance.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="notes.html" class="tool-card" data-tool="notes">
+          <span class="tool-emoji">🗒️</span>
+          <div class="tool-title">Notes</div>
+          <p class="tool-body">Capture ideas, class notes, and meeting highlights in seconds.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="whiteboard.html" class="tool-card" data-tool="whiteboard">
+          <span class="tool-emoji">🖊️</span>
+          <div class="tool-title">Whiteboard</div>
+          <p class="tool-body">Sketch flows, brainstorm with friends, and map out big projects.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="lists.html" class="tool-card" data-tool="lists">
+          <span class="tool-emoji">📋</span>
+          <div class="tool-title">Personal Lists</div>
+          <p class="tool-body">Reading lists, watchlists, packing lists — all in one calm place.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="journal.html" class="tool-card" data-tool="journal">
+          <span class="tool-emoji">📓</span>
+          <div class="tool-title">Journal</div>
+          <p class="tool-body">Daily reflections, gratitude logs, and progress check-ins.</p>
+          <span class="tool-link">Open</span>
+        </a>
+        <a href="quick-notes.html" class="tool-card" data-tool="quick">
+          <span class="tool-emoji">✏️</span>
+          <div class="tool-title">Quick Notes</div>
+          <p class="tool-body">Lightning-fast capture for thoughts you do not want to lose.</p>
+          <span class="tool-link">Open</span>
+        </a>
       </div>
     </div>
   </section>
@@ -1845,7 +1920,7 @@
     <div class="shell">
       <div class="section-heading reveal">
         <div class="section-tag"><span class="section-tag-dot"></span>Feature set</div>
-        <h2>Everything you need, nothing you don't</h2>
+        <h2>Everything you need, nothing you do not</h2>
         <p>Taskflows glues your scattered tools into one focused workspace so you can capture, plan, and execute without
           context switching.</p>
       </div>
@@ -2108,9 +2183,9 @@
           onerror="this.onerror=null;this.src='fallback.png'">
         <div class="about-founder-content reveal">
           <h2>Meet the Founder</h2>
-          <p>Hi, I’m <span class="founder-name">Ritvik Nayak</span>, the creator of Taskflows.<br>
-            I built Taskflows to help teams, builders, and creators work smarter — and actually enjoy the process.<br>
-            Together, let’s reinvent how we get things done.</p>
+          <p>Hi, I am <span class="founder-name">Ritvik Nayak</span>, the creator of Taskflows.<br>
+            I built Taskflows to help teams, builders, and creators work smarter and actually enjoy the process.<br>
+            Together, let us reinvent how we get things done.</p>
         </div>
       </div>
     </div>
@@ -2173,7 +2248,7 @@
   <!-- CTA -->
   <section class="section-pad">
     <div class="cta-banner-card reveal" id="cta">
-      <h2>Ready to supercharge your team's productivity?</h2>
+      <h2>Ready to supercharge your team’s productivity?</h2>
       <a href="dashboard.html" class="btn btn-primary magnet">Sign Up Now</a>
       <p>Completely Free. No strings attached.</p>
     </div>
@@ -2205,7 +2280,7 @@
           <img class="review-photo" src="https://randomuser.me/api/portraits/men/31.jpg" alt="Jamie L. photo">
           <div class="review-content">
             <div class="review-stars">★★★★★</div>
-            <div class="review-text">“It’s the only tool that handles my notes, lists, journal, and project boards
+            <div class="review-text">“It is the only tool that handles my notes, lists, journal, and project boards
               together. Real-time sync, quick capture, and zero clutter UI — Taskflows really helps me focus!”</div>
             <span class="review-author">Jamie L., Remote Team Manager</span>
           </div>
@@ -2223,7 +2298,7 @@
           <img class="review-photo" src="https://randomuser.me/api/portraits/men/29.jpg" alt="Daniel B. photo">
           <div class="review-content">
             <div class="review-stars">★★★★<span style="opacity:.6">★</span></div>
-            <div class="review-text">“It’s so easy to use. Notes, tasks, priorities, reminders, journal, and even a
+            <div class="review-text">“It is so easy to use. Notes, tasks, priorities, reminders, journal, and even a
               Pomodoro timer — all in one app. Taskflows is a total game changer for productivity.”</div>
             <span class="review-author">Daniel B., CTO</span>
           </div>
@@ -2331,16 +2406,18 @@
       }, { passive: true });
     }
 
-    // Parallax tilt for macbook
-    const mac = qs('#macbook');
-    if (mac && !prefersReduced) {
-      mac.addEventListener('mousemove', e => {
-        const b = mac.getBoundingClientRect();
-        const rx = ((e.clientY - b.top) / b.height - .5) * -6;
-        const ry = ((e.clientX - b.left) / b.width - .5) * 10;
-        mac.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    // HERO launcher parallax
+    const launcher = qs('#launcher-card');
+    if (launcher && !prefersReduced) {
+      launcher.addEventListener('mousemove', e => {
+        const b = launcher.getBoundingClientRect();
+        const rx = ((e.clientY - b.top) / b.height - .5) * -5;
+        const ry = ((e.clientX - b.left) / b.width - .5) * 6;
+        launcher.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
       });
-      mac.addEventListener('mouseleave', () => mac.style.transform = 'rotateX(3deg) rotateY(-6deg)');
+      launcher.addEventListener('mouseleave', () => {
+        launcher.style.transform = 'rotateX(3deg) rotateY(-5deg)';
+      });
     }
 
     // Magnetic + ripple CTAs
@@ -2461,16 +2538,14 @@
     window.addEventListener('resize', () => go(cur, false));
     renderDots(); go(0, false); restartAuto();
 
-    // ===== Improved Typewriter (stable width, no caret, no layout shift) =====
+    // ===== Typewriter (stable width) =====
     const WORDS = ["Clarity", "Momentum", "Flow", "Simplicity", "Progress", "Creativity", "Balance", "Velocity"];
     const out = document.getElementById('typeword');
     const wrap = out.parentElement;
 
-    // Measure widest word with same computed styles → lock width
     function lockTypeWidth() {
       const probe = document.createElement('span');
       const cs = getComputedStyle(out);
-      // Copy relevant text styles for accurate measure
       probe.style.font = cs.font;
       probe.style.letterSpacing = cs.letterSpacing;
       probe.style.fontWeight = cs.fontWeight;
@@ -2488,7 +2563,6 @@
       wrap.style.width = Math.ceil(max) + 'px';
     }
 
-    // Smooth type/delete (no caret)
     let wi = 0, li = 0, deleting = false;
     const speed = { type: 70, del: 30, hold: 700, gap: 220 };
 
@@ -2506,12 +2580,10 @@
       }
     }
 
-    // Start after fonts load → stable measurement
     window.addEventListener('load', () => {
       lockTypeWidth();
       setTimeout(tick, 200);
     });
-    // Re-lock width if viewport or zoom changes could affect metrics
     window.addEventListener('resize', () => lockTypeWidth());
 
     // ===== Persona switcher =====
@@ -2634,27 +2706,111 @@
 
       btn.addEventListener('click', () => {
         const isOpen = item.classList.contains('open');
-        // Close others
         faqItems.forEach(other => {
           if (other !== item) {
             other.classList.remove('open');
             const b = other.querySelector('.faq-body');
             const ic = other.querySelector('.faq-icon');
-            if (b) {
-              b.style.maxHeight = '0px';
-            }
-            if (ic) {
-              ic.textContent = '+';
-            }
+            if (b) b.style.maxHeight = '0px';
+            if (ic) ic.textContent = '+';
           }
         });
         setOpen(!isOpen);
       });
 
-      // Open first by default
-      if (idx === 0) {
-        setOpen(true);
+      if (idx === 0) setOpen(true);
+    });
+
+    // ===== Sync tools grid with hero launcher =====
+    const toolsData = [
+      {
+        key: 'editor',
+        emoji: '📝',
+        title: 'Text Editor',
+        tag: 'Deep work',
+        desc: 'Long-form writing, essays, and docs without distractions.'
+      },
+      {
+        key: 'todo',
+        emoji: '✅',
+        title: 'To-Do Lists',
+        tag: 'Execution',
+        desc: 'Turn plans into clear, prioritized lists you will actually follow.'
+      },
+      {
+        key: 'dashboard',
+        emoji: '📊',
+        title: 'Dashboard',
+        tag: 'Overview',
+        desc: 'One screen to see tasks, focus streaks, and deadlines.'
+      },
+      {
+        key: 'notes',
+        emoji: '🗒️',
+        title: 'Notes',
+        tag: 'Capture',
+        desc: 'Class notes, meeting notes, and random ideas in one place.'
+      },
+      {
+        key: 'whiteboard',
+        emoji: '🖊️',
+        title: 'Whiteboard',
+        tag: 'Brainstorm',
+        desc: 'Sketch flows, mind maps, and project diagrams freely.'
+      },
+      {
+        key: 'lists',
+        emoji: '📋',
+        title: 'Personal Lists',
+        tag: 'Life OS',
+        desc: 'Reading, movies, packing, and wishlists all in one board.'
+      },
+      {
+        key: 'journal',
+        emoji: '📓',
+        title: 'Journal',
+        tag: 'Reflection',
+        desc: 'Daily prompts and reflections to track your growth.'
+      },
+      {
+        key: 'quick',
+        emoji: '✏️',
+        title: 'Quick Notes',
+        tag: 'Instant',
+        desc: 'Dump ideas in seconds before they disappear from your mind.'
       }
+    ];
+
+    const launcherGrid = qs('#launcher-grid');
+    function renderLauncher(activeKey = 'editor') {
+      if (!launcherGrid) return;
+      launcherGrid.innerHTML = toolsData.slice(0, 4).map(tool => {
+        const activeClass = tool.key === activeKey ? ' launcher-item-active' : '';
+        return `
+          <div class="launcher-item${activeClass}" data-launcher-key="${tool.key}">
+            <div class="launcher-item-header">
+              <div>
+                <span class="launcher-emoji">${tool.emoji}</span>
+                <span class="launcher-title">${tool.title}</span>
+              </div>
+              <span class="launcher-chip">${tool.tag}</span>
+            </div>
+            <p class="launcher-desc">${tool.desc}</p>
+          </div>
+        `;
+      }).join('');
+    }
+    renderLauncher('editor');
+
+    // Hover on tools grid -> update launcher highlight
+    const toolCards = qsa('.tool-card');
+    function setLauncherFromTool(key) {
+      renderLauncher(key);
+    }
+    toolCards.forEach(card => {
+      const key = card.getAttribute('data-tool');
+      card.addEventListener('mouseenter', () => setLauncherFromTool(key));
+      card.addEventListener('focus', () => setLauncherFromTool(key));
     });
   </script>
 </body>
