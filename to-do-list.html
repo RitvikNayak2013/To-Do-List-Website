@@ -8,1350 +8,733 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
+
     gtag('config', 'G-RQR9BDLJ26');
   </script>
-  <meta charset="UTF-8" />
-  <title>TaskFlows · To-Do</title>
-  <link rel="icon" type="image/x-icon" href="Untitled-removebg-preview.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskflows To-Do List</title>
+  <link rel="icon" type="image/x-icon" href="
+Untitled-removebg-preview.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            bgDark: '#09090b',
+            bgSidebar: '#121215',
+            bgCard: '#18181b',
+            bgHover: '#27272a',
+            accent: '#6366f1',
+            accentHover: '#4f46e5',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    :root {
-      --bg: #ffffff;
-      --bg-soft: #f9fafb;
-      --border: #e5e7eb;
-      --text: #111827;
-      --muted: #6b7280;
-      --accent: #ef4444;
-      --accent-soft: #fef2f2;
-      --accent-border: #fecaca;
-      --p1-bg: #fee2e2;
-      --p1-text: #b91c1c;
-      --p2-bg: #ffedd5;
-      --p2-text: #9a3412;
-      --p3-bg: #dcfce7;
-      --p3-text: #166534;
-      --project-1: #3b82f6;
-      --project-2: #22c55e;
-      --project-3: #a855f7;
-      --project-4: #f97316;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      display: flex;
+      background-color: #09090b;
+      color: #e4e4e7;
     }
 
-    .app {
-      display: flex;
-      width: 100%;
-      height: 100vh;
+    /* Smooth Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 260px;
-      border-right: 1px solid var(--border);
-      background: #fcfcfd;
-      display: flex;
-      flex-direction: column;
-      padding: 16px 14px;
-    }
-
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      padding: 0 4px;
-    }
-
-    .logo-circle {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      background: #111827;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .logo-text-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .logo-text-sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .sidebar-section-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin: 14px 4px 6px;
-    }
-
-    .nav-list,
-    .project-list {
-      list-style: none;
-      margin-top: 4px;
-    }
-
-    .nav-item,
-    .project-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 8px;
-      border-radius: 8px;
-      font-size: 13px;
-      cursor: pointer;
-      color: var(--muted);
-    }
-
-    .nav-item span,
-    .project-main span {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .nav-item.active {
-      background: #111827;
-      color: white;
-    }
-
-    .nav-item i {
-      margin-right: 6px;
-      font-size: 16px;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-    }
-
-    .nav-count {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .nav-item.active .nav-count {
-      color: #e5e7eb;
-    }
-
-    .nav-item:hover:not(.active),
-    .project-item:hover {
-      background: #f3f4f6;
-    }
-
-    /* WORKSPACE LINKS (new) */
-    .workspace-links {
-      margin-top: 4px;
-      padding: 0 2px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .workspace-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
-    }
-
-    .workspace-link i {
-      font-size: 16px;
-    }
-
-    .workspace-link:hover {
-      background: #f3f4f6;
-      color: var(--text);
-      transform: translateX(1px);
-    }
-
-    .workspace-link.active {
-      background: #111827;
-      color: #f9fafb;
-    }
-
-    .workspace-link.active i {
-      color: #e5e7eb;
-    }
-
-    .project-main {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .project-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--project-1);
-      flex-shrink: 0;
-    }
-
-    .project-delete {
-      border: none;
+    ::-webkit-scrollbar-track {
       background: transparent;
-      color: var(--muted);
-      padding: 0;
-      cursor: pointer;
     }
 
-    .project-delete i {
-      font-size: 15px;
+    ::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 4px;
     }
 
-    .add-project-btn {
-      margin-top: 6px;
-      border: none;
-      background: transparent;
-      color: var(--accent);
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      padding: 4px 4px;
+    ::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
     }
 
-    .add-project-btn i {
-      font-size: 16px;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      font-size: 11px;
-      color: var(--muted);
-      padding: 8px 4px 4px;
-      border-top: 1px solid var(--border);
-    }
-
-    /* MAIN */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 16px 18px;
-      min-width: 0;
-      background: var(--bg-soft);
-    }
-
-    .main-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .view-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .view-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .view-meta {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .today-text {
-      font-weight: 500;
-    }
-
-    .quick-add {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #ffffff;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
-    }
-
-    .quick-add input[type="text"] {
-      flex: 1;
-      border: none;
-      background: transparent;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .quick-add input[type="date"],
-    .quick-add select {
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      padding: 4px 6px;
-      font-size: 11px;
-      background: white;
-      color: var(--muted);
-      outline: none;
-    }
-
-    .quick-add button {
-      border-radius: 999px;
-      border: none;
-      background: var(--accent);
-      color: white;
-      font-size: 12px;
-      padding: 6px 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.25);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.08s ease;
-    }
-
-    .quick-add button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 12px rgba(239, 68, 68, 0.28);
-    }
-
-    .quick-add button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
-      opacity: 0.95;
-    }
-
-    .quick-add button i {
-      font-size: 15px;
-    }
-
-    .task-list {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 4px;
-      background: #ffffff;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 4px 8px 8px;
-      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
-    }
-
+    /* Task Animations */
     .task-item {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .task-item.dragging {
+      opacity: 0.5;
+      border: 1px dashed #6366f1;
+      background: #121215;
+    }
+
+    .animate-enter {
+      animation: slideIn 0.3s ease-out forwards;
+    }
+
+    .animate-leave {
+      animation: slideOut 0.3s ease-in forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+    }
+
+    /* Checkbox Animation */
+    .checkbox-wrapper input:checked+div {
+      background-color: #6366f1;
+      border-color: #6366f1;
+    }
+
+    /* Date Input Customization */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 10px;
-      padding: 8px 4px;
-      border-bottom: 1px solid #f3f4f6;
+      transform: translateY(100px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 50;
     }
 
-    .task-item:last-child {
-      border-bottom: none;
-    }
-
-    .task-check {
-      margin-top: 3px;
-    }
-
-    .task-check input {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
-    .task-main {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .task-title-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .task-title {
-      font-size: 13px;
-      cursor: text;
-      outline: none;
-      min-height: 18px;
-    }
-
-    .task-title.completed {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-
-    .task-details-toggle {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--muted);
-      padding: 0;
-      display: flex;
-      align-items: center;
-    }
-
-    .task-details-toggle i {
-      font-size: 18px;
-      transition: transform 0.15s ease;
-    }
-
-    .task-item.open .task-details-toggle i {
-      transform: rotate(180deg);
-    }
-
-    .task-meta {
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--muted);
-      flex-wrap: wrap;
-    }
-
-    .task-date {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #f3f4f6;
-    }
-
-    .task-date.overdue {
-      background: var(--accent-soft);
-      color: #b91c1c;
-      border: 1px solid var(--accent-border);
-    }
-
-    .task-date i {
-      font-size: 14px;
-    }
-
-    .task-date-input {
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      padding: 2px 6px;
-      font-size: 11px;
-      background: white;
-      color: var(--muted);
-      outline: none;
-      display: none;
-    }
-
-    .task-item.show-date-editor .task-date-input {
-      display: inline-block;
-    }
-
-    .task-project-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #f3f4f6;
-    }
-
-    .task-project-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--project-1);
-    }
-
-    .task-priority {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-
-    .task-priority i {
-      font-size: 14px;
-    }
-
-    .task-priority.p1 {
-      background: var(--p1-bg);
-      color: var(--p1-text);
-      border-color: #fecaca;
-    }
-
-    .task-priority.p2 {
-      background: var(--p2-bg);
-      color: var(--p2-text);
-      border-color: #fed7aa;
-    }
-
-    .task-priority.p3 {
-      background: var(--p3-bg);
-      color: var(--p3-text);
-      border-color: #bbf7d0;
-    }
-
-    .task-priority span {
-      font-weight: 500;
-    }
-
-    .task-details {
-      display: none;
-      margin-top: 6px;
-    }
-
-    .task-item.open .task-details {
-      display: block;
-    }
-
-    .task-notes {
-      width: 100%;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      padding: 6px 8px;
-      font-size: 12px;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 50px;
-      max-height: 140px;
-      outline: none;
-      background: #fff;
-    }
-
-    .task-notes::placeholder {
-      color: var(--muted);
-    }
-
-    .task-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .task-actions button {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--muted);
-      padding: 2px;
-    }
-
-    .task-actions i {
-      font-size: 16px;
-    }
-
-    .task-empty {
-      margin-top: 32px;
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .clear-completed-btn {
-      margin-top: 8px;
-      border: none;
-      background: transparent;
-      font-size: 12px;
-      color: var(--muted);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .clear-completed-btn i {
-      font-size: 15px;
-    }
-
-    @media (max-width: 768px) {
-      .app {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .main {
-        padding: 12px 12px;
-      }
-
-      .sidebar-footer {
-        display: none;
-      }
-
-      .task-list {
-        padding-left: 6px;
-        padding-right: 6px;
-      }
+    .toast.show {
+      transform: translateY(0);
     }
   </style>
 </head>
 
-<body>
-  <div class="app">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-circle">TF</div>
-        <div>
-          <div class="logo-text-title">TaskFlows</div>
-          <div class="logo-text-sub">Clean to-do, no clutter</div>
-        </div>
-      </div>
+<body class="flex h-screen overflow-hidden antialiased selection:bg-accent selection:text-white">
 
-      <!-- Workspace navigation to other pages -->
-      <div>
-        <div class="sidebar-section-title">Workspace</div>
-        <div class="workspace-links">
-          <a href="to-do-list.html" class="workspace-link" data-page="to-do-list.html">
-            <i class="ri-checkbox-multiple-line"></i>
-            <span>To-do</span>
-          </a>
-          <a href="journal.html" class="workspace-link" data-page="journal.html">
-            <i class="ri-book-open-line"></i>
-            <span>Journal</span>
-          </a>
-          <a href="lists.html" class="workspace-link" data-page="lists.html">
-            <i class="ri-list-check-2"></i>
-            <span>Lists</span>
-          </a>
-          <a href="notes.html" class="workspace-link" data-page="notes.html">
-            <i class="ri-file-text-line"></i>
-            <span>Notes</span>
-          </a>
-          <a href="quicknotes.html" class="workspace-link" data-page="quicknotes.html">
-            <i class="ri-flashlight-line"></i>
-            <span>Quick notes</span>
-          </a>
-          <a href="text-editor.html" class="workspace-link" data-page="text-editor.html">
-            <i class="ri-edit-2-line"></i>
-            <span>Text editor</span>
-          </a>
-          <a href="whiteboard.html" class="workspace-link" data-page="whiteboard.html">
-            <i class="ri-layout-masonry-line"></i>
-            <span>Whiteboard</span>
-          </a>
-        </div>
+  <aside class="w-64 bg-bgSidebar h-full flex flex-col border-r border-white/5 flex-shrink-0 z-20">
+    <div class="p-6 flex items-center gap-3">
+      <div
+        class="w-8 h-8 bg-gradient-to-tr from-accent to-purple-500 rounded-lg flex items-center justify-center shadow-lg shadow-accent/20">
+        <i class="ph-bold ph-check text-white text-lg"></i>
       </div>
+      <span class="text-xl font-bold tracking-tight text-white">Taskflows</span>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-4 space-y-8">
+
+      <ul class="space-y-1">
+        <li>
+          <a href="dashboard.html"
+            class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+            <i class="ph ph-squares-four text-lg group-hover:text-accent transition-colors"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="projects.html"
+            class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+            <i class="ph ph-folder text-lg group-hover:text-accent transition-colors"></i> Projects
+          </a>
+        </li>
+        <li>
+          <a href="my_tasks.html"
+            class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+            <i class="ph ph-check-circle text-lg group-hover:text-accent transition-colors"></i> My Tasks
+          </a>
+        </li>
+        <li>
+          <a href="analytics.html"
+            class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+            <i class="ph ph-chart-bar text-lg group-hover:text-accent transition-colors"></i> Analytics
+          </a>
+        </li>
+      </ul>
 
       <div>
-        <div class="sidebar-section-title">Views</div>
-        <ul class="nav-list">
-          <li class="nav-item active" data-view="inbox">
-            <div class="nav-left">
-              <i class="ri-inbox-line"></i>
-              <span>Inbox</span>
-            </div>
-            <span class="nav-count" data-count="inbox">0</span>
+        <h3 class="px-3 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Workspace</h3>
+        <ul class="space-y-1">
+          <li>
+            <a href="text_editor.html"
+              class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+              <i class="ph ph-file-text text-lg group-hover:text-accent transition-colors"></i> Text Editor
+            </a>
           </li>
-          <li class="nav-item" data-view="today">
-            <div class="nav-left">
-              <i class="ri-sun-line"></i>
-              <span>Today</span>
-            </div>
-            <span class="nav-count" data-count="today">0</span>
+          <li>
+            <a href="to_do_lists.html"
+              class="flex items-center gap-3 px-3 py-2 bg-accent/10 text-accent border border-accent/20 rounded-lg shadow-sm">
+              <i class="ph-fill ph-list-checks text-lg"></i> To-Do Lists
+            </a>
           </li>
-          <li class="nav-item" data-view="upcoming">
-            <div class="nav-left">
-              <i class="ri-calendar-line"></i>
-              <span>Upcoming</span>
-            </div>
-            <span class="nav-count" data-count="upcoming">0</span>
+          <li>
+            <a href="notes.html"
+              class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+              <i class="ph ph-notebook text-lg group-hover:text-accent transition-colors"></i> Notes
+            </a>
           </li>
-          <li class="nav-item" data-view="completed">
-            <div class="nav-left">
-              <i class="ri-check-double-line"></i>
-              <span>Completed</span>
-            </div>
-            <span class="nav-count" data-count="completed">0</span>
+          <li>
+            <a href="whiteboard.html"
+              class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+              <i class="ph ph-chalkboard-simple text-lg group-hover:text-accent transition-colors"></i> Whiteboard
+            </a>
           </li>
         </ul>
       </div>
 
       <div>
-        <div class="sidebar-section-title">Projects</div>
-        <ul class="project-list" id="projectList">
-          <!-- projects injected -->
+        <h3 class="px-3 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Personal</h3>
+        <ul class="space-y-1">
+          <li>
+            <a href="lists.html"
+              class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+              <i class="ph ph-list-bullets text-lg group-hover:text-accent transition-colors"></i> Lists
+            </a>
+          </li>
+          <li>
+            <a href="journal.html"
+              class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+              <i class="ph ph-book-bookmark text-lg group-hover:text-accent transition-colors"></i> Journal
+            </a>
+          </li>
+          <li>
+            <a href="quick_notes.html"
+              class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+              <i class="ph ph-lightning text-lg group-hover:text-accent transition-colors"></i> Quick Notes
+            </a>
+          </li>
         </ul>
-        <button class="add-project-btn" id="addProjectBtn">
-          <i class="ri-add-line"></i>
-          <span>Add project</span>
-        </button>
+      </div>
+    </nav>
+
+    <div class="p-4 border-t border-white/5">
+      <a href="edit_profile.html"
+        class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition group">
+        <div
+          class="w-6 h-6 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center text-xs text-white">
+          R</div>
+        <span>Edit Profile</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-bgDark">
+
+    <header class="flex items-center justify-between px-10 py-6 border-b border-white/5">
+      <div>
+        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+          <span id="greeting">Good Morning</span>, Ritvik
+        </h1>
+        <p class="text-gray-400 text-sm mt-1" id="date-display">Today is ...</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div
+          class="h-9 w-9 rounded-full bg-bgCard border border-white/10 flex items-center justify-center text-gray-400 cursor-pointer hover:text-white hover:border-white/30 transition">
+          <i class="ph ph-bell"></i>
+        </div>
+        <div
+          class="h-9 w-9 rounded-full bg-bgCard border border-white/10 flex items-center justify-center text-gray-400 cursor-pointer hover:text-white hover:border-white/30 transition">
+          <i class="ph ph-gear"></i>
+        </div>
+      </div>
+    </header>
+
+    <div class="px-10 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+
+      <div
+        class="col-span-2 bg-gradient-to-br from-bgCard to-[#1f1f25] p-6 rounded-2xl border border-white/5 relative overflow-hidden group shadow-lg">
+        <div
+          class="absolute right-0 top-0 w-40 h-40 bg-accent/10 rounded-full blur-3xl -mr-10 -mt-10 transition group-hover:bg-accent/20">
+        </div>
+        <div class="flex justify-between items-end mb-4 relative z-10">
+          <div>
+            <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wide mb-1">Daily Goal</h3>
+            <div class="text-3xl font-bold text-white" id="progress-percent">0%</div>
+          </div>
+          <div class="text-xs px-2.5 py-1 bg-white/5 rounded border border-white/5 text-gray-300" id="progress-text">0/0
+          </div>
+        </div>
+        <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+          <div id="progress-bar"
+            class="h-full bg-gradient-to-r from-accent to-purple-400 w-0 transition-all duration-700 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]">
+          </div>
+        </div>
       </div>
 
-      <div class="sidebar-footer">
-        Tasks are saved on this browser using localStorage.
+      <div
+        class="bg-bgCard p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center hover:border-white/10 transition shadow-lg">
+        <span class="text-3xl font-bold text-white mb-1" id="count-pending">0</span>
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending</span>
       </div>
-    </aside>
+      <div
+        class="bg-bgCard p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center hover:border-white/10 transition shadow-lg">
+        <span class="text-3xl font-bold text-emerald-400 mb-1" id="count-completed">0</span>
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Done</span>
+      </div>
+    </div>
 
-    <!-- MAIN -->
-    <main class="main">
-      <header class="main-header">
-        <div>
-          <div class="view-title" id="viewTitle">Inbox</div>
-          <div class="view-subtitle" id="viewSubtitle">Capture everything here first.</div>
-        </div>
-        <div class="view-meta">
-          <span class="today-text" id="todayText"></span>
-        </div>
-      </header>
+    <div class="px-10 mb-6">
+      <div
+        class="bg-bgCard p-2 rounded-2xl border border-white/5 flex flex-col md:flex-row items-center gap-3 shadow-xl shadow-black/40 focus-within:border-accent/50 transition-colors">
 
-      <section class="quick-add">
-        <input type="text" id="quickInput" placeholder="Add a task (press Enter to save)" />
-        <input type="date" id="quickDate" />
-        <select id="quickPriority">
-          <option value="2">P2 · Medium</option>
-          <option value="1">P1 · High</option>
-          <option value="3">P3 · Low</option>
-        </select>
-        <button id="quickAddBtn">
-          <i class="ri-add-line"></i>
-          <span>Add</span>
+        <div class="pl-4 hidden md:block">
+          <div class="w-5 h-5 rounded border-2 border-gray-600 border-dashed"></div>
+        </div>
+
+        <input type="text" id="task-input" placeholder="What needs to be done?"
+          class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-500 h-10 text-sm w-full px-3 md:px-0">
+
+        <div class="flex items-center gap-2 w-full md:w-auto px-2 md:px-0">
+          <input type="date" id="date-input"
+            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 font-sans">
+
+          <select id="priority-select"
+            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 cursor-pointer">
+            <option value="low">Low Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+
+          <select id="category-select"
+            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 cursor-pointer">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Design">Design</option>
+          </select>
+
+          <button onclick="addTask()"
+            class="bg-accent hover:bg-accentHover text-white h-9 px-4 rounded-lg text-sm font-medium transition shadow-lg shadow-accent/20 flex items-center gap-2 ml-auto md:ml-0 whitespace-nowrap">
+            <i class="ph-bold ph-plus"></i> Add
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-10 mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        Tasks <span class="text-gray-500 text-sm font-normal">(Double click text to edit)</span>
+      </h2>
+      <div class="flex gap-3">
+        <button onclick="clearCompleted()"
+          class="text-xs text-gray-500 hover:text-red-400 transition flex items-center gap-1">
+          <i class="ph ph-trash"></i> Clear Done
         </button>
-      </section>
+        <div class="flex bg-bgCard p-1 rounded-lg border border-white/5">
+          <button onclick="filterTasks('all')"
+            class="filter-btn active px-3 py-1 rounded-md text-xs font-medium text-white bg-white/10 transition"
+            data-filter="all">All</button>
+          <button onclick="filterTasks('active')"
+            class="filter-btn px-3 py-1 rounded-md text-xs font-medium text-gray-400 hover:text-white transition"
+            data-filter="active">Active</button>
+          <button onclick="filterTasks('completed')"
+            class="filter-btn px-3 py-1 rounded-md text-xs font-medium text-gray-400 hover:text-white transition"
+            data-filter="completed">Done</button>
+        </div>
+      </div>
+    </div>
 
-      <section class="task-list" id="taskList">
-        <!-- tasks -->
-      </section>
+    <div class="flex-1 overflow-y-auto px-10 pb-10 space-y-3" id="task-list">
+      <div id="empty-state"
+        class="hidden flex flex-col items-center justify-center mt-12 text-center opacity-0 animate-enter">
+        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+          <i class="ph ph-check text-2xl text-gray-500"></i>
+        </div>
+        <h3 class="text-white font-medium">All caught up!</h3>
+        <p class="text-gray-500 text-sm mt-1">You have no tasks on your list.</p>
+      </div>
+    </div>
+  </main>
 
-      <button class="clear-completed-btn" id="clearCompletedBtn">
-        <i class="ri-delete-bin-7-line"></i>
-        <span>Clear completed</span>
-      </button>
-    </main>
-  </div>
+  <div id="toast-container"></div>
 
   <script>
-    (function () {
-      const STORAGE_KEY = "taskflows_todo_interactive_v1";
+    // --- APP STATE ---
+    let tasks = [];
+    let currentFilter = 'all';
 
-      const state = {
-        projects: [],
-        tasks: [],
-        view: { type: "inbox", id: null }
-      };
+    // --- DOM ELEMENTS ---
+    const taskListEl = document.getElementById('task-list');
+    const taskInput = document.getElementById('task-input');
+    const dateInput = document.getElementById('date-input');
+    const prioritySelect = document.getElementById('priority-select');
+    const categorySelect = document.getElementById('category-select');
+    const emptyState = document.getElementById('empty-state');
 
-      const els = {
-        navItems: document.querySelectorAll(".nav-item"),
-        viewTitle: document.getElementById("viewTitle"),
-        viewSubtitle: document.getElementById("viewSubtitle"),
-        todayText: document.getElementById("todayText"),
-        quickInput: document.getElementById("quickInput"),
-        quickDate: document.getElementById("quickDate"),
-        quickPriority: document.getElementById("quickPriority"),
-        quickAddBtn: document.getElementById("quickAddBtn"),
-        taskList: document.getElementById("taskList"),
-        clearCompletedBtn: document.getElementById("clearCompletedBtn"),
-        projectList: document.getElementById("projectList"),
-        addProjectBtn: document.getElementById("addProjectBtn"),
-        countInbox: document.querySelector('[data-count="inbox"]'),
-        countToday: document.querySelector('[data-count="today"]'),
-        countUpcoming: document.querySelector('[data-count="upcoming"]'),
-        countCompleted: document.querySelector('[data-count="completed"]')
-      };
+    // Stats
+    const progressPercent = document.getElementById('progress-percent');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const countPending = document.getElementById('count-pending');
+    const countCompleted = document.getElementById('count-completed');
+    const filterBtns = document.querySelectorAll('.filter-btn');
 
-      const projectColors = [
-        "var(--project-1)",
-        "var(--project-2)",
-        "var(--project-3)",
-        "var(--project-4)"
-      ];
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadTasks();
+      updateGreeting();
 
-      function init() {
-        loadState();
-        ensureInboxProject();
-        attachEvents();
-        updateTodayText();
-        renderAll();
-        // UX improvement: focus quick input on load
-        if (els.quickInput) {
-          els.quickInput.focus();
-        }
-        // Highlight active workspace link based on current page
-        highlightWorkspaceLink();
-      }
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.value = today;
+      document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    });
 
-      function highlightWorkspaceLink() {
-        const currentFile = window.location.pathname.split("/").pop() || "to-do-list.html";
-        const links = document.querySelectorAll(".workspace-link[data-page]");
-        links.forEach(link => {
-          if (link.getAttribute("data-page") === currentFile) {
-            link.classList.add("active");
-          }
-        });
-      }
+    function updateGreeting() {
+      const hours = new Date().getHours();
+      const el = document.getElementById('greeting');
+      if (hours < 12) el.innerText = "Good Morning";
+      else if (hours < 18) el.innerText = "Good Afternoon";
+      else el.innerText = "Good Evening";
+    }
 
-      function loadState() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            state.projects = parsed.projects || [];
-            state.tasks = (parsed.tasks || []).map(t => ({
-              ...t,
-              priority: t.priority || 2,
-              notes: t.notes || ""
-            }));
-            state.view = parsed.view || state.view;
-          } else {
-            seed();
-          }
-        } catch {
-          seed();
-        }
-      }
+    // --- LOCAL STORAGE ---
+    function saveTasks() {
+      localStorage.setItem('tf_tasks', JSON.stringify(tasks));
+      updateStats();
+    }
 
-      function seed() {
-        state.projects = [
-          { id: "inbox", name: "Inbox", color: "var(--project-4)", isInbox: true },
-          { id: "school", name: "School", color: "var(--project-1)", isInbox: false },
-          { id: "personal", name: "Personal", color: "var(--project-2)", isInbox: false }
+    function loadTasks() {
+      const stored = localStorage.getItem('tf_tasks');
+      if (stored) {
+        tasks = JSON.parse(stored);
+      } else {
+        // Initial Dummy Data
+        tasks = [
+          { id: 1, text: "Welcome to Taskflows To Do Lists!", completed: false, priority: 'high', category: 'Personal', date: new Date().toISOString().split('T')[0] },
+          { id: 2, text: "Try dragging this task to reorder", completed: false, priority: 'medium', category: 'Work', date: '' }
         ];
-        state.tasks = [];
-        state.view = { type: "inbox", id: null };
+      }
+      render();
+    }
+
+    // --- RENDERING ---
+    function getPriorityStyles(p) {
+      if (p === 'high') return 'text-red-400 bg-red-400/10 border-red-400/20';
+      if (p === 'medium') return 'text-orange-400 bg-orange-400/10 border-orange-400/20';
+      return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
+    }
+
+    function getCategoryIcon(c) {
+      if (c === 'Work') return 'ph-briefcase';
+      if (c === 'Design') return 'ph-paint-brush';
+      return 'ph-user';
+    }
+
+    function getDateBadge(dateStr) {
+      if (!dateStr) return '';
+      const today = new Date().toISOString().split('T')[0];
+      let colorClass = 'text-gray-500';
+      let text = dateStr;
+
+      if (dateStr === today) {
+        text = 'Today';
+        colorClass = 'text-accent';
+      } else if (dateStr < today) {
+        colorClass = 'text-red-400 font-bold';
       }
 
-      function saveState() {
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({
-            projects: state.projects,
-            tasks: state.tasks,
-            view: state.view
-          })
-        );
-      }
+      return `<span class="flex items-center gap-1 text-[11px] ${colorClass}"><i class="ph ph-calendar-blank"></i> ${text}</span>`;
+    }
 
-      function ensureInboxProject() {
-        if (!state.projects.some(p => p.id === "inbox")) {
-          state.projects.unshift({
-            id: "inbox",
-            name: "Inbox",
-            color: "var(--project-4)",
-            isInbox: true
+    function render() {
+      taskListEl.innerHTML = '';
+
+      let filteredTasks = tasks.filter(t => {
+        if (currentFilter === 'active') return !t.completed;
+        if (currentFilter === 'completed') return t.completed;
+        return true;
+      });
+
+      if (filteredTasks.length === 0) {
+        taskListEl.appendChild(emptyState);
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('opacity-100');
+      } else {
+        emptyState.classList.add('hidden');
+
+        filteredTasks.forEach(task => {
+          const el = document.createElement('div');
+          el.className = `task-item relative group bg-bgCard hover:bg-bgHover p-4 rounded-xl border border-white/5 flex items-center justify-between shadow-sm mb-3 ${task.completed ? 'opacity-50' : ''}`;
+          el.draggable = true;
+          el.dataset.id = task.id;
+
+          // Drag Events
+          el.addEventListener('dragstart', () => { el.classList.add('dragging'); });
+          el.addEventListener('dragend', () => {
+            el.classList.remove('dragging');
+            saveOrder();
           });
-        }
-      }
 
-      function attachEvents() {
-        els.navItems.forEach(item => {
-          item.addEventListener("click", () => {
-            const view = item.getAttribute("data-view");
-            setView(view);
-          });
+          el.innerHTML = `
+            <div class="flex items-center gap-4 flex-1">
+              <div class="cursor-grab text-gray-600 hover:text-gray-400 opacity-0 group-hover:opacity-100 transition">
+                <i class="ph ph-dots-six-vertical text-xl"></i>
+              </div>
+
+              <label class="checkbox-wrapper relative flex items-center justify-center cursor-pointer">
+                <input type="checkbox" class="absolute opacity-0 w-0 h-0" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                <div class="w-6 h-6 border-2 border-gray-600 rounded-lg transition-all flex items-center justify-center bg-transparent group-hover:border-gray-500">
+                  <i class="ph-bold ph-check text-white text-xs ${task.completed ? 'block' : 'hidden'}"></i>
+                </div>
+              </label>
+
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm text-gray-200 transition-all truncate ${task.completed ? 'line-through text-gray-500' : ''}" 
+                   contenteditable="true" 
+                   onblur="editTask(${task.id}, this)" 
+                   onkeydown="handleEditEnter(event, this)">${task.text}</p>
+                
+                <div class="flex items-center flex-wrap gap-3 mt-1.5">
+                  <span class="flex items-center gap-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${getPriorityStyles(task.priority)}">
+                    <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
+                    ${task.priority}
+                  </span>
+                  
+                  <span class="flex items-center gap-1 text-[11px] text-gray-500">
+                    <i class="ph ${getCategoryIcon(task.category)}"></i> ${task.category}
+                  </span>
+
+                  ${getDateBadge(task.date)}
+                </div>
+              </div>
+            </div>
+
+            <button onclick="deleteTask(this, ${task.id})" class="text-gray-600 hover:text-red-400 transition p-2 rounded-lg hover:bg-white/5 opacity-0 group-hover:opacity-100" title="Delete Task">
+              <i class="ph ph-trash text-lg"></i>
+            </button>
+          `;
+          taskListEl.appendChild(el);
         });
-
-        els.quickAddBtn.addEventListener("click", addTaskFromQuick);
-        els.quickInput.addEventListener("keydown", e => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            addTaskFromQuick();
-          }
-        });
-
-        els.taskList.addEventListener("click", handleTaskListClick);
-        els.taskList.addEventListener("keydown", handleTaskKeydown);
-        els.taskList.addEventListener("focusout", handleTaskFocusOut);
-        els.taskList.addEventListener("input", handleTaskInput);
-        els.taskList.addEventListener("change", handleTaskChange);
-
-        els.clearCompletedBtn.addEventListener("click", clearCompleted);
-
-        els.addProjectBtn.addEventListener("click", addProject);
       }
+      updateStats();
+    }
 
-      function updateTodayText() {
-        const today = new Date();
-        const options = { weekday: "short", month: "short", day: "numeric" };
-        els.todayText.textContent = today.toLocaleDateString(undefined, options);
+    // --- DRAG AND DROP LOGIC ---
+    taskListEl.addEventListener('dragover', e => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(taskListEl, e.clientY);
+      const draggable = document.querySelector('.dragging');
+      if (afterElement == null) {
+        taskListEl.appendChild(draggable);
+      } else {
+        taskListEl.insertBefore(draggable, afterElement);
       }
+    });
 
-      function setView(type, id = null) {
-        state.view = { type, id };
-        els.navItems.forEach(item => item.classList.remove("active"));
-        const nav = document.querySelector(`.nav-item[data-view="${type}"]`);
-        if (nav) nav.classList.add("active");
-        renderHeader();
-        renderTasks();
-        saveState();
-      }
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging)')];
 
-      function addTaskFromQuick() {
-        const title = els.quickInput.value.trim();
-        if (!title) return;
-        let projectId = "inbox";
-        if (state.view.type === "project" && state.view.id) {
-          projectId = state.view.id;
-        }
-        const dueDate = els.quickDate.value || null;
-        const priority = parseInt(els.quickPriority.value, 10) || 2;
-
-        const task = {
-          id: "task_" + Date.now().toString(36),
-          title,
-          projectId,
-          dueDate,
-          priority,
-          completed: false,
-          createdAt: Date.now(),
-          notes: ""
-        };
-
-        state.tasks.push(task);
-        els.quickInput.value = "";
-        els.quickDate.value = "";
-        els.quickPriority.value = "2";
-        saveState();
-        renderAll();
-      }
-
-      function handleTaskListClick(e) {
-        const item = e.target.closest(".task-item");
-        if (!item) return;
-        const id = item.getAttribute("data-id");
-        const task = state.tasks.find(t => t.id === id);
-        if (!task) return;
-
-        if (e.target.matches('input[type="checkbox"]')) {
-          task.completed = e.target.checked;
-          saveState();
-          renderAll();
-          return;
-        }
-
-        const deleteBtn = e.target.closest(".task-delete-btn");
-        if (deleteBtn) {
-          const ok = confirm(`Delete "${task.title}"?`);
-          if (!ok) return;
-          state.tasks = state.tasks.filter(t => t.id !== id);
-          saveState();
-          renderAll();
-          return;
-        }
-
-        const datePill = e.target.closest('[data-action="date-pill"]');
-        if (datePill) {
-          item.classList.add("show-date-editor");
-          const dateInput = item.querySelector(".task-date-input");
-          if (dateInput) {
-            dateInput.focus();
-          }
-          return;
-        }
-
-        const priorityPill = e.target.closest('[data-action="priority-pill"]');
-        if (priorityPill) {
-          cyclePriority(task);
-          saveState();
-          renderAll();
-          return;
-        }
-
-        const toggleBtn = e.target.closest('[data-action="toggle-details"]');
-        if (toggleBtn) {
-          item.classList.toggle("open");
-          return;
-        }
-      }
-
-      function handleTaskKeydown(e) {
-        const titleEl = e.target.closest('[data-role="title"]');
-        if (titleEl && e.key === "Enter") {
-          e.preventDefault();
-          titleEl.blur();
-        }
-      }
-
-      function handleTaskFocusOut(e) {
-        const titleEl = e.target.closest('[data-role="title"]');
-        if (titleEl) {
-          const item = titleEl.closest(".task-item");
-          if (!item) return;
-          const id = item.getAttribute("data-id");
-          const task = state.tasks.find(t => t.id === id);
-          if (!task) return;
-          const text = titleEl.textContent.trim();
-          task.title = text || "Untitled task";
-          saveState();
-          renderTasks();
-          renderCounts();
-        }
-      }
-
-      function handleTaskInput(e) {
-        const notesEl = e.target.closest('[data-role="notes"]');
-        if (notesEl) {
-          const item = notesEl.closest(".task-item");
-          if (!item) return;
-          const id = item.getAttribute("data-id");
-          const task = state.tasks.find(t => t.id === id);
-          if (!task) return;
-          task.notes = notesEl.value;
-          saveState();
-        }
-      }
-
-      function handleTaskChange(e) {
-        if (e.target.classList.contains("task-date-input")) {
-          const item = e.target.closest(".task-item");
-          if (!item) return;
-          const id = item.getAttribute("data-id");
-          const task = state.tasks.find(t => t.id === id);
-          if (!task) return;
-          const value = e.target.value.trim();
-          task.dueDate = value || null;
-          item.classList.remove("show-date-editor");
-          saveState();
-          renderAll();
-        }
-      }
-
-      function cyclePriority(task) {
-        if (!task.priority) {
-          task.priority = 2;
-        } else if (task.priority === 1) {
-          task.priority = 2;
-        } else if (task.priority === 2) {
-          task.priority = 3;
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
         } else {
-          task.priority = 1;
+          return closest;
         }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function saveOrder() {
+      const newOrderIds = [...document.querySelectorAll('.task-item')].map(el => parseInt(el.dataset.id));
+      // Reorder the tasks array based on the visual DOM order
+      const reorderedTasks = [];
+      newOrderIds.forEach(id => {
+        const t = tasks.find(x => x.id === id);
+        if (t) reorderedTasks.push(t);
+      });
+      tasks = reorderedTasks;
+      saveTasks();
+    }
+
+    // --- ACTIONS ---
+    function addTask() {
+      const text = taskInput.value.trim();
+      if (!text) {
+        showToast('Please enter a task description', 'warning');
+        return;
       }
 
-      function clearCompleted() {
-        if (!state.tasks.some(t => t.completed)) return;
-        const ok = confirm("Clear all completed tasks?");
-        if (!ok) return;
-        state.tasks = state.tasks.filter(t => !t.completed);
-        saveState();
-        renderAll();
-      }
+      const newTask = {
+        id: Date.now(),
+        text: text,
+        completed: false,
+        priority: prioritySelect.value,
+        category: categorySelect.value,
+        date: dateInput.value
+      };
 
-      function addProject() {
-        const name = prompt("Project name");
-        if (!name) return;
-        const trimmed = name.trim();
-        if (!trimmed) return;
-        const id = "proj_" + Date.now().toString(36);
-        const color = projectColors[state.projects.length % projectColors.length];
-        state.projects.push({ id, name: trimmed, color, isInbox: false });
-        saveState();
-        renderAll();
-      }
+      tasks.unshift(newTask);
+      taskInput.value = '';
 
-      function deleteProject(id) {
-        const project = state.projects.find(p => p.id === id);
-        if (!project || project.isInbox) return;
-        const count = state.tasks.filter(t => t.projectId === id).length;
-        const ok = confirm(
-          `Delete project "${project.name}" and move ${count} task(s) to Inbox?`
-        );
-        if (!ok) return;
-        state.tasks.forEach(t => {
-          if (t.projectId === id) t.projectId = "inbox";
-        });
-        state.projects = state.projects.filter(p => p.id !== id);
-        if (state.view.type === "project" && state.view.id === id) {
-          setView("inbox");
+      render();
+      const firstItem = taskListEl.querySelector('.task-item');
+      if (firstItem) firstItem.classList.add('animate-enter');
+
+      saveTasks();
+      showToast('Task added successfully', 'success');
+    }
+
+    taskInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') addTask();
+    });
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        saveTasks();
+        render();
+        if (task.completed) showToast('Task completed!', 'success');
+      }
+    }
+
+    function deleteTask(btnElement, id) {
+      const taskItem = btnElement.closest('.task-item');
+      taskItem.classList.add('animate-leave');
+
+      setTimeout(() => {
+        tasks = tasks.filter(t => t.id !== id);
+        saveTasks();
+        render();
+        showToast('Task removed', 'neutral');
+      }, 300);
+    }
+
+    function editTask(id, element) {
+      const newText = element.innerText.trim();
+      const task = tasks.find(t => t.id === id);
+      if (task && newText !== task.text && newText !== '') {
+        task.text = newText;
+        saveTasks();
+        showToast('Task updated', 'neutral');
+      } else if (newText === '') {
+        element.innerText = task.text; // Revert if empty
+      }
+    }
+
+    function handleEditEnter(e, element) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        element.blur();
+      }
+    }
+
+    function clearCompleted() {
+      const initialCount = tasks.length;
+      tasks = tasks.filter(t => !t.completed);
+      if (tasks.length < initialCount) {
+        saveTasks();
+        render();
+        showToast('Completed tasks cleared', 'neutral');
+      }
+    }
+
+    function filterTasks(type) {
+      currentFilter = type;
+      filterBtns.forEach(btn => {
+        if (btn.dataset.filter === type) {
+          btn.classList.remove('text-gray-400');
+          btn.classList.add('text-white', 'bg-white/10');
         } else {
-          saveState();
-          renderAll();
+          btn.classList.add('text-gray-400');
+          btn.classList.remove('text-white', 'bg-white/10');
         }
+      });
+      render();
+    }
+
+    function updateStats() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const pending = total - completed;
+      const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+      progressPercent.innerText = `${percent}%`;
+      progressBar.style.width = `${percent}%`;
+      progressText.innerText = `${completed}/${total}`;
+
+      countPending.innerText = pending;
+      countCompleted.innerText = completed;
+
+      // Colorize progress bar based on completion
+      if (percent === 100) {
+        progressBar.classList.remove('from-accent', 'to-purple-400');
+        progressBar.classList.add('bg-emerald-500');
+      } else {
+        progressBar.classList.add('from-accent', 'to-purple-400');
+        progressBar.classList.remove('bg-emerald-500');
       }
+    }
 
-      function getProject(id) {
-        return state.projects.find(p => p.id === id);
-      }
+    // --- TOAST SYSTEM ---
+    function showToast(message, type = 'neutral') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
 
-      function getFilteredTasks() {
-        const todayStr = new Date().toISOString().slice(0, 10);
-        let tasks = state.tasks.slice();
+      let icon = 'ph-info';
+      let color = '#6366f1'; // accent
 
-        if (state.view.type === "inbox") {
-          tasks = tasks.filter(t => !t.completed && (t.projectId === "inbox" || !t.projectId));
-        } else if (state.view.type === "today") {
-          tasks = tasks.filter(t => !t.completed && t.dueDate === todayStr);
-        } else if (state.view.type === "upcoming") {
-          tasks = tasks.filter(
-            t => !t.completed && t.dueDate && t.dueDate > todayStr
-          );
-        } else if (state.view.type === "completed") {
-          tasks = tasks.filter(t => t.completed);
-        } else if (state.view.type === "project") {
-          tasks = tasks.filter(t => !t.completed && t.projectId === state.view.id);
-        }
+      if (type === 'success') { icon = 'ph-check-circle'; color = '#10b981'; }
+      if (type === 'warning') { icon = 'ph-warning'; color = '#f59e0b'; }
+      if (type === 'neutral') { icon = 'ph-info'; color = '#9ca3af'; }
 
-        tasks.sort((a, b) => {
-          const pa = a.priority || 2;
-          const pb = b.priority || 2;
-          if (pa !== pb) return pa - pb;
-          const da = a.dueDate || "9999-12-31";
-          const db = b.dueDate || "9999-12-31";
-          if (da === db) return a.createdAt - b.createdAt;
-          return da.localeCompare(db);
-        });
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <i class="ph ${icon} text-lg" style="color: ${color}"></i>
+        <span class="text-sm font-medium">${message}</span>
+      `;
 
-        return tasks;
-      }
+      container.appendChild(toast);
 
-      function renderHeader() {
-        let title = "";
-        let subtitle = "";
+      // Trigger animation
+      requestAnimationFrame(() => {
+        toast.classList.add('show');
+      });
 
-        if (state.view.type === "inbox") {
-          title = "Inbox";
-          subtitle = "Capture everything here first.";
-        } else if (state.view.type === "today") {
-          title = "Today";
-          subtitle = "Only what needs your attention today.";
-        } else if (state.view.type === "upcoming") {
-          title = "Upcoming";
-          subtitle = "See what is coming next.";
-        } else if (state.view.type === "completed") {
-          title = "Completed";
-          subtitle = "Things you have already finished.";
-        } else if (state.view.type === "project") {
-          const p = getProject(state.view.id);
-          title = p ? p.name : "Project";
-          subtitle = "Tasks in this project.";
-        }
-
-        els.viewTitle.textContent = title;
-        els.viewSubtitle.textContent = subtitle;
-      }
-
-      function renderProjects() {
-        els.projectList.innerHTML = "";
-        state.projects.forEach((p, index) => {
-          const li = document.createElement("li");
-          li.className = "project-item";
-          li.setAttribute("data-project-id", p.id);
-
-          const main = document.createElement("div");
-          main.className = "project-main";
-
-          const dot = document.createElement("div");
-          dot.className = "project-dot";
-          dot.style.background = p.color || projectColors[index % projectColors.length];
-
-          const name = document.createElement("span");
-          name.textContent = p.name;
-
-          main.appendChild(dot);
-          main.appendChild(name);
-
-          li.appendChild(main);
-
-          if (!p.isInbox) {
-            const btn = document.createElement("button");
-            btn.className = "project-delete";
-            btn.innerHTML = '<i class="ri-close-line"></i>';
-            btn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              deleteProject(p.id);
-            });
-            li.appendChild(btn);
-          }
-
-          li.addEventListener("click", () => {
-            state.view = { type: "project", id: p.id };
-            renderHeader();
-            renderTasks();
-            saveState();
-          });
-
-          els.projectList.appendChild(li);
-        });
-      }
-
-      function renderTasks() {
-        const tasks = getFilteredTasks();
-        els.taskList.innerHTML = "";
-
-        if (!tasks.length) {
-          const empty = document.createElement("div");
-          empty.className = "task-empty";
-          empty.textContent = "No tasks here yet.";
-          els.taskList.appendChild(empty);
-          return;
-        }
-
-        const todayStr = new Date().toISOString().slice(0, 10);
-
-        tasks.forEach(task => {
-          const project = getProject(task.projectId);
-
-          const row = document.createElement("div");
-          row.className = "task-item";
-          row.setAttribute("data-id", task.id);
-
-          const checkWrap = document.createElement("div");
-          checkWrap.className = "task-check";
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.checked = task.completed;
-          checkWrap.appendChild(checkbox);
-
-          const main = document.createElement("div");
-          main.className = "task-main";
-
-          const titleRow = document.createElement("div");
-          titleRow.className = "task-title-row";
-
-          const title = document.createElement("div");
-          title.className = "task-title";
-          title.setAttribute("data-role", "title");
-          title.contentEditable = "true";
-          if (task.completed) title.classList.add("completed");
-          title.textContent = task.title || "Untitled task";
-
-          const toggleBtn = document.createElement("button");
-          toggleBtn.className = "task-details-toggle";
-          toggleBtn.setAttribute("data-action", "toggle-details");
-          toggleBtn.innerHTML = '<i class="ri-arrow-down-s-line"></i>';
-
-          titleRow.appendChild(title);
-          titleRow.appendChild(toggleBtn);
-          main.appendChild(titleRow);
-
-          const meta = document.createElement("div");
-          meta.className = "task-meta";
-
-          // Date pill
-          const dateBadge = document.createElement("div");
-          dateBadge.className = "task-date";
-          dateBadge.setAttribute("data-action", "date-pill");
-          if (task.dueDate) {
-            if (!task.completed && task.dueDate < todayStr) {
-              dateBadge.classList.add("overdue");
-            }
-            dateBadge.innerHTML = '<i class="ri-calendar-line"></i><span>' + task.dueDate + '</span>';
-          } else {
-            dateBadge.innerHTML = '<i class="ri-calendar-line"></i><span>Add date</span>';
-          }
-          meta.appendChild(dateBadge);
-
-          const dateInput = document.createElement("input");
-          dateInput.type = "date";
-          dateInput.className = "task-date-input";
-          dateInput.value = task.dueDate || "";
-          meta.appendChild(dateInput);
-
-          // Priority pill
-          const priorityBadge = document.createElement("div");
-          priorityBadge.className = "task-priority";
-          priorityBadge.setAttribute("data-action", "priority-pill");
-          const p = task.priority || 2;
-          if (p === 1) priorityBadge.classList.add("p1");
-          else if (p === 2) priorityBadge.classList.add("p2");
-          else priorityBadge.classList.add("p3");
-          priorityBadge.innerHTML = '<i class="ri-flag-2-line"></i><span>P' + p + '</span>';
-          meta.appendChild(priorityBadge);
-
-          // Project pill
-          if (project && !project.isInbox) {
-            const projBadge = document.createElement("div");
-            projBadge.className = "task-project-pill";
-            const dot = document.createElement("div");
-            dot.className = "task-project-dot";
-            dot.style.background = project.color;
-            const span = document.createElement("span");
-            span.textContent = project.name;
-            projBadge.appendChild(dot);
-            projBadge.appendChild(span);
-            meta.appendChild(projBadge);
-          }
-
-          main.appendChild(meta);
-
-          // Details / notes
-          const details = document.createElement("div");
-          details.className = "task-details";
-          const notes = document.createElement("textarea");
-          notes.className = "task-notes";
-          notes.setAttribute("data-role", "notes");
-          notes.placeholder = "Add notes or details...";
-          notes.value = task.notes || "";
-          details.appendChild(notes);
-          main.appendChild(details);
-
-          const actions = document.createElement("div");
-          actions.className = "task-actions";
-          const deleteBtn = document.createElement("button");
-          deleteBtn.className = "task-delete-btn";
-          deleteBtn.innerHTML = '<i class="ri-delete-bin-6-line"></i>';
-          actions.appendChild(deleteBtn);
-
-          row.appendChild(checkWrap);
-          row.appendChild(main);
-          row.appendChild(actions);
-
-          els.taskList.appendChild(row);
-        });
-      }
-
-      function renderCounts() {
-        const todayStr = new Date().toISOString().slice(0, 10);
-        const inboxCount = state.tasks.filter(
-          t => !t.completed && (t.projectId === "inbox" || !t.projectId)
-        ).length;
-        const todayCount = state.tasks.filter(
-          t => !t.completed && t.dueDate === todayStr
-        ).length;
-        const upcomingCount = state.tasks.filter(
-          t => !t.completed && t.dueDate && t.dueDate > todayStr
-        ).length;
-        const completedCount = state.tasks.filter(t => t.completed).length;
-
-        els.countInbox.textContent = inboxCount;
-        els.countToday.textContent = todayCount;
-        els.countUpcoming.textContent = upcomingCount;
-        els.countCompleted.textContent = completedCount;
-      }
-
-      function renderAll() {
-        renderHeader();
-        renderProjects();
-        renderTasks();
-        renderCounts();
-      }
-
-      init();
-    })();
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
   </script>
 </body>
 
