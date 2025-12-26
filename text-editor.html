@@ -1,1513 +1,898 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
+
     gtag('config', 'G-RQR9BDLJ26');
   </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Taskflows Ultimate Editor</title>
 
-  <meta charset="UTF-8" />
-  <title>TaskFlows · Text Editor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <link rel="icon" type="image/x-icon" href="Untitled.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Anton&family=Bitter&family=Cabin&family=Dancing+Script&family=Dosis&family=Fira+Sans&family=Inconsolata&family=Inter:wght@300;400;500;600;700&family=Josefin+Sans&family=Kanit&family=Lato&family=Lobster&family=Lora&family=Merriweather&family=Montserrat&family=Mukta&family=Nunito&family=Open+Sans&family=Oswald&family=Oxygen&family=Pacifico&family=Playfair+Display&family=Poppins&family=Quicksand&family=Raleway&family=Righteous&family=Roboto&family=Rubik&family=Shadows+Into+Light&family=Source+Sans+Pro&family=Ubuntu&family=Varela+Round&family=Work+Sans&display=swap"
+    rel="stylesheet">
+
+  <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
 
   <style>
+    /* --- THEME VARIABLES --- */
     :root {
-      --primary: #6366f1;
-      --primary-soft: #eef2ff;
-      --primary-soft-2: #e0e7ff;
-      --ink: #0f172a;
-      --ink-2: #111827;
-      --ink-3: #6b7280;
-      --ink-4: #9ca3af;
-
-      --bg: #f5f5f7;
-      --bg-soft: #eef0f4;
-      --card: #ffffff;
-      --glass: rgba(255, 255, 255, 0.9);
-
-      --border: #e5e7eb;
-      --muted: #f3f4f6;
-      --muted-2: #e5e7eb;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-      --radius: 14px;
-      --r-sm: 10px;
-      --speed: .18s;
+      --bg-body: #f3f4f6;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-hover: #f3f4f6;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --accent: #6366f1;
+      --scrollbar-track: #f1f1f1;
+      --scrollbar-thumb: #c1c1c1;
+      --editor-toolbar: #f9fafb;
+      --input-bg: #ffffff;
     }
 
-    .dark {
-      --bg: #020617;
-      --bg-soft: #020617;
-      --card: #020617;
-      --glass: rgba(15, 23, 42, 0.96);
-
-      --ink: #e5e7eb;
-      --ink-2: #e5e7eb;
-      --ink-3: #9ca3af;
-      --ink-4: #6b7280;
-
-      --border: #1f2937;
-      --muted: #020617;
-      --muted-2: #020617;
-      --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--ink-2);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
+    [data-theme="dark"] {
+      --bg-body: #050505;
+      --bg-sidebar: #0a0a0a;
+      --bg-card: #121212;
+      --bg-hover: #1a1a1a;
+      --text-main: #ffffff;
+      --text-muted: #a3a3a3;
+      --border-color: #262626;
+      --accent: #6366f1;
+      --scrollbar-track: #0a0a0a;
+      --scrollbar-thumb: #333;
+      --editor-toolbar: #1a1a1a;
+      --input-bg: #1a1a1a;
     }
 
     body {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .wrap {
-      display: flex;
-      flex: 1;
-      min-height: 100vh;
-    }
-
-    /* Sidebar (Docs + Nav) */
-    .sidebar {
-      width: 270px;
-      flex: 0 0 270px;
-      background: var(--glass);
-      backdrop-filter: blur(18px);
-      border-right: 1px solid var(--border);
-      padding: 16px 16px 18px;
-      position: sticky;
-      top: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
       height: 100vh;
-      overflow: auto;
-      box-shadow: 10px 0 40px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* --- SIDEBAR --- */
+    #sidebar-wrapper {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      transition: margin-left 0.3s ease, background-color 0.3s;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      transition: transform .2s ease;
+      z-index: 1000;
+      padding: 24px 16px;
     }
 
-    .sidebar.hidden {
-      transform: translateX(-100%);
+    #sidebar-wrapper.toggled {
+      margin-left: -260px;
     }
 
-    .logo {
+    .sidebar-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-left: 8px;
     }
 
-    .logo-badge {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle at 30% 20%, #a855f7, #4f46e5);
-      box-shadow: 0 10px 25px rgba(88, 80, 236, 0.35);
-    }
-
-    .logo-badge svg {
-      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.3));
-    }
-
-    .app-title {
-      font-weight: 800;
-      letter-spacing: -.03em;
-      font-size: 1.2rem;
-      color: var(--ink-2);
-    }
-
-    .app-sub {
-      font-size: .82rem;
-      font-weight: 500;
-      color: var(--ink-4);
-    }
-
-    .side-label {
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      color: var(--ink-4);
-      margin: 8px 2px 4px;
-    }
-
-    .side-nav {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    .sidebar-menu {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+      flex-grow: 1;
+      overflow-y: auto;
     }
 
-    .side-nav a {
-      font: 500 .9rem/1.2 'Inter', sans-serif;
+    .sidebar-link {
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
       display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .sidebar-link:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    .sidebar-link.active {
+      background-color: var(--accent);
+      color: white !important;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .sidebar-link.active i {
+      color: white !important;
+    }
+
+    .sidebar-link i {
+      font-size: 1.3rem;
+      margin-right: 12px;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .sidebar-section-header {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      padding-left: 16px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    /* --- EDITOR TOOLBAR --- */
+    .ql-toolbar.ql-snow {
+      background-color: var(--editor-toolbar);
+      border-color: var(--border-color);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      padding: 8px 9px;
-      border-radius: var(--r-sm);
-      color: var(--ink-3);
-      background: transparent;
-      transition: background var(--speed), color var(--speed);
     }
 
-    .side-nav a:hover {
-      background: var(--muted);
-      color: var(--ink-2);
+    .ql-snow .ql-picker.ql-font {
+      width: 160px;
     }
 
-    .side-nav .active {
-      background: var(--primary-soft);
-      color: var(--primary);
-      font-weight: 600;
+    .ql-snow .ql-picker-label {
+      color: var(--text-main);
+      outline: none;
     }
 
-    .nav-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--muted);
-      flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      font-size: .7rem;
-      font-weight: 600;
-      color: var(--ink-3);
+    .ql-snow .ql-picker-options {
+      background-color: var(--bg-card);
+      border-color: var(--border-color);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      max-height: 300px;
+      overflow-y: auto;
     }
 
-    .nav-dot-docs {
-      background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+    .ql-snow .ql-picker-item {
+      color: var(--text-main);
+      padding: 5px 10px;
     }
 
-    .nav-dot-dash {
-      background: linear-gradient(135deg, #e0e7ff, #f5f3ff);
+    .ql-snow .ql-picker-item:hover {
+      background-color: var(--bg-hover);
+      color: var(--accent);
     }
 
-    .nav-dot-lists {
-      background: linear-gradient(135deg, #dcfce7, #fee2e2);
-    }
-
-    /* Docs list */
-    .docs-header {
+    .size-control-wrapper {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-top: 2px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
     }
 
-    .docs-title {
-      font-size: .86rem;
-      font-weight: 600;
-      color: var(--ink-3);
-    }
-
-    .btn-small {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 3px 8px;
-      font-size: .75rem;
-      background: var(--card);
+    .btn-size-adjust {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0 8px;
+      height: 30px;
       cursor: pointer;
-      color: var(--ink-3);
-    }
-
-    .btn-small:hover {
-      background: var(--muted);
-    }
-
-    .doc-list {
-      list-style: none;
-      margin: 6px 0 0;
-      padding: 0;
       display: flex;
-      flex-direction: column;
-      gap: 4px;
-      max-height: 280px;
-      overflow: auto;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .btn-size-adjust:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+
+    #custom-font-size {
+      background-color: transparent;
+      border: none;
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      color: var(--text-main);
+      height: 30px;
+      width: 40px;
+      font-size: 14px;
+      text-align: center;
+      padding: 0;
+      -moz-appearance: textfield;
+    }
+
+    #custom-font-size::-webkit-outer-spin-button,
+    #custom-font-size::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    #custom-font-size:focus {
+      outline: none;
+      background-color: var(--bg-hover);
+    }
+
+    #editor-container {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border-color: var(--border-color);
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      font-size: 16px;
+      min-height: 400px;
+    }
+
+    .ql-editor {
+      color: var(--text-main) !important;
+    }
+
+    .ql-editor.ql-blank::before {
+      color: var(--text-muted);
+      font-style: normal;
+    }
+
+    [data-theme="dark"] .ql-snow .ql-stroke {
+      stroke: #e5e5e5;
+    }
+
+    [data-theme="dark"] .ql-snow .ql-fill {
+      fill: #e5e5e5;
+    }
+
+    [data-theme="dark"] .ql-snow .ql-picker {
+      color: #e5e5e5;
+    }
+
+    .btn-custom {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      transition: 0.2s;
+    }
+
+    .btn-custom:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-main);
+    }
+
+    #doc-title-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 1.25rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    #doc-title-input:hover {
+      border-color: var(--border-color);
+      background: var(--bg-hover);
+    }
+
+    #doc-title-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--bg-card);
     }
 
     .doc-item {
-      border-radius: var(--r-sm);
-      border: 1px solid transparent;
-      padding: 6px 7px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      padding: 10px;
+      margin-bottom: 6px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: 0.2s;
+      position: relative;
     }
 
     .doc-item:hover {
-      background: var(--muted);
+      background-color: var(--bg-hover);
     }
 
-    .doc-item.active {
-      background: var(--primary-soft);
-      border-color: var(--primary-soft-2);
+    .doc-item.active-doc {
+      background-color: var(--bg-hover);
+      border-left: 3px solid var(--accent);
     }
 
-    .doc-name {
-      font-size: .85rem;
-      font-weight: 500;
-      color: var(--ink-2);
+    .dropdown-menu {
+      background-color: var(--bg-card);
+      border-color: var(--border-color);
     }
 
-    .doc-meta {
-      font-size: .72rem;
-      color: var(--ink-4);
-      display: flex;
-      justify-content: space-between;
-      gap: 6px;
+    .dropdown-item {
+      color: var(--text-main);
     }
 
-    .doc-actions {
-      display: flex;
-      gap: 4px;
-      margin-top: 4px;
+    .dropdown-item:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-main);
     }
 
-    .doc-actions button {
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: transparent;
-      font-size: .7rem;
-      padding: 2px 6px;
-      cursor: pointer;
-      color: var(--ink-4);
-    }
-
-    .doc-actions button:hover {
-      background: var(--muted);
-      color: var(--ink-3);
-    }
-
-    .side-footer {
-      margin-top: auto;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: .78rem;
-      color: var(--ink-4);
-    }
-
-    .side-footer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border-radius: var(--r-sm);
-      border: 1px solid var(--border);
-      font-size: .8rem;
-      padding: 7px 10px;
-      color: var(--ink-3);
-      cursor: pointer;
-    }
-
-    .btn-outline:hover {
-      background: var(--muted);
-    }
-
-    /* Main area */
-    .main {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.08), transparent 55%), var(--bg);
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid var(--border);
-      padding: 10px 18px;
-      background: rgba(245, 245, 247, 0.95);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
-
-    .dark .topbar {
-      background: rgba(2, 6, 23, 0.96);
-    }
-
-    .topbar-inner {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .doc-title-input {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      font-size: .95rem;
-      font-weight: 600;
-      background: var(--card);
-      color: var(--ink-2);
-      outline: none;
-    }
-
-    .doc-title-input::placeholder {
-      color: var(--ink-4);
-      font-weight: 500;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 7px 10px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: .8rem;
-      font-weight: 600;
-      color: var(--ink-3);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: var(--shadow);
-      transition: background var(--speed), border-color var(--speed), color var(--speed), transform .08s;
-    }
-
-    .btn.primary {
-      background: #111827;
-      border-color: #111827;
-      color: #f9fafb;
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .btn-pill {
-      border-radius: 999px;
-    }
-
-    .btn-icon-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: radial-gradient(circle at 30% 20%, #4f46e5, #0f172a);
-    }
-
-    .btn-icon-focus {
-      width: 14px;
-      height: 14px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      position: relative;
-    }
-
-    .btn-icon-focus::before {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      border-radius: 2px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      object-fit: cover;
-      cursor: pointer;
-    }
-
-    /* Toolbar */
-    .toolbar-wrap {
-      display: flex;
-      justify-content: center;
-      padding: 8px 16px 4px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .toolbar {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .tool-group {
-      display: inline-flex;
-      border-radius: 999px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .tool-btn {
-      border: none;
-      background: transparent;
-      padding: 6px 9px;
-      font-size: .78rem;
-      font-weight: 500;
-      color: var(--ink-3);
-      cursor: pointer;
-      border-right: 1px solid var(--border);
-      min-width: 30px;
-    }
-
-    .tool-btn:last-child {
-      border-right: none;
-    }
-
-    .tool-btn:hover {
-      background: var(--muted);
-      color: var(--ink-2);
-    }
-
-    .tool-btn.active {
-      background: var(--primary-soft);
-      color: var(--primary);
-    }
-
-    .tool-label {
-      padding: 0 8px;
-      font-size: .78rem;
-      color: var(--ink-4);
-    }
-
-    .tool-select {
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      padding: 5px 10px;
-      font-size: .78rem;
-      font-weight: 500;
-      background: var(--card);
-      color: var(--ink-3);
-      cursor: pointer;
-    }
-
-    /* Editor area */
-    .editor-shell {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      padding: 16px 16px 18px;
-      overflow: auto;
-    }
-
-    .editor-wrap {
-      max-width: 1100px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .editor-page {
-      background: var(--card);
-      border-radius: 18px;
-      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
-      padding: 32px 46px 40px;
-      border: 1px solid var(--border);
-      width: 100%;
-      min-height: calc(100vh - 200px);
-      max-width: 800px;
-    }
-
-    #editor {
-      outline: none;
-      min-height: 500px;
-      font-size: .98rem;
-      line-height: 1.6;
-      color: var(--ink-2);
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    #editor h1,
-    #editor h2,
-    #editor h3 {
-      margin: 1.2em 0 .4em;
-      font-weight: 700;
-    }
-
-    #editor h1 {
-      font-size: 1.7rem;
-    }
-
-    #editor h2 {
-      font-size: 1.45rem;
-    }
-
-    #editor h3 {
-      font-size: 1.25rem;
-    }
-
-    #editor p {
-      margin: .3em 0;
-    }
-
-    #editor ul,
-    #editor ol {
-      padding-left: 1.3em;
-      margin: .3em 0;
-    }
-
-    #editor blockquote {
-      border-left: 3px solid var(--primary-soft-2);
-      padding-left: 10px;
-      color: var(--ink-3);
-      margin: .6em 0;
-      font-style: italic;
-    }
-
-    #editor hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 1.2em 0;
-    }
-
-    .todo-list {
-      list-style: none;
-      padding-left: 0;
-      margin: .3em 0;
-    }
-
-    .todo-list li {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin: .2em 0;
-    }
-
-    .todo-list input[type="checkbox"] {
-      width: 14px;
-      height: 14px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-    }
-
-    .code-inline {
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: .86rem;
-      background: var(--muted);
-      border-radius: 4px;
-      padding: 2px 4px;
-    }
-
-    .highlight {
-      background: #fef3c7;
-    }
-
-    /* Status bar */
-    .statusbar {
-      border-top: 1px solid var(--border);
-      padding: 6px 16px 8px;
-      display: flex;
-      justify-content: center;
-      font-size: .78rem;
-      color: var(--ink-4);
-      background: rgba(248, 250, 252, 0.9);
-      backdrop-filter: blur(10px);
-    }
-
-    .dark .statusbar {
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .status-inner {
-      width: 100%;
-      max-width: 1100px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .status-left,
-    .status-right {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #16a34a;
-      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.18);
-    }
-
-    .dot.unsaved {
-      background: #f97316;
-      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.16);
-    }
-
-    .kbd {
-      font-weight: 600;
-      border: 1px solid var(--border);
-      padding: 1px 5px;
-      border-radius: 5px;
-      background: var(--card);
-      font-size: .75rem;
-    }
-
-    /* Toasts */
-    .toasts {
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      display: grid;
-      gap: 6px;
-      z-index: 40;
-    }
-
-    .toast {
-      background: var(--card);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      padding: 7px 9px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: .8rem;
-      color: var(--ink-2);
-    }
-
-    .toast.ok {
-      border-color: #bbf7d0;
-    }
-
-    .toast.bad {
-      border-color: #fecaca;
-    }
-
-    /* Profile dropdown (simple) */
-    .pbox {
-      position: relative;
-    }
-
-    .pdrop {
-      position: absolute;
-      right: 0;
-      top: 38px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      min-width: 220px;
-      box-shadow: var(--shadow);
-      display: none;
-      padding: 8px 10px 10px;
-      z-index: 20;
-      font-size: .8rem;
-    }
-
-    .pdrop.show {
-      display: block;
-    }
-
-    .pdrop .name {
-      font-weight: 700;
-      font-size: .9rem;
-    }
-
-    .pdrop .email {
-      color: var(--ink-3);
-      font-weight: 500;
-      font-size: .78rem;
-    }
-
-    .pdrop .bio {
-      margin: 5px 0;
-      color: var(--ink-3);
-      font-weight: 400;
-      font-size: .78rem;
-    }
-
-    .pdrop .line {
-      border-top: 1px solid var(--border);
-      margin: 6px 0;
-    }
-
-    .pdrop .btn {
-      width: 100%;
-      justify-content: center;
-      box-shadow: none;
-      border-radius: var(--r-sm);
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .sidebar {
+    /* --- MOBILE OPTIMIZATIONS --- */
+    @media (max-width: 768px) {
+      #sidebar-wrapper {
         position: fixed;
-        left: 0;
+        height: 100%;
+        margin-left: -260px;
+      }
+
+      #sidebar-wrapper.mobile-show {
+        margin-left: 0;
+      }
+
+      .mobile-overlay {
+        display: none;
+        position: fixed;
         top: 0;
-        z-index: 30;
-        transform: translateX(-100%);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
       }
 
-      .sidebar.open {
-        transform: translateX(0);
+      .mobile-overlay.show {
+        display: block;
       }
 
-      .main {
-        flex: 1;
+      /* Scrollable Toolbar for Mobile */
+      .ql-toolbar.ql-snow {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .topbar-inner {
-        flex-wrap: wrap;
+      /* Hide Scrollbar in toolbar */
+      .ql-toolbar.ql-snow::-webkit-scrollbar {
+        height: 4px;
       }
 
-      .editor-page {
-        padding: 22px 18px 26px;
+      .ql-formats {
+        display: inline-flex;
+        margin-right: 15px !important;
+      }
+
+      /* Better input sizing */
+      #doc-title-input {
+        font-size: 1rem;
+        padding: 4px;
+      }
+
+      /* Hide font picker on extremely small screens if needed, 
+         or just let it scroll */
+      .ql-snow .ql-picker.ql-font {
+        width: 110px;
+      }
+
+      /* Adjust Editor Height for Mobile Keyboards */
+      #editor-container {
+        min-height: 50vh;
+      }
+
+      .mobile-padding-fix {
+        padding: 0.75rem !important;
       }
     }
 
-    @media (max-width: 600px) {
-      .toolbar {
-        justify-content: center;
-      }
+    /* Offcanvas Styling */
+    .offcanvas {
+      background-color: var(--bg-sidebar);
+      color: var(--text-main);
     }
 
-    .focus-mode .sidebar {
-      transform: translateX(-100%);
+    .offcanvas-header .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
     }
 
-    .focus-mode .topbar,
-    .focus-mode .toolbar-wrap,
-    .focus-mode .statusbar {
-      border-color: transparent;
-      background: transparent;
-      box-shadow: none;
-      backdrop-filter: none;
-    }
-
-    .focus-mode .editor-page {
-      box-shadow: none;
+    [data-theme="light"] .offcanvas-header .btn-close {
+      filter: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="logo">
-        <span class="logo-badge" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff">
-            <rect x="3" y="3" width="18" height="18" rx="6" opacity=".15"></rect>
-            <rect x="7" y="7" width="10" height="10" rx="3"></rect>
-          </svg>
-        </span>
-        <div>
-          <div class="app-title">TaskFlows</div>
-          <div class="app-sub">Text Editor</div>
-        </div>
+
+  <div class="d-flex h-100" id="wrapper">
+
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <div id="sidebar-wrapper">
+      <div class="sidebar-brand">
+        <i class="ph-fill ph-diamonds-four fs-4" style="color: var(--accent);"></i>
+        <span class="fs-5 fw-bold" style="color: var(--text-main);">Taskflows</span>
       </div>
 
-      <!-- Workspace navigation -->
-      <div class="side-label">Workspace</div>
-      <ul class="side-nav">
-        <li>
-          <a href="dashboard.html">
-            <span class="nav-dot nav-dot-dash">D</span>
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a href="journal.html">
-            <span class="nav-dot nav-dot-docs">J</span>
-            Journal
-          </a>
-        </li>
-        <li>
-          <a href="lists.html">
-            <span class="nav-dot nav-dot-lists">Ls</span>
-            Lists
-          </a>
-        </li>
-        <li>
-          <a href="notes.html">
-            <span class="nav-dot nav-dot-docs">N</span>
-            Notes
-          </a>
-        </li>
-        <li>
-          <a href="quicknotes.html">
-            <span class="nav-dot nav-dot-docs">Q</span>
-            Quick Notes
-          </a>
-        </li>
-        <li>
-          <a href="text-editor.html" class="active">
-            <span class="nav-dot nav-dot-docs">E</span>
-            Text Editor
-          </a>
-        </li>
-        <li>
-          <a href="to-do-list.html">
-            <span class="nav-dot nav-dot-lists">T</span>
-            To-Do Lists
-          </a>
-        </li>
-        <li>
-          <a href="whiteboard.html">
-            <span class="nav-dot nav-dot-lists">W</span>
-            Whiteboard
-          </a>
-        </li>
-      </ul>
+      <div class="sidebar-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="ph ph-squares-four"></i> Dashboard</a>
+        <a href="projects.html" class="sidebar-link"><i class="ph ph-folder-open"></i> Projects</a>
+        <a href="my_tasks.html" class="sidebar-link"><i class="ph ph-check-circle"></i> My Tasks</a>
+        <a href="analytics.html" class="sidebar-link"><i class="ph ph-chart-bar"></i> Analytics</a>
 
-      <!-- Documents section -->
-      <div class="side-label">Documents</div>
-      <div class="docs-header">
-        <div class="docs-title">Your docs</div>
-        <button class="btn-small" id="newDocBtn">New</button>
+        <div class="sidebar-section-header">WORKSPACE</div>
+        <a href="text_editor.html" class="sidebar-link active"><i class="ph ph-file-text"></i> Text Editor</a>
+        <a href="to_do_lists.html" class="sidebar-link"><i class="ph ph-list-checks"></i> To-Do Lists</a>
+        <a href="notes.html" class="sidebar-link"><i class="ph ph-note"></i> Notes</a>
+        <a href="whiteboard.html" class="sidebar-link"><i class="ph ph-scribble-loop"></i> Whiteboard</a>
+
+        <div class="sidebar-section-header">PERSONAL</div>
+        <a href="lists.html" class="sidebar-link"><i class="ph ph-list"></i> Lists</a>
+        <a href="journal.html" class="sidebar-link"><i class="ph ph-book-bookmark"></i> Journal</a>
+        <a href="quick_notes.html" class="sidebar-link"><i class="ph ph-bolt"></i> Quick Notes</a>
       </div>
-      <ul class="doc-list" id="docList"></ul>
 
-      <!-- Footer -->
-      <div class="side-footer">
-        <div class="side-footer-row">
-          <span>Theme</span>
-          <button class="btn-outline" id="themeToggleSide">Toggle</button>
-        </div>
-        <div class="side-footer-row">
-          <span>Sidebar</span>
-          <button class="btn-outline" id="hideSidebarBtn">Hide</button>
-        </div>
+      <div class="sidebar-footer">
+        <a href="edit_profile.html" class="sidebar-link"><i class="ph ph-user-circle"></i> Edit Profile</a>
       </div>
-    </aside>
+    </div>
 
-    <!-- Main -->
-    <main class="main">
-      <header class="topbar">
-        <div class="topbar-inner">
-          <input id="docTitle" class="doc-title-input" placeholder="Untitled document" />
-          <div class="top-actions">
-            <button class="btn btn-pill" id="focusModeBtn" title="Toggle focus mode">
-              <span class="btn-icon-focus"></span>Focus
+    <div id="page-content-wrapper" class="w-100 d-flex flex-column">
+
+      <nav class="navbar navbar-expand-lg border-bottom px-3 py-3"
+        style="background-color: var(--bg-body); border-color: var(--border-color) !important;">
+        <div class="container-fluid p-0">
+
+          <div class="d-flex align-items-center me-2">
+            <button class="btn btn-custom me-2" id="menu-toggle"><i class="ph ph-list fs-5"></i></button>
+            <button class="btn btn-custom d-md-none" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#mobileDocs" aria-controls="mobileDocs">
+              <i class="ph ph-folder fs-5"></i>
             </button>
-            <button class="btn btn-pill" id="themeToggleTop">
-              <span class="btn-icon-dot"></span>Theme
+          </div>
+
+          <div class="d-flex flex-column justify-content-center flex-grow-1 me-2 overflow-hidden">
+            <input type="text" id="doc-title-input" value="Untitled Document" class="mb-0">
+            <small class="text-truncate" style="color: var(--text-muted); padding-left: 8px;">Workspace / Editor</small>
+          </div>
+
+          <div class="ms-auto d-flex align-items-center gap-2">
+            <button class="btn btn-custom rounded-circle p-2" id="theme-toggle" title="Toggle Theme">
+              <i class="ph ph-moon fs-5" id="theme-icon"></i>
             </button>
-            <button class="btn" id="saveBtn">Save</button>
-            <button class="btn" id="exportTxtBtn">Export .txt</button>
-            <button class="btn" id="exportHtmlBtn">Export .html</button>
-            <div class="pbox">
-              <img id="topAvatar" class="avatar" alt="Profile" />
-              <div class="pdrop" id="pdrop">
-                <div class="name" id="pdName">Guest</div>
-                <div class="email" id="pdEmail">—</div>
-                <div class="bio" id="pdBio">No bio yet.</div>
-                <div class="line"></div>
-                <button class="btn" id="dummyProfileBtn">Open profile in dashboard</button>
+
+            <button class="btn btn-primary d-md-block" style="background-color: var(--accent); border:none;"
+              onclick="triggerSave()">
+              <span class="d-none d-md-inline"><i class="ph ph-floppy-disk me-1"></i> Save</span>
+              <span class="d-md-none"><i class="ph ph-floppy-disk"></i></span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid p-0 flex-grow-1 d-flex flex-column overflow-hidden">
+        <div class="row h-100 g-0">
+
+          <div class="col-md-3 col-lg-2 d-none d-md-flex flex-column border-end p-0"
+            style="background-color: var(--bg-sidebar); border-color: var(--border-color) !important;">
+            <div class="p-3 d-flex justify-content-between align-items-center">
+              <span class="fw-bold" style="color: var(--text-muted);">DOCUMENTS</span>
+              <button class="btn btn-sm btn-link text-decoration-none p-0 fw-bold" style="color: var(--accent);"
+                onclick="createNewDoc()">+ New</button>
+            </div>
+            <div class="px-3 pb-3">
+              <input type="text" id="search-docs" class="form-control form-control-sm" placeholder="Filter..."
+                style="background-color: var(--bg-card); color: var(--text-main); border-color: var(--border-color);">
+            </div>
+            <div id="document-list" class="flex-grow-1 overflow-auto px-2 pb-5"></div>
+          </div>
+
+          <div class="col-12 col-md-9 col-lg-10 p-3 p-md-4 mobile-padding-fix d-flex flex-column h-100 overflow-auto"
+            style="background-color: var(--bg-body);">
+
+            <div class="d-flex justify-content-between mb-2">
+              <div class="btn-group">
+                <button class="btn btn-sm btn-custom" onclick="window.print()"><i class="ph ph-printer"></i>
+                  <span class="d-none d-md-inline">Print</span></button>
+                <button class="btn btn-sm btn-custom"><i class="ph ph-file-pdf"></i> <span
+                    class="d-none d-md-inline">Export</span></button>
               </div>
+              <small id="status-indicator" class="text-success d-none"><i class="ph ph-check"></i> <span
+                  class="d-none d-md-inline">Changes saved</span><span class="d-md-none">Saved</span></small>
+            </div>
+
+            <div class="flex-grow-1 d-flex flex-column shadow-sm rounded-3 overflow-hidden">
+
+              <div id="toolbar-container">
+                <select class="ql-font"></select>
+
+                <span class="border-end mx-2"
+                  style="border-color: var(--border-color) !important; height: 20px;"></span>
+
+                <div class="size-control-wrapper me-2">
+                  <button class="btn-size-adjust" onclick="changeSize(-2)" title="Decrease Size"><i
+                      class="ph ph-minus"></i></button>
+                  <input type="number" id="custom-font-size" value="16" min="8" max="200" title="Font Size">
+                  <button class="btn-size-adjust" onclick="changeSize(2)" title="Increase Size"><i
+                      class="ph ph-plus"></i></button>
+                </div>
+
+                <span class="ql-formats">
+                  <button class="ql-bold"></button>
+                  <button class="ql-italic"></button>
+                  <button class="ql-underline"></button>
+                  <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                  <select class="ql-color"></select>
+                  <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered"></button>
+                  <button class="ql-list" value="bullet"></button>
+                  <button class="ql-align" value=""></button>
+                  <button class="ql-align" value="center"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-image"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-clean"></button>
+                </span>
+              </div>
+
+              <div id="editor-container" class="flex-grow-1 border-0"></div>
+            </div>
+
+            <div class="mt-2 d-flex justify-content-between" style="color: var(--text-muted); font-size: 0.85rem;">
+              <span id="word-count">0 Words | 0 Chars</span>
+              <span id="reading-time">~0 min</span>
             </div>
           </div>
         </div>
-      </header>
-
-      <!-- Toolbar -->
-      <section class="toolbar-wrap">
-        <div class="toolbar">
-          <select id="blockFormat" class="tool-select" title="Block style">
-            <option value="p">Normal text</option>
-            <option value="h1">Heading 1</option>
-            <option value="h2">Heading 2</option>
-            <option value="h3">Heading 3</option>
-          </select>
-
-          <div class="tool-group">
-            <button class="tool-btn" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
-            <button class="tool-btn" data-cmd="italic" title="Italic (Ctrl+I)" style="font-style:italic;">I</button>
-            <button class="tool-btn" data-cmd="underline" title="Underline (Ctrl+U)"
-              style="text-decoration:underline;">U</button>
-            <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough"
-              style="text-decoration:line-through;">S</button>
-          </div>
-
-          <div class="tool-group">
-            <button class="tool-btn" data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
-            <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
-            <button class="tool-btn" id="todoBtn" title="Checklist">☑︎ Tasks</button>
-          </div>
-
-          <div class="tool-group">
-            <button class="tool-btn" data-cmd="justifyLeft" title="Align left">≡</button>
-            <button class="tool-btn" data-cmd="justifyCenter" title="Align center">≣</button>
-            <button class="tool-btn" data-cmd="justifyRight" title="Align right">≡</button>
-          </div>
-
-          <div class="tool-group">
-            <button class="tool-btn" data-cmd="outdent" title="Decrease indent">←</button>
-            <button class="tool-btn" data-cmd="indent" title="Increase indent">→</button>
-          </div>
-
-          <div class="tool-group">
-            <button class="tool-btn" id="quoteBtn" title="Quote">“”</button>
-            <button class="tool-btn" id="inlineCodeBtn" title="Inline code">{ }</button>
-            <button class="tool-btn" id="highlightBtn" title="Highlight">HL</button>
-            <button class="tool-btn" id="dividerBtn" title="Insert divider">—</button>
-          </div>
-
-          <div class="tool-group">
-            <button class="tool-btn" data-cmd="undo" title="Undo">↺</button>
-            <button class="tool-btn" data-cmd="redo" title="Redo">↻</button>
-            <button class="tool-btn" data-cmd="removeFormat" title="Clear formatting">CLR</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Editor -->
-      <section class="editor-shell">
-        <div class="editor-wrap">
-          <div class="editor-page">
-            <div id="editor" contenteditable="true"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Status -->
-      <footer class="statusbar">
-        <div class="status-inner">
-          <div class="status-left">
-            <span id="saveDot" class="dot unsaved"></span>
-            <span id="saveStatus">Unsaved changes</span>
-          </div>
-          <div class="status-right">
-            <span id="wordCount">0 words</span>
-            <span id="charCount">0 characters</span>
-            <span id="readTime">~0 min read</span>
-            <span>Press <span class="kbd">Ctrl + S</span> to save</span>
-          </div>
-        </div>
-      </footer>
-    </main>
+      </div>
+    </div>
   </div>
 
-  <div class="toasts" id="toasts"></div>
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileDocs" aria-labelledby="mobileDocsLabel">
+    <div class="offcanvas-header border-bottom" style="border-color: var(--border-color) !important;">
+      <h5 class="offcanvas-title fw-bold" id="mobileDocsLabel">Documents</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-0">
+      <div class="p-3">
+        <button class="btn btn-primary w-100 mb-3" style="background-color: var(--accent); border:none;"
+          onclick="createNewDoc(); document.querySelector('[data-bs-dismiss=offcanvas]').click();">+ New
+          Document</button>
+        <input type="text" id="search-docs-mobile" class="form-control form-control-sm" placeholder="Filter..."
+          style="background-color: var(--bg-card); color: var(--text-main); border-color: var(--border-color);">
+      </div>
+      <div id="document-list-mobile" class="flex-grow-1 overflow-auto px-3">
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="image-upload" class="d-none" accept="image/*">
+
+  <style id="font-preview-styles"></style>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
   <script>
-    /* ===== Keys & Helpers ===== */
-    const KEY_THEME = 'taskflows-theme';
-    const KEY_DOCS = 'taskflows-docs';
-    const KEY_ACTIVE_DOC = 'taskflows-active-doc';
-    const KEY_PROFILE = 'taskflows-profile';
+    // --- 1. CONFIG: FONTS & SIZES ---
 
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => Array.from(document.querySelectorAll(sel));
-    const uid = () => 'd_' + Math.random().toString(36).slice(2, 9);
+    // We import the Style attributors to handle arbitrary values (e.g. "23px", "font-family: Roboto")
+    var FontAttributor = Quill.import('attributors/style/font');
+    var SizeAttributor = Quill.import('attributors/style/size');
 
-    const toast = (msg, type = 'ok') => {
-      const t = document.createElement('div');
-      t.className = 'toast ' + (type === 'ok' ? 'ok' : 'bad');
-      t.textContent = msg;
-      $('#toasts').appendChild(t);
-      setTimeout(() => {
-        t.style.opacity = 0;
-        setTimeout(() => t.remove(), 250);
-      }, 1800);
-    };
+    const fontNames = [
+      'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Oswald',
+      'Source Sans Pro', 'Raleway', 'Merriweather',
+      'Nunito', 'Playfair Display', 'Ubuntu', 'Rubik', 'Poppins',
+      'Kanit', 'Fira Sans', 'Mukta', 'Inconsolata', 'Bitter',
+      'Dosis', 'Josefin Sans', 'Anton', 'Cabin',
+      'Pacifico', 'Lobster', 'Shadows Into Light', 'Dancing Script',
+      'Abril Fatface', 'Righteous', 'Varela Round'
+    ];
 
-    const getTheme = () => localStorage.getItem(KEY_THEME) || 'dark';
-    const setTheme = (t) => {
-      localStorage.setItem(KEY_THEME, t);
-      document.documentElement.classList.toggle('dark', t === 'dark');
-    };
+    // Whitelist setup
+    FontAttributor.whitelist = fontNames;
+    Quill.register(FontAttributor, true);
+    Quill.register(SizeAttributor, true);
 
-    const getDocs = () => JSON.parse(localStorage.getItem(KEY_DOCS) || '[]');
-    const setDocs = (arr) => localStorage.setItem(KEY_DOCS, JSON.stringify(arr));
-    const getActiveId = () => localStorage.getItem(KEY_ACTIVE_DOC) || null;
-    const setActiveId = (id) => localStorage.setItem(KEY_ACTIVE_DOC, id);
-
-    const defaultProfile = () => ({
-      name: 'Guest',
-      email: '',
-      bio: '',
-      avatar: 'https://api.dicebear.com/8.x/identicon/svg?seed=guest'
+    // Populate the dropdown <option> tags so Quill knows what to render
+    const fontSelect = document.querySelector('.ql-font');
+    fontNames.forEach(font => {
+      const option = document.createElement('option');
+      option.value = font;
+      option.innerText = font;
+      if (font === 'Inter') option.selected = true;
+      fontSelect.appendChild(option);
     });
 
-    const getProfile = () => {
-      try {
-        return JSON.parse(localStorage.getItem(KEY_PROFILE) || 'null') || defaultProfile();
-      } catch {
-        return defaultProfile();
-      }
-    };
-
-    function fmtDateShort(ts) {
-      if (!ts) return '—';
-      const d = new Date(ts);
-      if (isNaN(d)) return '—';
-      const month = d.getMonth() + 1;
-      const day = d.getDate();
-      return `${month}/${day}`;
-    }
-
-    function countStats(text) {
-      const trimmed = text.trim();
-      const words = trimmed ? trimmed.split(/\s+/).length : 0;
-      const chars = text.replace(/\s/g, '').length;
-      const minutes = words ? Math.max(1, Math.round(words / 200)) : 0;
-      return { words, chars, minutes };
-    }
-
-    /* ===== State ===== */
-    let activeDoc = null;
-    let autosaveTimer = null;
-    let dirty = false;
-
-    /* ===== Theme & Profile UI ===== */
-    setTheme(getTheme());
-
-    function renderProfile() {
-      const u = getProfile();
-      $('#topAvatar').src = u.avatar || defaultProfile().avatar;
-      $('#pdName').textContent = u.name || 'Guest';
-      $('#pdEmail').textContent = u.email || '—';
-      $('#pdBio').textContent = u.bio || 'No bio yet.';
-    }
-
-    /* ===== Docs CRUD ===== */
-    function ensureDocsSeed() {
-      const docs = getDocs();
-      if (docs.length === 0) {
-        const id = uid();
-        const now = Date.now();
-        const initial = {
-          id,
-          title: 'Welcome to TaskFlows Editor',
-          content: '<h1>Welcome to TaskFlows Editor</h1><p>Start typing here, or create a new document from the sidebar.</p><p>You can format text, create lists, checklists, quotes, and more.\nTry pressing <span class="code-inline">Ctrl + S</span> to save.</p>',
-          created: now,
-          updated: now
-        };
-        setDocs([initial]);
-        setActiveId(id);
-      }
-    }
-
-    function renderDocList() {
-      const list = $('#docList');
-      list.innerHTML = '';
-      const docs = getDocs().sort((a, b) => b.updated - a.updated);
-      const activeId = activeDoc?.id || getActiveId();
-
-      docs.forEach(doc => {
-        const li = document.createElement('li');
-        li.className = 'doc-item' + (doc.id === activeId ? ' active' : '');
-        li.dataset.id = doc.id;
-        li.innerHTML = `
-          <div class="doc-name">${doc.title || 'Untitled document'}</div>
-          <div class="doc-meta">
-            <span>${fmtDateShort(doc.updated)}</span>
-            <span>${Math.max(1, Math.round((doc.content || '').length / 80))} lines</span>
-          </div>
-          <div class="doc-actions">
-            <button data-act="rename">Rename</button>
-            <button data-act="duplicate">Duplicate</button>
-            <button data-act="delete">Delete</button>
-          </div>
+    // --- 2. DYNAMIC CSS FOR FONT PREVIEWS ---
+    const styleTag = document.getElementById('font-preview-styles');
+    let cssRules = "";
+    fontNames.forEach(font => {
+      cssRules += `
+            .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="${font}"]::before {
+                content: "${font}";
+                font-family: "${font}", sans-serif;
+            }
+            .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="${font}"]::before {
+                content: "${font}";
+                font-family: "${font}", sans-serif;
+            }
         `;
-        list.appendChild(li);
-      });
+    });
+    styleTag.innerHTML = cssRules;
+
+
+    // --- 3. INIT QUILL ---
+    var quill = new Quill('#editor-container', {
+      theme: 'snow',
+      modules: {
+        toolbar: {
+          container: '#toolbar-container',
+          handlers: {
+            image: imageHandler
+          }
+        }
+      },
+      placeholder: 'Start writing...',
+    });
+
+
+    // --- 4. FONT SIZE LOGIC (NUMBER + BUTTONS) ---
+    const sizeInput = document.getElementById('custom-font-size');
+
+    function changeSize(amount) {
+      let current = parseInt(sizeInput.value) || 16;
+      let newSize = current + amount;
+      if (newSize < 8) newSize = 8;
+      if (newSize > 200) newSize = 200;
+
+      sizeInput.value = newSize;
+      applySize(newSize);
     }
 
-    function loadDoc(id) {
-      const docs = getDocs();
-      const doc = docs.find(d => d.id === id) || docs[0];
-      if (!doc) return;
-      activeDoc = { ...doc };
-      setActiveId(doc.id);
-      $('#docTitle').value = doc.title || '';
-      $('#editor').innerHTML = doc.content || '';
-      dirty = false;
-      updateDirtyUI();
-      updateStatsUI();
-      renderDocList();
+    function applySize(val) {
+      quill.format('size', val + 'px');
+      quill.focus();
     }
 
-    function saveActiveDoc(showToast = true) {
-      if (!activeDoc) return;
-      const docs = getDocs();
-      const index = docs.findIndex(d => d.id === activeDoc.id);
-      const now = Date.now();
-      const title = $('#docTitle').value.trim() || 'Untitled document';
-      const content = $('#editor').innerHTML;
+    sizeInput.addEventListener('change', function () {
+      applySize(this.value);
+    });
 
-      const updatedDoc = {
-        ...(index >= 0 ? docs[index] : activeDoc),
-        id: activeDoc.id,
-        title,
-        content,
-        updated: now
-      };
-
-      if (index >= 0) docs[index] = updatedDoc;
-      else docs.push(updatedDoc);
-
-      setDocs(docs);
-      activeDoc = { ...updatedDoc };
-      dirty = false;
-      updateDirtyUI();
-      renderDocList();
-      if (showToast) toast('Document saved');
-    }
-
-    function newDoc() {
-      const id = uid();
-      const now = Date.now();
-      const docs = getDocs();
-      const doc = {
-        id,
-        title: 'Untitled document',
-        content: '',
-        created: now,
-        updated: now
-      };
-      docs.push(doc);
-      setDocs(docs);
-      setActiveId(id);
-      loadDoc(id);
-      toast('New document created');
-    }
-
-    function renameDoc(id) {
-      const docs = getDocs();
-      const idx = docs.findIndex(d => d.id === id);
-      if (idx < 0) return;
-      const current = docs[idx].title || 'Untitled document';
-      const name = prompt('Rename document:', current);
-      if (name === null) return;
-      docs[idx].title = name.trim() || current;
-      docs[idx].updated = Date.now();
-      setDocs(docs);
-      if (activeDoc && activeDoc.id === id) {
-        $('#docTitle').value = docs[idx].title;
-        activeDoc.title = docs[idx].title;
+    quill.on('selection-change', function (range, oldRange, source) {
+      if (range) {
+        let format = quill.getFormat(range);
+        if (format.size) {
+          sizeInput.value = parseInt(format.size);
+        } else {
+          sizeInput.value = 16;
+        }
       }
+    });
+
+
+    // --- 5. APP STATE ---
+    let documents = [];
+    let activeDocId = null;
+
+    function initApp() {
+      const storedDocs = localStorage.getItem('tf_documents');
+      const storedActiveId = localStorage.getItem('tf_activeDocId');
+
+      if (storedDocs) {
+        documents = JSON.parse(storedDocs);
+        activeDocId = storedActiveId ? parseInt(storedActiveId) : (documents.length > 0 ? documents[0].id : null);
+      }
+
+      if (documents.length === 0) createNewDoc(true);
+      else {
+        const exists = documents.find(d => d.id === activeDocId);
+        if (!exists) activeDocId = documents[0].id;
+      }
+
+      renderDocList();
+      loadActiveDocument();
+
+      const storedTheme = localStorage.getItem('tf_theme');
+      if (storedTheme) setTheme(storedTheme);
+    }
+
+    function saveState() {
+      localStorage.setItem('tf_documents', JSON.stringify(documents));
+      localStorage.setItem('tf_activeDocId', activeDocId);
       renderDocList();
     }
+
+    function createNewDoc(silent = false) {
+      const newDoc = { id: Date.now(), title: "Untitled Document", content: "", date: new Date().toLocaleDateString() };
+      documents.unshift(newDoc);
+      activeDocId = newDoc.id;
+      if (!silent) { saveState(); loadActiveDocument(); }
+    }
+
+    function loadActiveDocument() {
+      const doc = documents.find(d => d.id === activeDocId);
+      if (!doc) return;
+      document.getElementById('doc-title-input').value = doc.title;
+      if (doc.content) quill.setContents(doc.content);
+      else quill.setText('');
+      sizeInput.value = 16;
+      renderDocList();
+    }
+
+    document.getElementById('doc-title-input').addEventListener('input', function (e) {
+      const doc = documents.find(d => d.id === activeDocId);
+      if (doc) {
+        doc.title = e.target.value;
+        clearTimeout(window.saveTimeout);
+        window.saveTimeout = setTimeout(() => saveState(), 500);
+      }
+    });
 
     function duplicateDoc(id) {
-      const docs = getDocs();
-      const src = docs.find(d => d.id === id);
-      if (!src) return;
-      const now = Date.now();
-      const copy = {
-        ...src,
-        id: uid(),
-        title: src.title + ' (Copy)',
-        created: now,
-        updated: now
-      };
-      docs.push(copy);
-      setDocs(docs);
-      setActiveId(copy.id);
-      loadDoc(copy.id);
-      toast('Document duplicated');
+      const original = documents.find(d => d.id === id);
+      if (!original) return;
+      const newDoc = { ...original, id: Date.now(), title: original.title + " (Copy)" };
+      documents.unshift(newDoc);
+      saveState();
     }
 
     function deleteDoc(id) {
-      const docs = getDocs();
-      const doc = docs.find(d => d.id === id);
-      if (!doc) return;
-      if (!confirm(`Delete "${doc.title || 'Untitled document'}"?`)) return;
-      const nextDocs = docs.filter(d => d.id !== id);
-      setDocs(nextDocs);
-      if (nextDocs.length === 0) {
-        setActiveId('');
-        activeDoc = null;
-        $('#docTitle').value = '';
-        $('#editor').innerHTML = '';
-        renderDocList();
-        toast('Document deleted');
-        return;
+      if (!confirm("Delete this document?")) return;
+      documents = documents.filter(d => d.id !== id);
+      if (activeDocId === id) {
+        if (documents.length > 0) activeDocId = documents[0].id;
+        else createNewDoc(true);
+        loadActiveDocument();
       }
-      const newActive = nextDocs[0];
-      setActiveId(newActive.id);
-      loadDoc(newActive.id);
-      toast('Document deleted');
+      saveState();
     }
 
-    /* ===== Editor Commands ===== */
-    function execCmd(cmd, value = null) {
-      document.execCommand(cmd, false, value);
-      $('#editor').focus();
-      markDirty();
+    function switchDoc(id) {
+      activeDocId = id;
+      localStorage.setItem('tf_activeDocId', id);
+      loadActiveDocument();
+      // Close mobile offcanvas if open
+      const offcanvasEl = document.getElementById('mobileDocs');
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+      if (bsOffcanvas) bsOffcanvas.hide();
     }
 
-    function applyBlockFormat(tag) {
-      const blockMap = {
-        h1: 'H1',
-        h2: 'H2',
-        h3: 'H3',
-        p: 'P'
+    function renderDocList() {
+      const listContainer = document.getElementById('document-list');
+      const mobileListContainer = document.getElementById('document-list-mobile');
+
+      const filterDesktop = document.getElementById('search-docs').value.toLowerCase();
+      const filterMobile = document.getElementById('search-docs-mobile')?.value.toLowerCase() || '';
+
+      const render = (container, filter) => {
+        container.innerHTML = '';
+        documents.forEach(doc => {
+          if (filter && !doc.title.toLowerCase().includes(filter)) return;
+          const isActive = doc.id === activeDocId ? 'active-doc' : '';
+          const itemHtml = `
+                <div class="doc-item ${isActive}">
+                    <div class="d-flex justify-content-between align-items-start" onclick="switchDoc(${doc.id})">
+                        <div style="width: 80%">
+                            <div class="fw-bold text-truncate" style="color: var(--text-main); font-size: 0.9rem;">${doc.title}</div>
+                            <div class="text-truncate" style="color: var(--text-muted); font-size: 0.75rem;">${new Date(doc.id).toLocaleDateString()}</div>
+                        </div>
+                        <div class="dropdown" onclick="event.stopPropagation()">
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none" style="color: var(--text-muted);" data-bs-toggle="dropdown"><i class="ph ph-dots-three-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li><a class="dropdown-item" href="#" onclick="duplicateDoc(${doc.id})"><i class="ph ph-copy me-2"></i> Duplicate</a></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteDoc(${doc.id})"><i class="ph ph-trash me-2"></i> Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>`;
+          container.innerHTML += itemHtml;
+        });
+      }
+
+      render(listContainer, filterDesktop);
+      if (mobileListContainer) render(mobileListContainer, filterMobile);
+    }
+
+    document.getElementById('search-docs').addEventListener('input', renderDocList);
+    // Search for mobile
+    document.getElementById('search-docs-mobile')?.addEventListener('input', renderDocList);
+
+    quill.on('text-change', function (delta, oldDelta, source) {
+      if (source === 'user') {
+        const doc = documents.find(d => d.id === activeDocId);
+        if (doc) {
+          doc.content = quill.getContents();
+          const text = quill.getText();
+          const words = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
+          document.getElementById('word-count').innerText = `${words} Words | ${text.length} Chars`;
+          document.getElementById('reading-time').innerText = `~${Math.ceil(words / 200)} min read`;
+          clearTimeout(window.saveTimeout);
+          document.getElementById('status-indicator').classList.add('d-none');
+          window.saveTimeout = setTimeout(() => { saveState(); document.getElementById('status-indicator').classList.remove('d-none'); }, 1000);
+        }
+      }
+    });
+
+    function imageHandler() {
+      const input = document.getElementById('image-upload');
+      input.click();
+      input.onchange = () => {
+        const file = input.files[0];
+        if (/^image\//.test(file.type)) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const range = quill.getSelection();
+            quill.insertEmbed(range.index, 'image', reader.result);
+          };
+        }
       };
-      const block = blockMap[tag] || 'P';
-      document.execCommand('formatBlock', false, block);
-      $('#editor').focus();
-      markDirty();
     }
 
-    function insertChecklist() {
-      const html = '<ul class="todo-list"><li><input type="checkbox" /> Task 1</li><li><input type="checkbox" /> Task 2</li></ul>';
-      document.execCommand('insertHTML', false, html);
-      $('#editor').focus();
-      markDirty();
-    }
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
 
-    function wrapSelection(tagClass) {
-      const sel = window.getSelection();
-      if (!sel.rangeCount) return;
-      const range = sel.getRangeAt(0);
-      if (range.collapsed) {
-        // insert inline wrapper at cursor
-        const span = document.createElement('span');
-        span.className = tagClass;
-        span.textContent = 'text';
-        range.insertNode(span);
-        sel.removeAllRanges();
-        const newRange = document.createRange();
-        newRange.selectNodeContents(span);
-        sel.addRange(newRange);
+    function setTheme(mode) {
+      if (mode === 'light') {
+        html.removeAttribute('data-theme');
+        themeIcon.className = 'ph ph-sun fs-5';
+        localStorage.setItem('tf_theme', 'light');
       } else {
-        const span = document.createElement('span');
-        span.className = tagClass;
-        span.appendChild(range.extractContents());
-        range.insertNode(span);
+        html.setAttribute('data-theme', 'dark');
+        themeIcon.className = 'ph ph-moon fs-5';
+        localStorage.setItem('tf_theme', 'dark');
       }
-      markDirty();
     }
+    themeToggle.addEventListener('click', () => {
+      setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
 
-    function insertDivider() {
-      document.execCommand('insertHorizontalRule', false, null);
-      $('#editor').focus();
-      markDirty();
-    }
-
-    function insertQuote() {
-      document.execCommand('formatBlock', false, 'BLOCKQUOTE');
-      $('#editor').focus();
-      markDirty();
-    }
-
-    /* ===== Stats & Dirty State ===== */
-    function markDirty() {
-      dirty = true;
-      updateDirtyUI();
-      updateStatsUI();
-      scheduleAutosave();
-    }
-
-    function updateDirtyUI() {
-      const dot = $('#saveDot');
-      const txt = $('#saveStatus');
-      if (!dirty) {
-        dot.classList.remove('unsaved');
-        txt.textContent = 'All changes saved';
+    document.getElementById("menu-toggle").onclick = (e) => {
+      e.preventDefault();
+      const sidebar = document.getElementById("sidebar-wrapper");
+      if (window.innerWidth <= 768) {
+        sidebar.classList.toggle("mobile-show");
+        document.getElementById("mobileOverlay").classList.toggle("show");
       } else {
-        dot.classList.add('unsaved');
-        txt.textContent = 'Unsaved changes';
+        sidebar.classList.toggle("toggled");
       }
-    }
+    };
+    document.getElementById("mobileOverlay").onclick = () => {
+      document.getElementById("sidebar-wrapper").classList.remove("mobile-show");
+      document.getElementById("mobileOverlay").classList.remove("show");
+    };
 
-    function updateStatsUI() {
-      const text = $('#editor').innerText || '';
-      const { words, chars, minutes } = countStats(text);
-      $('#wordCount').textContent = `${words} word${words === 1 ? '' : 's'}`;
-      $('#charCount').textContent = `${chars} character${chars === 1 ? '' : 's'}`;
-      $('#readTime').textContent = minutes ? `~${minutes} min read` : '~0 min read';
-    }
+    function triggerSave() { saveState(); alert("Saved!"); }
+    initApp();
 
-    function scheduleAutosave() {
-      if (autosaveTimer) clearTimeout(autosaveTimer);
-      autosaveTimer = setTimeout(() => {
-        if (dirty) saveActiveDoc(false);
-      }, 1000);
-    }
-
-    /* ===== Export ===== */
-    function downloadFile(filename, text, type = 'text/plain') {
-      const blob = new Blob([text], { type });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function exportTxt() {
-      const title = $('#docTitle').value.trim() || 'document';
-      const text = $('#editor').innerText || '';
-      downloadFile(title.replace(/[^\w\-]+/g, '_') + '.txt', text, 'text/plain');
-      toast('Exported as .txt');
-    }
-
-    function exportHtml() {
-      const title = $('#docTitle').value.trim() || 'document';
-      const html = $('#editor').innerHTML || '';
-      const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title></head><body>${html}</body></html>`;
-      downloadFile(title.replace(/[^\w\-]+/g, '_') + '.html', fullHtml, 'text/html');
-      toast('Exported as .html');
-    }
-
-    /* ===== Focus & Sidebar ===== */
-    function toggleFocusMode() {
-      document.body.classList.toggle('focus-mode');
-    }
-
-    function toggleSidebarMobile() {
-      $('#sidebar').classList.toggle('open');
-    }
-
-    /* ===== Events ===== */
-    document.addEventListener('DOMContentLoaded', () => {
-      ensureDocsSeed();
-      renderDocList();
-      const activeId = getActiveId();
-      const docs = getDocs();
-      const firstId = activeId || (docs[0] && docs[0].id);
-      if (firstId) loadDoc(firstId);
-
-      renderProfile();
-      updateStatsUI();
-    });
-
-    // Toolbar buttons
-    $$('.tool-btn[data-cmd]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cmd = btn.dataset.cmd;
-        execCmd(cmd);
-      });
-    });
-
-    $('#blockFormat').addEventListener('change', (e) => {
-      applyBlockFormat(e.target.value);
-    });
-
-    $('#todoBtn').addEventListener('click', insertChecklist);
-    $('#dividerBtn').addEventListener('click', insertDivider);
-    $('#quoteBtn').addEventListener('click', insertQuote);
-    $('#inlineCodeBtn').addEventListener('click', () => wrapSelection('code-inline'));
-    $('#highlightBtn').addEventListener('click', () => wrapSelection('highlight'));
-
-    // Editor input
-    $('#editor').addEventListener('input', markDirty);
-    $('#docTitle').addEventListener('input', markDirty);
-
-    // Save & Export
-    $('#saveBtn').addEventListener('click', () => saveActiveDoc(true));
-    $('#exportTxtBtn').addEventListener('click', exportTxt);
-    $('#exportHtmlBtn').addEventListener('click', exportHtml);
-
-    // Theme toggles
-    $('#themeToggleTop').addEventListener('click', () => {
-      const next = getTheme() === 'dark' ? 'light' : 'dark';
-      setTheme(next);
-    });
-    $('#themeToggleSide').addEventListener('click', () => {
-      const next = getTheme() === 'dark' ? 'light' : 'dark';
-      setTheme(next);
-    });
-
-    // Focus mode
-    $('#focusModeBtn').addEventListener('click', toggleFocusMode);
-
-    // Sidebar show/hide
-    $('#hideSidebarBtn').addEventListener('click', () => {
-      $('#sidebar').classList.toggle('hidden');
-    });
-
-    // Doc list click
-    $('#docList').addEventListener('click', (e) => {
-      const item = e.target.closest('.doc-item');
-      if (!item) return;
-      const id = item.dataset.id;
-      const actBtn = e.target.closest('button[data-act]');
-      if (actBtn) {
-        const act = actBtn.dataset.act;
-        if (act === 'rename') renameDoc(id);
-        if (act === 'duplicate') duplicateDoc(id);
-        if (act === 'delete') deleteDoc(id);
-        return;
-      }
-      if (activeDoc && activeDoc.id === id) return;
-      loadDoc(id);
-    });
-
-    // New doc
-    $('#newDocBtn').addEventListener('click', newDoc);
-
-    // Profile dropdown (simple)
-    $('#topAvatar').addEventListener('click', () => {
-      $('#pdrop').classList.toggle('show');
-    });
-    document.addEventListener('click', (e) => {
-      if (!$('.pbox').contains(e.target)) {
-        $('#pdrop').classList.remove('show');
-      }
-    });
-    $('#dummyProfileBtn').addEventListener('click', () => {
-      toast('Open your profile from the Dashboard page.');
-    });
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        saveActiveDoc(true);
-      }
-      // open/close sidebar on Ctrl/Cmd + \
-      if (e.key === '\\' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        toggleSidebarMobile();
-      }
-    });
   </script>
 </body>
 
