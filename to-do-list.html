@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RQR9BDLJ26"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -12,10 +11,9 @@
     gtag('config', 'G-RQR9BDLJ26');
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Taskflows To-Do List</title>
-  <link rel="icon" type="image/x-icon" href="
-Untitled-removebg-preview.png">
+  <link rel="icon" type="image/x-icon" href="Untitled-removebg-preview.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -44,6 +42,7 @@ Untitled-removebg-preview.png">
     body {
       background-color: #09090b;
       color: #e4e4e7;
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* Smooth Scrollbar */
@@ -130,6 +129,8 @@ Untitled-removebg-preview.png">
       position: fixed;
       bottom: 20px;
       right: 20px;
+      left: 20px;
+      /* Mobile fix */
       background: #18181b;
       border: 1px solid #3f3f46;
       color: white;
@@ -141,7 +142,15 @@ Untitled-removebg-preview.png">
       gap: 10px;
       transform: translateY(100px);
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      z-index: 50;
+      z-index: 60;
+    }
+
+    @media (min-width: 768px) {
+      .toast {
+        left: auto;
+        /* Reset for desktop */
+        width: auto;
+      }
     }
 
     .toast.show {
@@ -152,13 +161,22 @@ Untitled-removebg-preview.png">
 
 <body class="flex h-screen overflow-hidden antialiased selection:bg-accent selection:text-white">
 
-  <aside class="w-64 bg-bgSidebar h-full flex flex-col border-r border-white/5 flex-shrink-0 z-20">
-    <div class="p-6 flex items-center gap-3">
-      <div
-        class="w-8 h-8 bg-gradient-to-tr from-accent to-purple-500 rounded-lg flex items-center justify-center shadow-lg shadow-accent/20">
-        <i class="ph-bold ph-check text-white text-lg"></i>
+  <div id="mobile-overlay" onclick="toggleSidebar()"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden md:hidden transition-opacity opacity-0"></div>
+
+  <aside id="sidebar"
+    class="fixed inset-y-0 left-0 w-64 bg-bgSidebar h-full flex flex-col border-r border-white/5 flex-shrink-0 z-40 transform -translate-x-full transition-transform duration-300 md:relative md:translate-x-0">
+    <div class="p-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-8 h-8 bg-gradient-to-tr from-accent to-purple-500 rounded-lg flex items-center justify-center shadow-lg shadow-accent/20">
+          <i class="ph-bold ph-check text-white text-lg"></i>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-white">Taskflows</span>
       </div>
-      <span class="text-xl font-bold tracking-tight text-white">Taskflows</span>
+      <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+        <i class="ph ph-x text-xl"></i>
+      </button>
     </div>
 
     <nav class="flex-1 overflow-y-auto px-4 space-y-8">
@@ -238,14 +256,21 @@ Untitled-removebg-preview.png">
     </div>
   </aside>
 
-  <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-bgDark">
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-bgDark w-full">
 
-    <header class="flex items-center justify-between px-10 py-6 border-b border-white/5">
-      <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-          <span id="greeting">Good Morning</span>
-        </h1>
-        <p class="text-gray-400 text-sm mt-1" id="date-display">Today is ...</p>
+    <header class="flex items-center justify-between px-4 py-4 md:px-10 md:py-6 border-b border-white/5">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()"
+          class="md:hidden h-9 w-9 flex items-center justify-center rounded-lg bg-bgCard border border-white/10 text-white">
+          <i class="ph ph-list text-xl"></i>
+        </button>
+
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <span id="greeting">Good Morning</span>
+          </h1>
+          <p class="text-gray-400 text-xs md:text-sm mt-0.5" id="date-display">Today is ...</p>
+        </div>
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -259,10 +284,10 @@ Untitled-removebg-preview.png">
       </div>
     </header>
 
-    <div class="px-10 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="px-4 md:px-10 py-6 md:py-8 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
 
       <div
-        class="col-span-2 bg-gradient-to-br from-bgCard to-[#1f1f25] p-6 rounded-2xl border border-white/5 relative overflow-hidden group shadow-lg">
+        class="col-span-2 bg-gradient-to-br from-bgCard to-[#1f1f25] p-5 md:p-6 rounded-2xl border border-white/5 relative overflow-hidden group shadow-lg">
         <div
           class="absolute right-0 top-0 w-40 h-40 bg-accent/10 rounded-full blur-3xl -mr-10 -mt-10 transition group-hover:bg-accent/20">
         </div>
@@ -282,59 +307,59 @@ Untitled-removebg-preview.png">
       </div>
 
       <div
-        class="bg-bgCard p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center hover:border-white/10 transition shadow-lg">
-        <span class="text-3xl font-bold text-white mb-1" id="count-pending">0</span>
-        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending</span>
+        class="col-span-1 bg-bgCard p-4 md:p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center hover:border-white/10 transition shadow-lg">
+        <span class="text-2xl md:text-3xl font-bold text-white mb-1" id="count-pending">0</span>
+        <span class="text-[10px] md:text-xs font-medium text-gray-500 uppercase tracking-wide">Pending</span>
       </div>
       <div
-        class="bg-bgCard p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center hover:border-white/10 transition shadow-lg">
-        <span class="text-3xl font-bold text-emerald-400 mb-1" id="count-completed">0</span>
-        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Done</span>
+        class="col-span-1 bg-bgCard p-4 md:p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center hover:border-white/10 transition shadow-lg">
+        <span class="text-2xl md:text-3xl font-bold text-emerald-400 mb-1" id="count-completed">0</span>
+        <span class="text-[10px] md:text-xs font-medium text-gray-500 uppercase tracking-wide">Done</span>
       </div>
     </div>
 
-    <div class="px-10 mb-6">
+    <div class="px-4 md:px-10 mb-6">
       <div
-        class="bg-bgCard p-2 rounded-2xl border border-white/5 flex flex-col md:flex-row items-center gap-3 shadow-xl shadow-black/40 focus-within:border-accent/50 transition-colors">
+        class="bg-bgCard p-3 md:p-2 rounded-2xl border border-white/5 flex flex-col md:flex-row items-stretch md:items-center gap-3 shadow-xl shadow-black/40 focus-within:border-accent/50 transition-colors">
 
         <div class="pl-4 hidden md:block">
           <div class="w-5 h-5 rounded border-2 border-gray-600 border-dashed"></div>
         </div>
 
         <input type="text" id="task-input" placeholder="What needs to be done?"
-          class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-500 h-10 text-sm w-full px-3 md:px-0">
+          class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-500 h-10 text-sm w-full px-1 md:px-0">
 
-        <div class="flex items-center gap-2 w-full md:w-auto px-2 md:px-0">
+        <div class="grid grid-cols-2 gap-2 md:flex md:items-center md:gap-2 w-full md:w-auto">
           <input type="date" id="date-input"
-            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 font-sans">
+            class="col-span-2 md:col-span-1 bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 font-sans w-full md:w-auto">
 
           <select id="priority-select"
-            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 cursor-pointer">
+            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 cursor-pointer w-full md:w-auto">
             <option value="low">Low Priority</option>
             <option value="medium">Medium Priority</option>
             <option value="high">High Priority</option>
           </select>
 
           <select id="category-select"
-            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 cursor-pointer">
+            class="bg-bgDark text-xs text-gray-300 py-2 px-3 rounded-lg border border-white/10 outline-none focus:border-accent h-9 cursor-pointer w-full md:w-auto">
             <option value="Work">Work</option>
             <option value="Personal">Personal</option>
             <option value="Design">Design</option>
           </select>
 
           <button onclick="addTask()"
-            class="bg-accent hover:bg-accentHover text-white h-9 px-4 rounded-lg text-sm font-medium transition shadow-lg shadow-accent/20 flex items-center gap-2 ml-auto md:ml-0 whitespace-nowrap">
+            class="col-span-2 md:col-span-1 bg-accent hover:bg-accentHover text-white h-9 px-4 rounded-lg text-sm font-medium transition shadow-lg shadow-accent/20 flex items-center justify-center md:justify-start gap-2 whitespace-nowrap mt-1 md:mt-0">
             <i class="ph-bold ph-plus"></i> Add
           </button>
         </div>
       </div>
     </div>
 
-    <div class="px-10 mb-4 flex items-center justify-between">
+    <div class="px-4 md:px-10 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
       <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-        Tasks <span class="text-gray-500 text-sm font-normal">(Double click text to edit)</span>
+        Tasks <span class="text-gray-500 text-xs font-normal hidden md:inline">(Double click text to edit)</span>
       </h2>
-      <div class="flex gap-3">
+      <div class="flex justify-between items-center w-full md:w-auto gap-3">
         <button onclick="clearCompleted()"
           class="text-xs text-gray-500 hover:text-red-400 transition flex items-center gap-1">
           <i class="ph ph-trash"></i> Clear Done
@@ -353,7 +378,7 @@ Untitled-removebg-preview.png">
       </div>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-10 pb-10 space-y-3" id="task-list">
+    <div class="flex-1 overflow-y-auto px-4 md:px-10 pb-20 md:pb-10 space-y-3" id="task-list">
       <div id="empty-state"
         class="hidden flex flex-col items-center justify-center mt-12 text-center opacity-0 animate-enter">
         <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
@@ -380,6 +405,10 @@ Untitled-removebg-preview.png">
     const categorySelect = document.getElementById('category-select');
     const emptyState = document.getElementById('empty-state');
 
+    // Sidebar Elements
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+
     // Stats
     const progressPercent = document.getElementById('progress-percent');
     const progressBar = document.getElementById('progress-bar');
@@ -405,6 +434,21 @@ Untitled-removebg-preview.png">
       if (hours < 12) el.innerText = "Good Morning";
       else if (hours < 18) el.innerText = "Good Afternoon";
       else el.innerText = "Good Evening";
+    }
+
+    // --- MOBILE SIDEBAR LOGIC ---
+    function toggleSidebar() {
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        // Small delay for fade in animation
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      }
     }
 
     // --- LOCAL STORAGE ---
@@ -474,6 +518,7 @@ Untitled-removebg-preview.png">
 
         filteredTasks.forEach(task => {
           const el = document.createElement('div');
+          // Added md:opacity-0 logic to Delete button parent class for mobile visibility
           el.className = `task-item relative group bg-bgCard hover:bg-bgHover p-4 rounded-xl border border-white/5 flex items-center justify-between shadow-sm mb-3 ${task.completed ? 'opacity-50' : ''}`;
           el.draggable = true;
           el.dataset.id = task.id;
@@ -486,12 +531,12 @@ Untitled-removebg-preview.png">
           });
 
           el.innerHTML = `
-            <div class="flex items-center gap-4 flex-1">
-              <div class="cursor-grab text-gray-600 hover:text-gray-400 opacity-0 group-hover:opacity-100 transition">
+            <div class="flex items-center gap-3 md:gap-4 flex-1">
+              <div class="cursor-grab text-gray-600 hover:text-gray-400 hidden md:block opacity-0 group-hover:opacity-100 transition">
                 <i class="ph ph-dots-six-vertical text-xl"></i>
               </div>
 
-              <label class="checkbox-wrapper relative flex items-center justify-center cursor-pointer">
+              <label class="checkbox-wrapper relative flex items-center justify-center cursor-pointer flex-shrink-0">
                 <input type="checkbox" class="absolute opacity-0 w-0 h-0" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
                 <div class="w-6 h-6 border-2 border-gray-600 rounded-lg transition-all flex items-center justify-center bg-transparent group-hover:border-gray-500">
                   <i class="ph-bold ph-check text-white text-xs ${task.completed ? 'block' : 'hidden'}"></i>
@@ -504,7 +549,7 @@ Untitled-removebg-preview.png">
                    onblur="editTask(${task.id}, this)" 
                    onkeydown="handleEditEnter(event, this)">${task.text}</p>
                 
-                <div class="flex items-center flex-wrap gap-3 mt-1.5">
+                <div class="flex items-center flex-wrap gap-2 md:gap-3 mt-1.5">
                   <span class="flex items-center gap-1 text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${getPriorityStyles(task.priority)}">
                     <div class="w-1.5 h-1.5 rounded-full bg-current"></div>
                     ${task.priority}
@@ -519,7 +564,7 @@ Untitled-removebg-preview.png">
               </div>
             </div>
 
-            <button onclick="deleteTask(this, ${task.id})" class="text-gray-600 hover:text-red-400 transition p-2 rounded-lg hover:bg-white/5 opacity-0 group-hover:opacity-100" title="Delete Task">
+            <button onclick="deleteTask(this, ${task.id})" class="text-gray-600 hover:text-red-400 transition p-2 rounded-lg hover:bg-white/5 opacity-100 md:opacity-0 md:group-hover:opacity-100" title="Delete Task">
               <i class="ph ph-trash text-lg"></i>
             </button>
           `;
