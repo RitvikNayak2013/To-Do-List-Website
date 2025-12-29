@@ -12,10 +12,9 @@
     gtag('config', 'G-RQR9BDLJ26');
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Taskflows Dashboard</title>
-  <link rel="icon" type="image/x-icon" href="
-Untitled-removebg-preview.png">
+  <link rel="icon" type="image/x-icon" href="Untitled-removebg-preview.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
@@ -66,6 +65,7 @@ Untitled-removebg-preview.png">
       box-sizing: border-box;
       outline: none;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -113,10 +113,26 @@ Untitled-removebg-preview.png">
       display: flex;
       flex-direction: column;
       padding: 24px;
-      z-index: 10;
-      transition: background 0.3s;
-      /* Changed to auto to allow scrolling if menu is long */
+      z-index: 50;
+      transition: transform 0.3s var(--ease-smooth);
       overflow-y: auto;
+    }
+
+    /* Mobile Sidebar Overlay */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: all;
     }
 
     .brand {
@@ -132,7 +148,6 @@ Untitled-removebg-preview.png">
       flex-shrink: 0;
     }
 
-    /* Sidebar Section Headers */
     .nav-header {
       font-size: 0.75rem;
       font-weight: 700;
@@ -157,7 +172,6 @@ Untitled-removebg-preview.png">
       position: relative;
       overflow: hidden;
       text-decoration: none;
-      /* Added for link support */
     }
 
     .nav-item:hover {
@@ -183,21 +197,30 @@ Untitled-removebg-preview.png">
       flex-direction: column;
       position: relative;
       background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05) 0%, transparent 40%);
+      width: 100%;
     }
 
     /* HEADER */
     header {
-      height: 80px;
+      height: 70px;
+      /* Slightly shorter for mobile feel */
       padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid transparent;
       transition: 0.3s;
+      flex-shrink: 0;
     }
 
     header:hover {
       border-bottom-color: var(--border);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      /* Hidden on desktop */
+      margin-right: 15px;
     }
 
     .greeting h2 {
@@ -212,7 +235,7 @@ Untitled-removebg-preview.png">
 
     .header-actions {
       display: flex;
-      gap: 16px;
+      gap: 12px;
       align-items: center;
     }
 
@@ -229,6 +252,7 @@ Untitled-removebg-preview.png">
       cursor: pointer;
       transition: all 0.2s var(--ease-elastic);
       position: relative;
+      flex-shrink: 0;
     }
 
     .btn-icon:hover {
@@ -240,33 +264,6 @@ Untitled-removebg-preview.png">
 
     .btn-icon:active {
       transform: scale(0.9);
-    }
-
-    .notif-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 10px;
-      height: 10px;
-      background: var(--danger);
-      border-radius: 50%;
-      border: 2px solid var(--bg-body);
-      display: none;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-      }
-
-      70% {
-        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-      }
     }
 
     /* VIEWS SYSTEM */
@@ -297,6 +294,8 @@ Untitled-removebg-preview.png">
       flex: 1;
       overflow-y: auto;
       padding: 20px 40px 40px 40px;
+      -webkit-overflow-scrolling: touch;
+      /* Smooth scrolling iOS */
     }
 
     .grid-container {
@@ -318,6 +317,7 @@ Untitled-removebg-preview.png">
       gap: 8px;
       transition: all 0.3s var(--ease-smooth);
       box-shadow: 0 4px 15px var(--primary-glow);
+      white-space: nowrap;
     }
 
     .btn-primary:hover {
@@ -345,12 +345,6 @@ Untitled-removebg-preview.png">
       transition: 0.3s;
       position: relative;
       overflow: hidden;
-    }
-
-    .stat-card:hover {
-      border-color: var(--primary);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      transform: translateY(-3px);
     }
 
     .stat-value {
@@ -384,35 +378,6 @@ Untitled-removebg-preview.png">
       flex-direction: column;
       gap: 15px;
       animation: slideUp 0.4s var(--ease-smooth) backwards;
-    }
-
-    /* Staggered Animation for list items */
-    .project-card:nth-child(1) {
-      animation-delay: 0.05s;
-    }
-
-    .project-card:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-
-    .project-card:nth-child(3) {
-      animation-delay: 0.15s;
-    }
-
-    .project-card:nth-child(4) {
-      animation-delay: 0.2s;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .project-card:hover {
@@ -528,6 +493,8 @@ Untitled-removebg-preview.png">
       padding: 10px 15px;
       border-radius: 10px;
       transition: 0.3s;
+      min-width: 0;
+      /* Prevents input from overflowing flex container */
     }
 
     .glass-input:focus {
@@ -554,10 +521,6 @@ Untitled-removebg-preview.png">
       cursor: pointer;
     }
 
-    .task-item:hover {
-      background: rgba(255, 255, 255, 0.06);
-    }
-
     .check-circle {
       width: 20px;
       height: 20px;
@@ -567,6 +530,7 @@ Untitled-removebg-preview.png">
       align-items: center;
       justify-content: center;
       transition: 0.2s;
+      flex-shrink: 0;
     }
 
     .task-item.done .check-circle {
@@ -592,6 +556,8 @@ Untitled-removebg-preview.png">
       opacity: 0;
       pointer-events: none;
       transition: 0.3s;
+      padding: 20px;
+      /* Padding for mobile safety */
     }
 
     .modal-overlay.open {
@@ -602,6 +568,7 @@ Untitled-removebg-preview.png">
     .modal-box {
       background: var(--bg-modal);
       width: 500px;
+      max-width: 100%;
       border-radius: 24px;
       padding: 30px;
       border: 1px solid var(--border);
@@ -656,6 +623,7 @@ Untitled-removebg-preview.png">
 
     .cmd-box {
       width: 600px;
+      max-width: 90%;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -713,44 +681,7 @@ Untitled-removebg-preview.png">
       z-index: 300;
     }
 
-    .toast {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 15px 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      animation: toastIn 0.3s var(--ease-elastic);
-      min-width: 300px;
-    }
-
-    @keyframes toastIn {
-      from {
-        opacity: 0;
-        transform: translateX(50px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .toast-success {
-      border-left: 4px solid var(--success);
-    }
-
-    .toast-danger {
-      border-left: 4px solid var(--danger);
-    }
-
-    .toast-info {
-      border-left: 4px solid var(--primary);
-    }
-
-    /* ANALYTICS CHART BAR (Simple CSS) */
+    /* ANALYTICS CHART BAR */
     .chart-bar-container {
       display: flex;
       height: 30px;
@@ -770,21 +701,82 @@ Untitled-removebg-preview.png">
       filter: brightness(1.2);
     }
 
-    .seg-tooltip {
-      position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: black;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      display: none;
-      white-space: nowrap;
-    }
+    /* ================= RESPONSIVE / MOBILE CSS ================= */
+    @media (max-width: 900px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+        /* Stack columns vertically */
+        gap: 20px;
+      }
 
-    .chart-seg:hover .seg-tooltip {
-      display: block;
+      /* Turn Sidebar into Drawer */
+      aside {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100%;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      }
+
+      aside.open {
+        transform: translateX(280px);
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        /* Show hamburger */
+      }
+
+      header {
+        padding: 0 20px;
+      }
+
+      .content-scroll {
+        padding: 20px;
+      }
+
+      .stats-bar {
+        grid-template-columns: 1fr;
+        /* Stack stats vertically */
+        gap: 15px;
+      }
+
+      .modal-box {
+        width: 95%;
+        /* Responsive modals */
+        padding: 20px;
+      }
+
+      .cmd-overlay {
+        padding-top: 20px;
+        align-items: flex-start;
+      }
+
+      .toast-container {
+        right: 20px;
+        left: 20px;
+        bottom: 20px;
+      }
+
+      .toast {
+        min-width: auto;
+        width: 100%;
+      }
+
+      .header-actions {
+        gap: 8px;
+      }
+
+      /* Hide the 'Me' avatar text, just show circle to save space */
+      .header-actions div:last-child {
+        font-size: 0.7rem;
+        width: 36px;
+        height: 36px;
+      }
+
+      .greeting h2 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
@@ -793,8 +785,10 @@ Untitled-removebg-preview.png">
 
   <div class="toast-container" id="toast-container"></div>
 
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
   <div class="modal-overlay" id="name-modal">
-    <div class="modal-box" style="text-align: center; width: 400px;">
+    <div class="modal-box" style="text-align: center; width: 400px; max-width: 90%;">
       <span class="material-symbols-rounded"
         style="font-size: 48px; color: var(--primary); margin-bottom: 20px;">waving_hand</span>
       <h2 style="margin-bottom: 10px;">Welcome to Taskflows</h2>
@@ -809,7 +803,7 @@ Untitled-removebg-preview.png">
   <div class="cmd-overlay" id="search-modal" onclick="if(event.target === this) toggleSearch()">
     <div class="cmd-box">
       <input type="text" class="cmd-input" id="cmd-input" placeholder="Search projects or tasks..."
-        oninput="handleSearch(this.value)" autofocus>
+        oninput="handleSearch(this.value)">
       <div class="cmd-results" id="cmd-results">
         <div style="padding: 20px; text-align: center; color: var(--text-muted);">Start typing to search...</div>
       </div>
@@ -895,7 +889,7 @@ Untitled-removebg-preview.png">
     </div>
   </div>
 
-  <aside>
+  <aside id="main-sidebar">
     <div class="brand">
       <span class="material-symbols-rounded" style="color: var(--primary);">layers</span>
       Taskflows
@@ -952,19 +946,25 @@ Untitled-removebg-preview.png">
 
   <main>
     <header>
-      <div class="greeting">
-        <h2 id="greeting-text">Hello, User</h2>
-        <p id="date-display">Fetching date...</p>
+      <div style="display: flex; align-items: center;">
+        <div class="btn-icon mobile-menu-btn" onclick="toggleSidebar()">
+          <span class="material-symbols-rounded">menu</span>
+        </div>
+        <div class="greeting">
+          <h2 id="greeting-text">Hello, User</h2>
+          <p id="date-display">Fetching date...</p>
+        </div>
       </div>
+
       <div class="header-actions">
-        <div class="btn-icon" onclick="toggleSearch()" title="Search (Ctrl+K)">
+        <div class="btn-icon" onclick="toggleSearch()" title="Search">
           <span class="material-symbols-rounded">search</span>
         </div>
         <div class="btn-icon" onclick="toggleSettings()" title="Settings">
           <span class="material-symbols-rounded">settings</span>
         </div>
         <div
-          style="width: 40px; height: 40px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; display: grid; place-items: center; font-weight: 700; cursor: pointer; border: 2px solid var(--bg-card);">
+          style="background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; display: grid; place-items: center; font-weight: 700; cursor: pointer; border: 2px solid var(--bg-card); color:white;">
           ME
         </div>
       </div>
@@ -996,7 +996,7 @@ Untitled-removebg-preview.png">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <h3>Recent Projects</h3>
               <button class="btn-primary" onclick="openCreateModal()">
-                <span class="material-symbols-rounded">add</span> New Project
+                <span class="material-symbols-rounded">add</span> <span style="display:inline-block;">Project</span>
               </button>
             </div>
 
@@ -1051,7 +1051,7 @@ Untitled-removebg-preview.png">
           <div class="task-input-group">
             <input type="text" id="main-task-input" class="glass-input" placeholder="What needs to be done?"
               onkeypress="if(event.key==='Enter') addMainTask()">
-            <button class="btn-primary" onclick="addMainTask()">Add Task</button>
+            <button class="btn-primary" onclick="addMainTask()">Add</button>
           </div>
           <div id="main-task-list" class="task-list" style="max-height: none;"></div>
         </div>
@@ -1113,9 +1113,20 @@ Untitled-removebg-preview.png">
           document.getElementById('search-modal').classList.remove('open');
           document.getElementById('settings-modal').classList.remove('open');
           closeModal();
+          // Close sidebar if open
+          document.getElementById('main-sidebar').classList.remove('open');
+          document.getElementById('sidebar-overlay').classList.remove('active');
         }
       });
     };
+
+    // ================= MOBILE SIDEBAR LOGIC =================
+    function toggleSidebar() {
+      const sidebar = document.getElementById('main-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
 
     function saveData() {
       localStorage.setItem('tf_projects', JSON.stringify(state.projects));
@@ -1133,7 +1144,7 @@ Untitled-removebg-preview.png">
     }
 
     function initDate() {
-      const options = { weekday: 'long', month: 'long', day: 'numeric' };
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
       document.getElementById('date-display').textContent = new Date().toLocaleDateString('en-US', options);
     }
 
@@ -1169,6 +1180,11 @@ Untitled-removebg-preview.png">
         section.classList.remove('active-view');
       });
       document.getElementById(`view-${viewName}`).classList.add('active-view');
+
+      // Close sidebar on mobile after selection
+      if (window.innerWidth <= 900) {
+        toggleSidebar();
+      }
     }
 
     // ================= SETTINGS & SEARCH =================
